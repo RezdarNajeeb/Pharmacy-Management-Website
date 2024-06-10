@@ -1,11 +1,11 @@
 /* Color Palette With General Configurations */
 :root {
-  --primary-color: #4CAF50;
-  --secondary-color: #FFC107;
-  --background-color: #F9F9F9;
+  --primary-color: #4caf50;
+  --secondary-color: #ffc107;
+  --background-color: #f9f9f9;
   --text-color: #333333;
-  --header-footer-bg-color: #2C3E50;
-  --hover-color: #3498DB;
+  --header-footer-bg-color: #2c3e50;
+  --hover-color: #3498db;
   --border: 1px solid #ccc;
   --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   --base-font-size: 10px;
@@ -17,75 +17,19 @@ html {
 }
 
 /* General Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Body Styles */
 body {
   background-color: var(--background-color);
   color: var(--text-color);
-  margin: 0;
-  padding: 0;
 }
 
-/* Header Styles */
-header {
-  background-color: var(--header-footer-bg-color);
-  color: #fff;
-  padding: 1rem 0;
-  box-shadow: var(--box-shadow);
-}
-
-.header-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 2rem;
-}
-
-.logo img {
-  height: 5rem;
-}
-
-.navbar ul {
-  list-style: none;
-  display: flex;
-  gap: 2rem;
-  margin: 0;
-  padding: 0;
-}
-
-.navbar a {
-  color: #fff;
-  text-decoration: none;
-  padding: 1rem 1.5rem;
-  border-radius: .5rem;
-  transition: background-color 0.3s;
-}
-
-.navbar a:hover {
-  background-color: var(--hover-color);
-}
-
-.icons {
-  display: flex;
-  gap: 1.5rem;
-}
-
-.icon {
-  color: #fff;
-  text-decoration: none;
-  font-size: 1.5rem;
-  transition: color 0.3s;
-}
-
-.icon:hover {
-  color: var(--hover-color);
-}
-
-.icon img {
-  height: 3rem;
-  cursor: pointer;
-}
-
+/* auth-forms styles */
 .auth-forms-container {
   width: 100%;
   display: flex;
@@ -101,7 +45,7 @@ header {
   min-width: 40rem;
   padding: 2rem;
   background-color: #fff;
-  border-radius: .5rem;
+  border-radius: 0.5rem;
   box-shadow: var(--box-shadow);
 }
 
@@ -118,7 +62,7 @@ header {
 .auth-forms-container form input {
   padding: 1rem;
   border: var(--border);
-  border-radius: .5rem;
+  border-radius: 0.5rem;
 }
 
 .auth-forms-container form button {
@@ -127,14 +71,14 @@ header {
   background-color: var(--hover-color);
   color: #fff;
   border: none;
-  border-radius: .5rem;
+  border-radius: 0.5rem;
   margin-top: 1rem;
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
 .auth-forms-container form button:hover {
-  background-color: #2980B9;
+  background-color: #2980b9;
 }
 
 .auth-forms-container form a {
@@ -143,7 +87,7 @@ header {
   background-color: var(--primary-color);
   color: #fff;
   border: none;
-  border-radius: .5rem;
+  border-radius: 0.5rem;
   text-align: center;
   text-decoration: none;
   cursor: pointer;
@@ -154,3 +98,108 @@ header {
   background-color: #359b39;
 }
 
+/* Header Styles */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: var(--header-footer-bg-color);
+}
+
+header .logo {
+  width: 5rem;
+  height: 5rem;
+}
+
+header .logo img {
+  width: 100%;
+  height: 100%;
+}
+
+header .navbar ul {
+  display: flex;
+  column-gap: 3rem;
+}
+
+header .navbar ul li {
+  list-style: none;
+}
+
+header .navbar ul a {
+  font-size: 2rem;
+  color: #fff;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  transition: background-color 0.3s;
+}
+
+header .navbar ul a:hover {
+  background-color: var(--hover-color);
+}
+
+header .icons {
+  display: flex;
+  column-gap: 1.5rem;
+}
+
+header .icons a {
+  font-size: 2rem;
+  color: #fff;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+header .icons a:hover {
+  color: var(--hover-color);
+}
+
+/* Footer Styles */
+/* Footer Styles */
+footer {
+  background-color: var(--header-footer-bg-color);
+  color: #fff;
+  padding: 2rem;
+  text-align: center;
+}
+
+footer p {
+  margin: 1rem 0;
+  font-size: 1.6rem;
+}
+
+footer span {
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+footer a {
+  color: var(--secondary-color);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+footer a:hover {
+  color: var(--hover-color);
+}
+
+footer .social-media {
+  margin-top: 2rem;
+}
+
+footer .social-media p {
+  font-size: 1.6rem;
+  margin-bottom: 1rem;
+}
+
+footer .social-media a {
+  font-size: 2rem;
+  margin: 0 1rem;
+  color: #fff;
+  transition: color 0.3s;
+}
+
+footer .social-media a:hover {
+  color: var(--hover-color);
+}

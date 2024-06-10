@@ -76,7 +76,7 @@ if (isset($_POST['login'])) {
 
 <body>
   <div class="auth-forms-container">
-    <form method="POST" action="login.php" id="login-form">
+    <form method="post" action="login.php" id="login-form">
       <h2>چوونەژوورەوە</h2>
       <label for="username">ناوی بەکارهێنەر:</label>
       <input type="text" id="username" name="username" required>
