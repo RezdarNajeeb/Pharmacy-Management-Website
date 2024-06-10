@@ -1,0 +1,156 @@
+/* Color Palette With General Configurations */
+:root {
+  --primary-color: #4CAF50;
+  --secondary-color: #FFC107;
+  --background-color: #F9F9F9;
+  --text-color: #333333;
+  --header-footer-bg-color: #2C3E50;
+  --hover-color: #3498DB;
+  --border: 1px solid #ccc;
+  --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --base-font-size: 10px;
+}
+
+/* General Font Size */
+html {
+  font-size: var(--base-font-size);
+}
+
+/* General Styles */
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  margin: 0;
+  padding: 0;
+}
+
+/* Header Styles */
+header {
+  background-color: var(--header-footer-bg-color);
+  color: #fff;
+  padding: 1rem 0;
+  box-shadow: var(--box-shadow);
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.logo img {
+  height: 5rem;
+}
+
+.navbar ul {
+  list-style: none;
+  display: flex;
+  gap: 2rem;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar a {
+  color: #fff;
+  text-decoration: none;
+  padding: 1rem 1.5rem;
+  border-radius: .5rem;
+  transition: background-color 0.3s;
+}
+
+.navbar a:hover {
+  background-color: var(--hover-color);
+}
+
+.icons {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.icon {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.5rem;
+  transition: color 0.3s;
+}
+
+.icon:hover {
+  color: var(--hover-color);
+}
+
+.icon img {
+  height: 3rem;
+  cursor: pointer;
+}
+
+.auth-forms-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.auth-forms-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 40rem;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: .5rem;
+  box-shadow: var(--box-shadow);
+}
+
+.auth-forms-container form h2 {
+  font-size: 3rem;
+  text-align: center;
+  margin: 0 0 1rem 0;
+}
+
+.auth-forms-container form label {
+  font-size: 2rem;
+}
+
+.auth-forms-container form input {
+  padding: 1rem;
+  border: var(--border);
+  border-radius: .5rem;
+}
+
+.auth-forms-container form button {
+  font-size: 2rem;
+  padding: 1rem;
+  background-color: var(--hover-color);
+  color: #fff;
+  border: none;
+  border-radius: .5rem;
+  margin-top: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.auth-forms-container form button:hover {
+  background-color: #2980B9;
+}
+
+.auth-forms-container form a {
+  font-size: 2rem;
+  padding: 1rem;
+  background-color: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: .5rem;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.auth-forms-container form a:hover {
+  background-color: #359b39;
+}
+

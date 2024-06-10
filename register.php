@@ -49,19 +49,23 @@ if (isset($_POST['register'])) {
 </head>
 
 <body>
-  <h2>دروستکردنی هەژمار</h2>
-  <form method="post" action="register.php" id="register-form">
-    <label for="username">ناوی بەکارهێنەر: </label>
-    <input type="text" id="username" name="username" required><br>
-    <label for="password">وشەی نهێنی</label>
-    <input type="password" id="password" name="password" required><br>
-    <label for="confirm_password">وشەی نهێنیی دڵنیایی</label>
-    <input type="password" id="confirm_password" name="confirm_password" required><br>
-    <label for="show-password">پیشاندانی وشەی نهێنی</label>
-    <input type="checkbox" id="show-password"><br>
-    <button type="submit" name="register">دروستکردن</button>
-    <a href="login.php">چوونەژوورەوە!</a>
-  </form>
+  <div class="auth-forms-container">
+    <form method="post" action="register.php" id="register-form">
+      <h2>دروستکردنی هەژمار</h2>
+      <label for="username">ناوی بەکارهێنەر: </label>
+      <input type="text" id="username" name="username" required>
+      <label for="password">وشەی نهێنی</label>
+      <input type="password" id="password" name="password" required>
+      <label for="confirm_password">وشەی نهێنیی دڵنیایی</label>
+      <input type="password" id="confirm_password" name="confirm_password" required>
+      <div class="show-pass-cont">
+        <label for="show-password">پیشاندانی وشەی نهێنی</label>
+        <input type="checkbox" id="show-password">
+      </div>
+      <button type="submit" name="register">دروستکردن</button>
+      <a href="login.php">چوونەژوورەوە</a>
+    </form>
+  </div>
 
   <script src="js/lib/jquery-3.7.1.min.js"></script>
   <script src="js/validate.js"></script>

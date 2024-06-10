@@ -75,19 +75,25 @@ if (isset($_POST['login'])) {
 </head>
 
 <body>
-  <h2>چوونەژوورەوە</h2>
-  <form method="POST" action="login.php" id="login-form">
-    <label for="username">ناوی بەکارهێنەر:</label>
-    <input type="text" id="username" name="username" required><br>
-    <label for="password">وشەی نهێنی:</label>
-    <input type="password" id="password" name="password" required><br>
-    <label for="show-password">پیشاندانی وشەی نهێنی</label>
-    <input type="checkbox" id="show-password"><br>
-    <label for="remember">منت لەبیر بێت</label>
-    <input type="checkbox" id="remember" name="remember"><br>
-    <button type="submit" name="login">بچۆ ژوورەوە</button>
-    <a href="register.php">دروستکردنی هەژمار</a>
-  </form>
+  <div class="auth-forms-container">
+    <form method="POST" action="login.php" id="login-form">
+      <h2>چوونەژوورەوە</h2>
+      <label for="username">ناوی بەکارهێنەر:</label>
+      <input type="text" id="username" name="username" required>
+      <label for="password">وشەی نهێنی:</label>
+      <input type="password" id="password" name="password" required>
+      <div class="show-pass-cont">
+        <label for="show-password">پیشاندانی وشەی نهێنی</label>
+        <input type="checkbox" id="show-password">
+      </div>
+      <div class="remember-me-cont">
+        <label for="remember">منت لەبیر بێت</label>
+        <input type="checkbox" id="remember" name="remember">
+      </div>
+      <button type="submit" name="login">بچۆ ژوورەوە</button>
+      <a href="register.php">دروستکردنی هەژمار</a>
+    </form>
+  </div>
 
   <script src="js/lib/jquery-3.7.1.min.js"></script>
   <script src="js/validate.js"></script>
