@@ -210,7 +210,7 @@ header #user-box span {
 
 header #user-box button {
   font-size: 2rem;
-  padding: .5rem 1rem;
+  padding: 0.5rem 1rem;
   background-color: var(--secondary-color);
   color: #fff;
   border: none;
@@ -225,7 +225,7 @@ header #user-box button:hover {
 
 header #user-box a {
   font-size: 2rem;
-  padding: .5rem 1rem;
+  padding: 0.5rem 1rem;
   color: #fff;
   background-color: var(--red-color);
   border-radius: 0.5rem;
@@ -314,6 +314,57 @@ header #user-box a:hover {
 
 .modal-content button:hover {
   background-color: #ff9800;
+}
+
+/* Add Medicine Form */
+#add-medicine-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1rem;
+  background-color: #fff;
+  border-radius: 0.5rem;
+  box-shadow: var(--box-shadow);
+}
+
+#add-medicine-form input,
+#add-medicine-form button {
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: var(--border);
+  border-radius: 0.5rem;
+}
+
+#add-medicine-form button {
+  background-color: var(--primary-color);
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#add-medicine-form button:hover {
+  background-color: var(--hover-color);
+}
+
+/* Medicines Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 2rem;
+}
+
+table th,
+table td {
+  border: var(--border);
+  padding: 1rem;
+  text-align: center;
+}
+
+table img {
+  max-width: 50px;
+  max-height: 50px;
 }
 
 /* Footer Styles */
