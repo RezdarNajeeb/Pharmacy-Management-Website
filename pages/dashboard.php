@@ -19,8 +19,11 @@ if (!isset($_SESSION['user_id'])) {
 
 <body>
     <?php include('../includes/header.php'); ?>
-
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
     <?php include('../includes/footer.php'); ?>
+
+    <script src="../js/lib/jquery-3.7.1.min.js"></script>
+    <script src="../js/scripts.js"></script>
 </body>
 
 </html>

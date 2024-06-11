@@ -24,7 +24,7 @@ if (isset($_COOKIE['remember_me'])) {
 
 if (isset($_POST['login'])) {
   $username = $conn->real_escape_string($_POST['username']);
-  $password = $_POST['password'];
+  $password = $conn->real_escape_string($_POST['password']);
   $remember = isset($_POST['remember']);
 
   $stmt = $conn->prepare("SELECT * FROM users WHERE username= ?");
