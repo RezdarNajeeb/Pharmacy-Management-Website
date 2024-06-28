@@ -75,8 +75,8 @@ $medicines = $stmt->get_result();
         <form id="add-medicine-form" method="post" enctype="multipart/form-data">
           <input type="text" name="name" placeholder="ناوی دەرمان" required>
           <input type="text" name="category" placeholder="پۆل" required>
-          <input type="number" name="price" placeholder="نرخ" required>
-          <input type="number" name="quantity" placeholder="بڕ" required>
+          <input type="number" name="price" min="0" placeholder="نرخ" required>
+          <input type="number" name="quantity" min="0" placeholder="بڕ" required>
           <input type="date" name="expiry_date" placeholder="بەسەرچوونی" required>
           <input type="file" name="image" accept="image/*" required>
           <button type="submit" name="add_medicine">زیادکردنی دەرمان</button>
@@ -108,8 +108,11 @@ $medicines = $stmt->get_result();
               <td><?php echo $medicine['expiry_date']; ?></td>
               <td><img src="../uploads/<?php echo $medicine['image']; ?>" alt="Medicine Image" width="50"></td>
               <td>
-                <button type="button" class="edit-button" onclick="showEditMedicineModal(<?php echo htmlspecialchars(json_encode($medicine)); ?>)">دەستکاری</button>
-                <button type="button" class="delete-button" onclick="deleteMedicine(<?php echo $medicine['id']; ?>)">سڕینەوە</button>
+                <button type="button" class="edit-button" onclick="showEditMedicineModal()">دەستکاری</button>
+                <form action="../delete_medicine.php" method="post" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                  <input type="hidden" name="id" value="<?php echo $medicine['id']; ?>">
+                  <button type="submit" class="delete-button">سڕینەوە</button>
+                </form>
               </td>
             </tr>
           <?php endforeach; ?>
@@ -122,14 +125,14 @@ $medicines = $stmt->get_result();
   <div id="edit-medicine-modal" class="modal">
     <div class="modal-content">
       <i class="close fas fa-times" onclick="closeEditMedicineModal()"></i>
-      <form id="edit-medicine-form" method="post" enctype="multipart/form-data">
-        <input type="hidden" name="id" id="edit-id">
-        <input type="hidden" name="existing_image" id="existing-image">
-        <input type="text" name="name" id="edit-name" placeholder="ناوی دەرمان" required>
-        <input type="text" name="category" id="edit-category" placeholder="پۆل" required>
-        <input type="number" name="price" id="edit-price" placeholder="نرخ" required>
-        <input type="number" name="quantity" id="edit-quantity" placeholder="بڕ" required>
-        <input type="date" name="expiry_date" id="edit-expiry_date" placeholder="بەسەرچوونی" required>
+      <form action="../update_medicine.php" id="edit-medicine-form" method="post" enctype="multipart/form-data">
+        <input type="hidden" value="<?php echo $medicine['id'] ?>" name="id" id="edit-id">
+        <input type="hidden" value="<?php echo $medicine['image'] ?>" name="existing_image" id="existing-image">
+        <input type="text" name="name" value="<?php echo $medicine['name'] ?>" id="edit-name" placeholder="ناوی دەرمان" required>
+        <input type="text" name="category" value="<?php echo $medicine['category'] ?>" id="edit-category" placeholder="پۆل" required>
+        <input type="number" name="price" value="<?php echo $medicine['price'] ?>" id="edit-price" placeholder="نرخ" required>
+        <input type="number" name="quantity" value="<?php echo $medicine['quantity'] ?>" id="edit-quantity" placeholder="بڕ" required>
+        <input type="date" name="expiry_date" value="<?php echo $medicine['expiry_date'] ?>" id="edit-expiry_date" placeholder="بەسەرچوونی" required>
         <input type="file" name="image" id="edit-image" accept="image/*">
         <button type="submit">نوێکردنەوەی دەرمان</button>
       </form>
@@ -147,61 +150,13 @@ $medicines = $stmt->get_result();
       }
     });
 
-    function showEditMedicineModal(medicine) {
-      $('#edit-id').val(medicine.id);
-      $('#edit-name').val(medicine.name);
-      $('#edit-category').val(medicine.category);
-      $('#edit-price').val(medicine.price);
-      $('#edit-quantity').val(medicine.quantity);
-      $('#edit-expiry_date').val(medicine.expiry_date);
-      $('#existing-image').val(medicine.image);
-
+    function showEditMedicineModal() {
       $('#edit-medicine-modal').css('visibility', 'visible');
     }
 
     function closeEditMedicineModal() {
       $('#edit-medicine-modal').hide();
     }
-
-    function deleteMedicine(id) {
-      if (confirm('دڵنیایت لە سڕینەوەی ئەم دەرمانە؟')) {
-        $.ajax({
-          url: '../delete_medicine.php',
-          method: 'POST',
-          data: {
-            id: id
-          },
-          success: function(response) {
-            alert(response);
-            location.replace('medicines.php');
-          },
-          error: function(xhr, status, error) {
-            alert('Error: ' + error);
-          }
-        });
-      }
-    }
-
-    $('#edit-medicine-form').submit(function(e) {
-      e.preventDefault();
-
-      $.ajax({
-        url: 'update_medicine.php',
-        method: 'POST',
-        data: new FormData(this),
-        dataType: 'json',
-        contentType: false,
-        cache: false,
-        processData: false,
-        success: function(response) {
-          alert(response.message);
-          location.reload();
-        },
-        error: function(xhr, status, error) {
-          alert('Error: ' + error);
-        }
-      });
-    });
   </script>
 </body>
 

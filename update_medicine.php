@@ -4,7 +4,7 @@ session_start();
 
 // Check if the user is logged in
 if (!isset($_SESSION['user_id'])) {
-  echo json_encode(["status" => "error", "message" => "Unauthorized"]);
+  header("Location: login.php");
   exit();
 }
 
@@ -20,10 +20,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   // Handle image upload
   if (!empty($_FILES['image']['name'])) {
     $image = $_FILES['image']['name'];
-    $target_dir = "../uploads/";
+    $target_dir = "uploads/";
     $target_file = $target_dir . basename($image);
     if (!move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
-      echo json_encode(["status" => "error", "message" => "Error uploading image."]);
+      echo "Error uploading image.";
       exit();
     }
   } else {
@@ -31,17 +31,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   }
 
   $stmt = $conn->prepare("UPDATE medicines SET name=?, category=?, price=?, quantity=?, expiry_date=?, image=? WHERE id=?");
-  $stmt->bind_param("ssdiisi", $name, $category, $price, $quantity, $expiry_date, $image, $id);
+  $stmt->bind_param("ssdissi", $name, $category, $price, $quantity, $expiry_date, $image, $id);
 
   if ($stmt->execute()) {
-    echo json_encode(["status" => "success", "message" => "Medicine updated successfully."]);
+    header("Location: pages/medicines.php");
   } else {
-    echo json_encode(["status" => "error", "message" => "Error: " . $stmt->error]);
+    echo "Error: " . $stmt->error;
   }
 
   $stmt->close();
 } else {
-  echo json_encode(["status" => "error", "message" => "Invalid request method."]);
+  echo "داواکارییەکەت هەڵەیە.";
+  header("Location: pages/medicines.php");
 }
 
 $conn->close();

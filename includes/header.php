@@ -33,7 +33,6 @@
   </div>
 </header>
 
-
 <div id="account-modal" class="modal">
   <div class="modal-content">
     <i class="fas fa-times close"></i>

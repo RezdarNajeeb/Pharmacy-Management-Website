@@ -277,6 +277,25 @@ header #user-box a:hover {
   background-color: #b42828;
 }
 
+/* message style */
+.message {
+  text-align: center;
+  font-size: 2rem;
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 0.5rem;
+}
+
+.message.success {
+  background-color: #4caf50;
+  color: #fff;
+}
+
+.message.error {
+  background-color: var(--red-color);
+  color: #fff;
+}
+
 /* Modal Styles For Updating User Account*/
 .modal {
   display: flex;
