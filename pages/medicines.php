@@ -23,7 +23,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
 
   if (move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
     $stmt = $conn->prepare("INSERT INTO medicines (name, category, price, quantity, expiry_date, image) VALUES (?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("ssdiis", $name, $category, $price, $quantity, $expiry_date, $image);
+    echo $expiry_date;
+    $stmt->bind_param("ssdiss", $name, $category, $price, $quantity, $expiry_date, $image);
 
     if ($stmt->execute()) {
       echo "Medicine added successfully.";
@@ -52,54 +53,69 @@ $medicines = $stmt->get_result();
   <title>دەرمانەکان</title>
   <link rel="stylesheet" href="../css/styles.css">
   <link rel="stylesheet" href="../assets/fontawesome-free-6.5.2-web/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css" />
+
 </head>
 
 <body>
   <?php include '../includes/header.php'; ?>
 
-  <div class="container">
-    <h2>دەرمانەکان</h2>
-    <form id="add-medicine-form" method="post" enctype="multipart/form-data">
-      <input type="text" name="name" placeholder="ناوی دەرمان" required>
-      <input type="text" name="category" placeholder="پۆل" required>
-      <input type="number" name="price" placeholder="نرخ" required>
-      <input type="number" name="quantity" placeholder="بڕ" required>
-      <input type="date" name="expiry_date" placeholder="بەسەرچوونی" required>
-      <input type="file" name="image" accept="image/*" required>
-      <button type="submit" name="add_medicine">زیادکردنی دەرمان</button>
-    </form>
+  <div class="medicines-container">
 
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
+    <div class="right-side-container">
+      <div class="info-content">
+        <h1>
+          دەرمانخانەی سەردەشت
+        </h1>
+        <img src="../assets/images/logo.jpg" alt="logo">
+      </div>
+
+      <div class="add-medicine">
+        <h2 class="title">زیادکردنی دەرمان</h2>
+        <form id="add-medicine-form" method="post" enctype="multipart/form-data">
+          <input type="text" name="name" placeholder="ناوی دەرمان" required>
+          <input type="text" name="category" placeholder="پۆل" required>
+          <input type="number" name="price" placeholder="نرخ" required>
+          <input type="number" name="quantity" placeholder="بڕ" required>
+          <input type="date" name="expiry_date" placeholder="بەسەرچوونی" required>
+          <input type="file" name="image" accept="image/*" required>
+          <button type="submit" name="add_medicine">زیادکردنی دەرمان</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="left-side-container">
+      <h2 class="title">دەرمانەکان</h2>
+      <table id="medicines-table">
+        <thead>
+          <th>#</th>
           <th>ناو</th>
           <th>پۆل</th>
           <th>نرخ</th>
-          <th>بڕ</th>
+          <th>بڕ ($)</th>
           <th>بەسەرچوونی</th>
           <th>وێنە</th>
           <th>کردار</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php while ($row = $medicines->fetch_assoc()) : ?>
-          <tr>
-            <td><?php echo $row['id']; ?></td>
-            <td><?php echo $row['name']; ?></td>
-            <td><?php echo $row['category']; ?></td>
-            <td><?php echo $row['price']; ?></td>
-            <td><?php echo $row['quantity']; ?></td>
-            <td><?php echo $row['expiry_date']; ?></td>
-            <td><img src="../uploads/<?php echo $row['image']; ?>" alt="Medicine Image" width="50"></td>
-            <td>
-              <button type="button" onclick="showEditMedicineModal(<?php echo htmlspecialchars(json_encode($row)); ?>)">دەستکاری</button>
-              <button type="button" onclick="deleteMedicine(<?php echo $row['id']; ?>)">سڕینەوە</button>
-            </td>
-          </tr>
-        <?php endwhile; ?>
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          <?php foreach ($medicines as $index => $medicine) : ?>
+            <tr>
+              <td><?php echo $index + 1; ?></td>
+              <td><?php echo $medicine['name']; ?></td>
+              <td><?php echo $medicine['category']; ?></td>
+              <td><?php echo $medicine['price']; ?></td>
+              <td><?php echo $medicine['quantity']; ?></td>
+              <td><?php echo $medicine['expiry_date']; ?></td>
+              <td><img src="../uploads/<?php echo $medicine['image']; ?>" alt="Medicine Image" width="50"></td>
+              <td>
+                <button type="button" class="edit-button" onclick="showEditMedicineModal(<?php echo htmlspecialchars(json_encode($medicine)); ?>)">دەستکاری</button>
+                <button type="button" class="delete-button" onclick="deleteMedicine(<?php echo $medicine['id']; ?>)">سڕینەوە</button>
+              </td>
+            </tr>
+          <?php endforeach; ?>
+        </tbody>
+      </table>
+    </div>
   </div>
 
   <!-- Edit Medicine Form Modal -->
@@ -121,7 +137,16 @@ $medicines = $stmt->get_result();
   </div>
 
   <script src="../js/lib/jquery-3.7.1.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+  <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+  <script src="../js/scripts.js"></script>
   <script>
+    $('#medicines-table').DataTable({
+      "language": {
+        "url": "https://cdn.datatables.net/plug-ins/1.10.25/i18n/Kurdish.json"
+      }
+    });
+
     function showEditMedicineModal(medicine) {
       $('#edit-id').val(medicine.id);
       $('#edit-name').val(medicine.name);
@@ -147,12 +172,10 @@ $medicines = $stmt->get_result();
             id: id
           },
           success: function(response) {
-            console.log(response);
             alert(response);
-            location.reload();
+            location.replace('medicines.php');
           },
           error: function(xhr, status, error) {
-            console.log('Error: ' + error);
             alert('Error: ' + error);
           }
         });

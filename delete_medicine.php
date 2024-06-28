@@ -16,7 +16,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
   if ($stmt->execute()) {
     echo "دەرمانەکە بە سەرکەوتویی سڕایەوە.";
-    exit();
   } else {
     echo "Error: " . $stmt->error;
   }
