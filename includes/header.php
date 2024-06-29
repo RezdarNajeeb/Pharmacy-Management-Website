@@ -15,7 +15,8 @@
     <ul>
       <li><a href="dashboard.php">زانیارییەکان</a></li>
       <li><a href="medicines.php">دەرمانەکان</a></li>
-      <li><a href="sales.php">فرۆشتنەکان</a></li>
+      <li><a href="sales.php">فرۆشتن</a></li>
+      <li><a href="sales_history.php">مێژووی فرۆشتن</a></li>
       <li><a href="user_tracking.php">چالاکی بەکارهێنەرەکان</a></li>
     </ul>
   </nav>
