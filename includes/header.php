@@ -1,9 +1,25 @@
-<?php $currentUsername = isset($_SESSION['username']) ? $_SESSION['username'] : null; ?>
+<?php $currentUsername = isset($_SESSION['username']) ? $_SESSION['username'] : null;
+
+// Fetch warning count
+$warningQuery = "
+    SELECT COUNT(*) AS warning_count FROM medicines 
+    WHERE quantity <= (SELECT warning_quantity FROM settings WHERE id = 1) 
+    OR expiry_date <= DATE_ADD(NOW(), INTERVAL (SELECT warning_expiry_days FROM settings WHERE id = 1) DAY)
+";
+$warningResult = $conn->query($warningQuery);
+$warningCount = $warningResult->fetch_assoc()['warning_count'];
+?>
 
 <header>
   <div class="icons">
     <div class="icon" id="user-icon">
       <i class="fas fa-user"></i>
+      <a href="../pages/warnings.php" class="notifications-icon">
+        <i class="fas fa-exclamation-circle"></i>
+        <?php if ($warningCount > 0) : ?>
+          <span class="notification-count"><?php echo $warningCount; ?></span>
+        <?php endif; ?>
+      </a>
     </div>
 
     <a href="search.php" class="icon" id="search-icon">
