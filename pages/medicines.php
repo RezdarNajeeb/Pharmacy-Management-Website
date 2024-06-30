@@ -145,6 +145,10 @@ $medicines = $stmt->get_result();
   <script src="../js/scripts.js"></script>
   <script>
     $('#medicines-table').DataTable({
+      "paging": true,
+      "ordering": true,
+      "info": true,
+      "searching": true,
       "language": {
         "url": "https://cdn.datatables.net/plug-ins/1.10.25/i18n/Kurdish.json"
       }

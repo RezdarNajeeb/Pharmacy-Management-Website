@@ -34,6 +34,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $stmt->bind_param("ssdissi", $name, $category, $price, $quantity, $expiry_date, $image, $id);
 
   if ($stmt->execute()) {
+    // Log the activity
+    $activity = "Updated medicine with name $name";
+    $stmt_log = $conn->prepare("INSERT INTO user_activities (user_id, activity) VALUES (?, ?)");
+    $stmt_log->bind_param("is", $_SESSION['user_id'], $activity);
+    $stmt_log->execute();
+    $stmt_log->close();
+
     header("Location: pages/medicines.php");
   } else {
     echo "Error: " . $stmt->error;

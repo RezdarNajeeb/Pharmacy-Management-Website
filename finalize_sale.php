@@ -16,6 +16,7 @@ if (empty($data)) {
 
 foreach ($data as $sale) {
   $medicine_id = intval($sale['id']);
+  $medicine_name = $sale['name'];
   $quantity = intval($sale['quantity']);
   $price = floatval($sale['price']);
   $total = floatval($sale['total']);
@@ -27,6 +28,13 @@ foreach ($data as $sale) {
     echo json_encode(['status' => 'error', 'message' => 'Error: ' . $stmt->error]);
     exit();
   }
+
+  // Log the activity
+  $activity = "Added sale for medicine with name $medicine_name and quantity $quantity";
+  $stmt_log = $conn->prepare("INSERT INTO user_activities (user_id, activity) VALUES (?, ?)");
+  $stmt_log->bind_param("is", $_SESSION['user_id'], $activity);
+  $stmt_log->execute();
+  $stmt_log->close();
 
   // Update the quantity in the medicines table
   $stmt = $conn->prepare("UPDATE medicines SET quantity = quantity - ? WHERE id = ?");

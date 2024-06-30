@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $id = $_POST['id'];
 
   // First, fetch the image filename from the database
-  $stmt = $conn->prepare("SELECT image FROM medicines WHERE id=?");
+  $stmt = $conn->prepare("SELECT name, image FROM medicines WHERE id=?");
   $stmt->bind_param("i", $id);
   $stmt->execute();
   $result = $stmt->get_result();
@@ -27,6 +27,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($imageFilename && file_exists("uploads/" . $imageFilename)) {
       unlink("uploads/" . $imageFilename);
     }
+
+    // Log the activity
+    $activity = "Deleted medicine with name " . $medicine['name'];
+    $stmt_log = $conn->prepare("INSERT INTO user_activities (user_id, activity) VALUES (?, ?)");
+    $stmt_log->bind_param("is", $_SESSION['user_id'], $activity);
+    $stmt_log->execute();
+    $stmt_log->close();
+
     echo "دەرمان بەسەرکەوتوی سڕایەوە.";
     header("Location: pages/medicines.php");
   } else {
