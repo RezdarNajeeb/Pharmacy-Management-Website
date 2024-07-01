@@ -21,10 +21,6 @@ $warningCount = $warningResult->fetch_assoc()['warning_count'];
         <?php endif; ?>
       </a>
     </div>
-
-    <a href="search.php" class="icon" id="search-icon">
-      <i class="fas fa-search"></i>
-    </a>
   </div>
 
   <nav class="navbar">

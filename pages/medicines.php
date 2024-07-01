@@ -15,6 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
   $price = $_POST['price'];
   $quantity = $_POST['quantity'];
   $expiry_date = $_POST['expiry_date'];
+  $barcode = $_POST['barcode'];
 
   // Handle image upload
   $image = $_FILES['image']['name'];
@@ -22,9 +23,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
   $target_file = $target_dir . basename($image);
 
   if (move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
-    $stmt = $conn->prepare("INSERT INTO medicines (name, category, price, quantity, expiry_date, image) VALUES (?, ?, ?, ?, ?, ?)");
-    echo $expiry_date;
-    $stmt->bind_param("ssdiss", $name, $category, $price, $quantity, $expiry_date, $image);
+    $stmt = $conn->prepare("INSERT INTO medicines (name, category, price, quantity, expiry_date, barcode, image) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("ssdisss", $name, $category, $price, $quantity, $expiry_date, $barcode, $image);
 
     if ($stmt->execute()) {
       echo "Medicine added successfully.";
@@ -70,6 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
           <input type="number" name="price" min="0" placeholder="نرخ" required>
           <input type="number" name="quantity" min="0" placeholder="بڕ" required>
           <input type="date" name="expiry_date" placeholder="بەسەرچوونی" required>
+          <input type="text" name="barcode" id="barcode" placeholder="بارکۆد" required>
           <input type="file" name="image" accept="image/*" required>
           <button type="submit" name="add_medicine">زیادکردنی دەرمان</button>
         </form>
@@ -80,14 +81,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
       <h2 class="title">دەرمانەکان</h2>
       <table id="medicines-table">
         <thead>
-          <th>#</th>
-          <th>ناو</th>
-          <th>پۆل</th>
-          <th>نرخ</th>
-          <th>بڕ</th>
-          <th>بەسەرچوونی</th>
-          <th>وێنە</th>
-          <th>کردار</th>
+          <tr>
+            <th>#</th>
+            <th>وێنە</th>
+            <th>ناو</th>
+            <th>پۆل</th>
+            <th>نرخ</th>
+            <th>بڕ</th>
+            <th>بەسەرچوونی</th>
+            <th>بارکۆد</th>
+            <th>کردار</th>
+          </tr>
         </thead>
         <tbody>
           <!-- Data will be fetched by DataTables via AJAX -->
@@ -111,6 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
         <input type="number" name="price" id="edit-price" placeholder="نرخ" required>
         <input type="number" name="quantity" id="edit-quantity" placeholder="بڕ" required>
         <input type="date" name="expiry_date" id="edit-expiry_date" placeholder="بەسەرچوونی" required>
+        <input type="text" name="barcode" id="edit-barcode" placeholder="بارکۆد" required>
         <input type="file" name="image" id="edit-image" accept="image/*">
         <button type="submit">نوێکردنەوەی دەرمان</button>
       </form>
@@ -122,53 +127,85 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
   <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
   <script src="../js/scripts.js"></script>
   <script>
-    $('#medicines-table').DataTable({
-      "processing": true,
-      "serverSide": true,
-      "ajax": {
-        "url": "../fetch_medicines.php",
-        "type": "POST"
-      },
-      "language": {
-        "url": "https://cdn.datatables.net/plug-ins/1.10.25/i18n/Kurdish.json"
-      },
-      "columns": [{
-          "data": "id"
+    $(document).ready(function() {
+      $('#medicines-table').DataTable({
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+          "url": "../fetch_medicines.php",
+          "type": "POST"
         },
-        {
-          "data": "name"
+        "language": {
+          "url": "https://cdn.datatables.net/plug-ins/1.10.25/i18n/Kurdish.json"
         },
-        {
-          "data": "category"
-        },
-        {
-          "data": "price"
-        },
-        {
-          "data": "quantity"
-        },
-        {
-          "data": "expiry_date"
-        },
-        {
-          "data": "image",
-          "render": function(data, type, row) {
-            return `<img src="../uploads/${data}" alt="Medicine Image" width="50">`;
-          }
-        },
-        {
-          "data": "id",
-          "render": function(data, type, row) {
-            return `
+        "columnDefs": [{
+            "orderable": false,
+            "targets": [0, 1, 7, 8]
+          } // Disable sorting for specific columns
+        ],
+        "order": [
+          [2, 'asc']
+        ], // Default sorting by the third column (name) in ascending order
+        "columns": [{
+            "data": null, // Use null since we will render custom data
+            "render": function(data, type, row, meta) {
+              return meta.row + 1; // Display row number starting from 1
+            }
+          },
+          {
+            "data": "image",
+            "render": function(data) {
+              return `<img src="../uploads/${data}" alt="Medicine Image" width="50">`;
+            }
+          },
+          {
+            "data": "name"
+          },
+          {
+            "data": "category"
+          },
+          {
+            "data": "price"
+          },
+          {
+            "data": "quantity"
+          },
+          {
+            "data": "expiry_date"
+          },
+          {
+            "data": "barcode"
+          }, // Ensure the barcode column is included
+          {
+            "data": "id",
+            "render": function(data) {
+              return `
               <button type="button" class="edit-button" onclick="showEditMedicineModal(${data})">دەستکاری</button>
-              <form action="../delete_medicine.php" method="post" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                <form action="../delete_medicine.php" method="post" onsubmit="return confirm('Are you sure you want to delete this item?');">
                 <input type="hidden" name="id" value="${data}">
                 <button type="submit" class="delete-button">سڕینەوە</button>
-              </form>
-            `;
+                </form>
+              `;
+            }
           }
-        }
-      ]
+        ]
+      });
+    });
+
+    // Function to focus the search input field
+    // Use setTimeout to ensure DataTables has fully rendered before focusing
+    function focusSearchField() {
+      setTimeout(function() {
+        $('.dataTables_filter input').focus();
+      }, 100);
+    }
+
+    // Focus on page load
+    focusSearchField();
+
+    // Focus after page reload (optional, assuming DataTables maintains state)
+    $(window).on('load', function() {
+      focusSearchField();
     });
 
     function showEditMedicineModal(id) {
@@ -189,6 +226,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
           $('#edit-price').val(medicine.price);
           $('#edit-quantity').val(medicine.quantity);
           $('#edit-expiry_date').val(medicine.expiry_date);
+          $('#edit-barcode').val(medicine.barcode);
           $('#existing-image').val(medicine.image);
           $('#edit-medicine-modal').css('visibility', 'visible');
         }

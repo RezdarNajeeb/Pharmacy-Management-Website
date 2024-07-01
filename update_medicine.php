@@ -15,6 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $price = $_POST['price'];
   $quantity = $_POST['quantity'];
   $expiry_date = $_POST['expiry_date'];
+  $barcode = $_POST['barcode'];
   $existing_image = $_POST['existing_image'];
 
   // Handle image upload
@@ -30,8 +31,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $image = $existing_image;
   }
 
-  $stmt = $conn->prepare("UPDATE medicines SET name=?, category=?, price=?, quantity=?, expiry_date=?, image=? WHERE id=?");
-  $stmt->bind_param("ssdissi", $name, $category, $price, $quantity, $expiry_date, $image, $id);
+  $stmt = $conn->prepare("UPDATE medicines SET name=?, category=?, price=?, quantity=?, expiry_date=?, barcode=?, image=? WHERE id=?");
+  $stmt->bind_param("ssdisssi", $name, $category, $price, $quantity, $expiry_date, $barcode, $image, $id);
 
   if ($stmt->execute()) {
     // Log the activity

@@ -27,8 +27,9 @@ $total_records = $total_records_query->fetch_assoc()['total'];
 $filtered_records = $total_records; // Initialize with total records
 
 if (!empty($search_value)) {
-  $query .= " WHERE name LIKE ? OR category LIKE ?";
-  $query_count .= " WHERE name LIKE ? OR category LIKE ?";
+  $query .= " WHERE name LIKE ? OR category LIKE ? OR barcode LIKE ?";
+  $query_count .= " WHERE name LIKE ? OR category LIKE ? OR barcode LIKE ?";
+  $params[] = '%' . $search_value . '%';
   $params[] = '%' . $search_value . '%';
   $params[] = '%' . $search_value . '%';
 
@@ -40,8 +41,19 @@ if (!empty($search_value)) {
   $stmt_count->close();
 }
 
-// Order by
-$query .= " ORDER BY name ASC";
+// Order by column
+$columns = [
+  2 => 'name',
+  3 => 'category',
+  4 => 'price',
+  5 => 'quantity',
+  6 => 'expiry_date',
+];
+
+$order_column = $columns[$_POST['order'][0]['column']];
+$order_dir = $_POST['order'][0]['dir'];
+
+$query .= " ORDER BY $order_column $order_dir";
 
 // Limit results for pagination
 $query .= " LIMIT ?, ?";
@@ -49,7 +61,7 @@ $params[] = $start;
 $params[] = $length;
 
 $stmt = $conn->prepare($query);
-$stmt->bind_param(str_repeat('s', count($params)), ...$params);
+$stmt->bind_param(str_repeat('s', count($params) - 2) . 'ii', ...$params);
 $stmt->execute();
 $result = $stmt->get_result();
 
