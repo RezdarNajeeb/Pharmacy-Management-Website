@@ -108,9 +108,9 @@ $medicines = $stmt->get_result();
               <td><?php echo $medicine['expiry_date']; ?></td>
               <td><img src="../uploads/<?php echo $medicine['image']; ?>" alt="Medicine Image" width="50"></td>
               <td>
-                <button type="button" class="edit-button" onclick="showEditMedicineModal()">دەستکاری</button>
+                <button type="button" class="edit-button" onclick="showEditMedicineModal(<?php echo htmlspecialchars($medicine['id']); ?>)">دەستکاری</button>
                 <form action="../delete_medicine.php" method="post" onsubmit="return confirm('Are you sure you want to delete this item?');">
-                  <input type="hidden" name="id" value="<?php echo $medicine['id']; ?>">
+                  <input type="hidden" name="id" value="<?php echo htmlspecialchars($medicine['id']); ?>">
                   <button type="submit" class="delete-button">سڕینەوە</button>
                 </form>
               </td>
@@ -126,13 +126,16 @@ $medicines = $stmt->get_result();
     <div class="modal-content">
       <i class="close fas fa-times" onclick="closeEditMedicineModal()"></i>
       <form action="../update_medicine.php" id="edit-medicine-form" method="post" enctype="multipart/form-data">
-        <input type="hidden" value="<?php echo $medicine['id'] ?>" name="id" id="edit-id">
-        <input type="hidden" value="<?php echo $medicine['image'] ?>" name="existing_image" id="existing-image">
-        <input type="text" name="name" value="<?php echo $medicine['name'] ?>" id="edit-name" placeholder="ناوی دەرمان" required>
-        <input type="text" name="category" value="<?php echo $medicine['category'] ?>" id="edit-category" placeholder="پۆل" required>
-        <input type="number" name="price" value="<?php echo $medicine['price'] ?>" id="edit-price" placeholder="نرخ" required>
-        <input type="number" name="quantity" value="<?php echo $medicine['quantity'] ?>" id="edit-quantity" placeholder="بڕ" required>
-        <input type="date" name="expiry_date" value="<?php echo $medicine['expiry_date'] ?>" id="edit-expiry_date" placeholder="بەسەرچوونی" required>
+        <input type="hidden" name="id" id="edit-id">
+        <input type="hidden" name="existing_image" id="existing-image">
+        <div>
+          <img id="current-img" src="<?php echo htmlspecialchars($currentImagePath); ?>" alt="Current Image" style="max-width: 100px; max-height: 100px;">
+        </div>
+        <input type="text" name="name" id="edit-name" placeholder="ناوی دەرمان" required>
+        <input type="text" name="category" id="edit-category" placeholder="پۆل" required>
+        <input type="number" name="price" id="edit-price" placeholder="نرخ" required>
+        <input type="number" name="quantity" id="edit-quantity" placeholder="بڕ" required>
+        <input type="date" name="expiry_date" id="edit-expiry_date" placeholder="بەسەرچوونی" required>
         <input type="file" name="image" id="edit-image" accept="image/*">
         <button type="submit">نوێکردنەوەی دەرمان</button>
       </form>
@@ -145,21 +148,40 @@ $medicines = $stmt->get_result();
   <script src="../js/scripts.js"></script>
   <script>
     $('#medicines-table').DataTable({
-      "paging": true,
-      "ordering": true,
-      "info": true,
-      "searching": true,
       "language": {
         "url": "https://cdn.datatables.net/plug-ins/1.10.25/i18n/Kurdish.json"
       }
     });
 
-    function showEditMedicineModal() {
-      $('#edit-medicine-modal').css('visibility', 'visible');
+    function showEditMedicineModal(id) {
+      $.ajax({
+        url: '../edit_medicine.php',
+        type: 'POST',
+        data: {
+          id: id
+        },
+        dataType: 'json',
+        success: function(response) {
+          const medicine = response.medicine;
+          $('#edit-id').val(medicine.id);
+          $('#edit-name').val(medicine.name);
+          $('#edit-category').val(medicine.category);
+          $('#edit-price').val(medicine.price);
+          $('#edit-quantity').val(medicine.quantity);
+          $('#edit-expiry_date').val(medicine.expiry_date);
+          $('#existing-image').val(medicine.image);
+          $('#current-img').attr('src', `../uploads/${medicine.image}`);
+          $('#edit-medicine-modal').css('visibility', 'visible');
+        },
+        error: function(error) {
+          console.error(error.responseText);
+          alert('Error fetching medicine details.');
+        }
+      });
     }
 
     function closeEditMedicineModal() {
-      $('#edit-medicine-modal').hide();
+      $('#edit-medicine-modal').css('visibility', 'hidden');
     }
   </script>
 </body>
