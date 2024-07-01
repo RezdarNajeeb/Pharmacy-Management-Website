@@ -37,11 +37,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
     echo "Error uploading image.";
   }
 }
-
-// Fetch medicines from the database
-$stmt = $conn->prepare("SELECT * FROM medicines");
-$stmt->execute();
-$medicines = $stmt->get_result();
 ?>
 
 <!DOCTYPE html>
@@ -54,7 +49,6 @@ $medicines = $stmt->get_result();
   <link rel="stylesheet" href="../assets/fontawesome-free-6.5.2-web/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css" />
   <link rel="stylesheet" href="../css/styles.css">
-
 </head>
 
 <body>
@@ -64,9 +58,7 @@ $medicines = $stmt->get_result();
 
     <div class="right-side-container">
       <div class="info-content">
-        <h1>
-          دەرمانخانەی سەردەشت
-        </h1>
+        <h1>دەرمانخانەی سەردەشت</h1>
         <img src="../assets/images/logo.jpg" alt="logo">
       </div>
 
@@ -92,30 +84,13 @@ $medicines = $stmt->get_result();
           <th>ناو</th>
           <th>پۆل</th>
           <th>نرخ</th>
-          <th>بڕ ($)</th>
+          <th>بڕ</th>
           <th>بەسەرچوونی</th>
           <th>وێنە</th>
           <th>کردار</th>
         </thead>
         <tbody>
-          <?php foreach ($medicines as $index => $medicine) : ?>
-            <tr>
-              <td><?php echo $index + 1; ?></td>
-              <td><?php echo $medicine['name']; ?></td>
-              <td><?php echo $medicine['category']; ?></td>
-              <td><?php echo $medicine['price']; ?></td>
-              <td><?php echo $medicine['quantity']; ?></td>
-              <td><?php echo $medicine['expiry_date']; ?></td>
-              <td><img src="../uploads/<?php echo $medicine['image']; ?>" alt="Medicine Image" width="50"></td>
-              <td>
-                <button type="button" class="edit-button" onclick="showEditMedicineModal(<?php echo htmlspecialchars($medicine['id']); ?>)">دەستکاری</button>
-                <form action="../delete_medicine.php" method="post" onsubmit="return confirm('Are you sure you want to delete this item?');">
-                  <input type="hidden" name="id" value="<?php echo htmlspecialchars($medicine['id']); ?>">
-                  <button type="submit" class="delete-button">سڕینەوە</button>
-                </form>
-              </td>
-            </tr>
-          <?php endforeach; ?>
+          <!-- Data will be fetched by DataTables via AJAX -->
         </tbody>
       </table>
     </div>
@@ -129,7 +104,7 @@ $medicines = $stmt->get_result();
         <input type="hidden" name="id" id="edit-id">
         <input type="hidden" name="existing_image" id="existing-image">
         <div>
-          <img id="current-img" src="<?php echo htmlspecialchars($currentImagePath); ?>" alt="Current Image" style="max-width: 100px; max-height: 100px;">
+          <img id="current-img" src="" alt="Current Image" style="max-width: 100px; max-height: 100px;">
         </div>
         <input type="text" name="name" id="edit-name" placeholder="ناوی دەرمان" required>
         <input type="text" name="category" id="edit-category" placeholder="پۆل" required>
@@ -148,12 +123,56 @@ $medicines = $stmt->get_result();
   <script src="../js/scripts.js"></script>
   <script>
     $('#medicines-table').DataTable({
+      "processing": true,
+      "serverSide": true,
+      "ajax": {
+        "url": "../fetch_medicines.php",
+        "type": "POST"
+      },
       "language": {
         "url": "https://cdn.datatables.net/plug-ins/1.10.25/i18n/Kurdish.json"
-      }
+      },
+      "columns": [{
+          "data": "id"
+        },
+        {
+          "data": "name"
+        },
+        {
+          "data": "category"
+        },
+        {
+          "data": "price"
+        },
+        {
+          "data": "quantity"
+        },
+        {
+          "data": "expiry_date"
+        },
+        {
+          "data": "image",
+          "render": function(data, type, row) {
+            return `<img src="../uploads/${data}" alt="Medicine Image" width="50">`;
+          }
+        },
+        {
+          "data": "id",
+          "render": function(data, type, row) {
+            return `
+              <button type="button" class="edit-button" onclick="showEditMedicineModal(${data})">دەستکاری</button>
+              <form action="../delete_medicine.php" method="post" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                <input type="hidden" name="id" value="${data}">
+                <button type="submit" class="delete-button">سڕینەوە</button>
+              </form>
+            `;
+          }
+        }
+      ]
     });
 
     function showEditMedicineModal(id) {
+      // Fetch the medicine details and fill the form
       $.ajax({
         url: '../edit_medicine.php',
         type: 'POST',
@@ -165,17 +184,13 @@ $medicines = $stmt->get_result();
           const medicine = response.medicine;
           $('#edit-id').val(medicine.id);
           $('#edit-name').val(medicine.name);
+          $('#current-img').attr('src', `../uploads/${medicine.image}`);
           $('#edit-category').val(medicine.category);
           $('#edit-price').val(medicine.price);
           $('#edit-quantity').val(medicine.quantity);
           $('#edit-expiry_date').val(medicine.expiry_date);
           $('#existing-image').val(medicine.image);
-          $('#current-img').attr('src', `../uploads/${medicine.image}`);
           $('#edit-medicine-modal').css('visibility', 'visible');
-        },
-        error: function(error) {
-          console.error(error.responseText);
-          alert('Error fetching medicine details.');
         }
       });
     }
