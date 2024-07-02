@@ -14,7 +14,11 @@ if (empty($data)) {
   exit();
 }
 
-foreach ($data as $sale) {
+$sales = $data['sales'];
+$discount = floatval($data['discount']);
+$discounted_total = floatval($data['discountedTotalIQD']);
+
+foreach ($sales as $sale) {
   $medicine_id = intval($sale['id']);
   $medicine_name = $sale['name'];
   $quantity = intval($sale['quantity']);
@@ -22,8 +26,8 @@ foreach ($data as $sale) {
   $selling_price = floatval($sale['sellingPrice']);
   $total = floatval($sale['totalIQD']);
 
-  $stmt = $conn->prepare("INSERT INTO sales_history (medicine_id, quantity, cost_price, selling_price total, user_id) VALUES (?, ?, ?, ?, ?, ?)");
-  $stmt->bind_param('iidddi', $medicine_id, $quantity, $cost_price, $selling_price, $total, $_SESSION['user_id']);
+  $stmt = $conn->prepare("INSERT INTO sales_history (medicine_id, quantity, cost_price, selling_price, total, discount, discounted_total, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+  $stmt->bind_param('iidddddi', $medicine_id, $quantity, $cost_price, $selling_price, $total, $discount, $discounted_total, $_SESSION['user_id']);
 
   if (!$stmt->execute()) {
     echo json_encode(['status' => 'error', 'message' => 'Error: ' . $stmt->error]);

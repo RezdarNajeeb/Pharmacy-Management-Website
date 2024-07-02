@@ -1,10 +1,13 @@
 $(document).ready(function () {
-  const currency = $("#currency_select").val();
-  const exchangeRate = $("#exchange-rate").data("exchange-rate");
+  const currencySelect = $("#currency-select");
+  const exchangeRate = parseFloat($("#exchange-rate").data("exchange-rate"));
   const sales = [];
   const salesTableBody = $("#sales-table tbody");
   const totalPriceUSDElement = $("#total-price-usd");
   const totalPriceIQDElement = $("#total-price-iqd");
+  const discountedTotalPriceUSDElement = $("#discounted-total-price-usd");
+  const discountedTotalPriceIQDElement = $("#discounted-total-price-iqd");
+  const discountField = $("#discount");
 
   $("#sales-form").on("submit", function (event) {
     event.preventDefault();
@@ -24,9 +27,7 @@ $(document).ready(function () {
     $.ajax({
       url: "../get_medicine_details.php",
       method: "GET",
-      data: {
-        barcode: barcode,
-      },
+      data: { barcode: barcode },
       dataType: "json",
       success: function (data) {
         if (data.status === "error") {
@@ -35,7 +36,6 @@ $(document).ready(function () {
         }
 
         const medicine = data.medicine;
-
         const id = medicine.id;
         const name = medicine.name;
         const costPrice = parseFloat(medicine.cost_price);
@@ -83,18 +83,18 @@ $(document).ready(function () {
       row.append(`<td>${sale.quantity}</td>`);
       row.append(
         `<td>IQD${sale.costPrice.toFixed(2)}<br>
-          $${sale.costPrice.toFixed(2) / exchangeRate}
+          $${(sale.costPrice / exchangeRate).toFixed(2)}
         </td>`
       );
       row.append(
         `<td>IQD${sale.sellingPrice.toFixed(2)}<br>
-          $${sale.costPrice.toFixed(2) / exchangeRate}
+          $${(sale.sellingPrice / exchangeRate).toFixed(2)}
         </td>`
       );
       row.append(
-        `<td>$${sale.totalUSD.toFixed(2)}<br>IQD${sale.totalIQD.toFixed(
-          2
-        )}</td>`
+        `<td>$${sale.totalUSD.toFixed(2)}<br>
+          IQD${sale.totalIQD.toFixed(2)}
+        </td>`
       );
       row.append(
         `<td><button type="button" class="remove-sale" data-index="${index}">Remove</button> 
@@ -108,6 +108,24 @@ $(document).ready(function () {
 
     totalPriceUSDElement.text(totalPriceUSD.toFixed(2));
     totalPriceIQDElement.text(totalPriceIQD.toFixed(2));
+    updateDiscountedTotals();
+  }
+
+  function updateDiscountedTotals() {
+    let totalPriceUSD = parseFloat(totalPriceUSDElement.text());
+    let totalPriceIQD = parseFloat(totalPriceIQDElement.text());
+    const discount = parseFloat(discountField.val()) || 0;
+
+    if (currencySelect.val() === "USD") {
+      totalPriceUSD -= discount;
+      totalPriceIQD = totalPriceUSD * exchangeRate;
+    } else if (currencySelect.val() === "IQD") {
+      totalPriceIQD -= discount;
+      totalPriceUSD = totalPriceIQD / exchangeRate;
+    }
+
+    discountedTotalPriceUSDElement.text(totalPriceUSD.toFixed(2));
+    discountedTotalPriceIQDElement.text(totalPriceIQD.toFixed(2));
   }
 
   // Event handler to remove a sale item
@@ -122,8 +140,8 @@ $(document).ready(function () {
     const index = $(this).data("index");
     if (sales[index].quantity > 1) {
       sales[index].quantity--;
-      sales[index].totalUSD = sales[index].quantity * sales[index].sellingPrice;
       sales[index].totalIQD = sales[index].quantity * sales[index].sellingPrice;
+      sales[index].totalUSD = sales[index].totalIQD / exchangeRate;
       updateSalesTable();
     }
   });
@@ -135,11 +153,26 @@ $(document).ready(function () {
       return;
     }
 
+    const discount = parseFloat(discountField.val()) || 0;
+    const discountedTotalUSD = parseFloat(
+      discountedTotalPriceUSDElement.text()
+    );
+    const discountedTotalIQD = parseFloat(
+      discountedTotalPriceIQDElement.text()
+    );
+
+    const saleData = {
+      sales: sales,
+      discount: discount,
+      discountedTotalUSD: discountedTotalUSD,
+      discountedTotalIQD: discountedTotalIQD,
+    };
+
     $.ajax({
       url: "../finalize_sale.php",
       method: "POST",
       contentType: "application/json",
-      data: JSON.stringify(sales), // Convert the sales array to a JSON string
+      data: JSON.stringify(saleData), // Convert the sales array to a JSON string
       dataType: "json",
       success: function (data) {
         alert(data.message);
@@ -154,6 +187,11 @@ $(document).ready(function () {
         alert("Failed to finalize sale.");
       },
     });
+  });
+
+  // Event handler for discount input field
+  discountField.on("input", function () {
+    updateDiscountedTotals();
   });
 
   // Focus on barcode input field on page load

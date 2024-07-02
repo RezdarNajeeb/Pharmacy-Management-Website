@@ -50,7 +50,11 @@ if (!isset($_SESSION['user_id'])) {
       </tbody>
     </table>
 
+    <label for="discount">Discount </label>
+    <input type="number" id="discount" name="discount" min="0" value="0" required>
+
     <h3>Total: $<span id="total-price-usd">0.00</span> | IQD<span id="total-price-iqd">0</span></h3>
+    <h3>Discounted Total: $<span id="discounted-total-price-usd">0.00</span> | IQD<span id="discounted-total-price-iqd">0</span></h3>
 
     <button id="finalize-sale">Finalize Sale</button>
   </div>

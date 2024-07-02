@@ -29,23 +29,29 @@ if (!isset($_SESSION['user_id'])) {
         <tr>
           <th>Medicine</th>
           <th>Quantity</th>
-          <th>Price</th>
+          <th>Cost Price</th>
+          <th>Selling Price</th>
           <th>Total</th>
+          <th>Discount</th>
+          <th>Discounted Total</th>
           <th>Sold By</th>
           <th>Date</th>
         </tr>
       </thead>
       <tbody>
         <?php
-        $stmt = $conn->prepare("SELECT medicines.name, sales_history.quantity, sales_history.price, sales_history.total, users.username, sales_history.created_at FROM sales_history JOIN medicines ON sales_history.medicine_id = medicines.id JOIN users ON sales_history.user_id = users.id ORDER BY sales_history.created_at DESC");
+        $stmt = $conn->prepare("SELECT medicines.name, sales_history.quantity, sales_history.cost_price, sales_history.selling_price, sales_history.total, sales_history.discount, sales_history.discounted_total, users.username, sales_history.created_at FROM sales_history JOIN medicines ON sales_history.medicine_id = medicines.id JOIN users ON sales_history.user_id = users.id ORDER BY sales_history.created_at DESC");
         $stmt->execute();
         $result = $stmt->get_result();
         while ($row = $result->fetch_assoc()) {
           echo '<tr>';
           echo '<td>' . htmlspecialchars($row['name']) . '</td>';
           echo '<td>' . htmlspecialchars($row['quantity']) . '</td>';
-          echo '<td>' . htmlspecialchars(number_format($row['price'], 2)) . '</td>';
+          echo '<td>' . htmlspecialchars(number_format($row['cost_price'], 2)) . '</td>';
+          echo '<td>' . htmlspecialchars(number_format($row['selling_price'], 2)) . '</td>';
           echo '<td>' . htmlspecialchars(number_format($row['total'], 2)) . '</td>';
+          echo '<td>' . htmlspecialchars(number_format($row['discount'], 2)) . '</td>';
+          echo '<td>' . htmlspecialchars(number_format($row['discounted_total'], 2)) . '</td>';
           echo '<td>' . htmlspecialchars($row['username']) . '</td>';
           echo '<td>' . htmlspecialchars($row['created_at']) . '</td>';
           echo '</tr>';
