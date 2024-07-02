@@ -449,6 +449,7 @@ header #user-box a:hover {
 .left-side-container {
   width: 75%;
   padding: 0 2rem;
+  overflow: hidden;
 }
 
 /* Medicines Table */
@@ -462,7 +463,7 @@ header #user-box a:hover {
   color: white;
 }
 
-#medicines-table thead th {
+#medicines-table thead tr th {
   text-align: center;
   padding: 1rem;
   font-weight: bold;

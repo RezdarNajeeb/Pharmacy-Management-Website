@@ -18,11 +18,12 @@ foreach ($data as $sale) {
   $medicine_id = intval($sale['id']);
   $medicine_name = $sale['name'];
   $quantity = intval($sale['quantity']);
-  $price = floatval($sale['price']);
-  $total = floatval($sale['total']);
+  $cost_price = floatval($sale['costPrice']);
+  $selling_price = floatval($sale['sellingPrice']);
+  $total = floatval($sale['totalIQD']);
 
-  $stmt = $conn->prepare("INSERT INTO sales_history (medicine_id, quantity, price, total, user_id) VALUES (?, ?, ?, ?, ?)");
-  $stmt->bind_param('iiddi', $medicine_id, $quantity, $price, $total, $_SESSION['user_id']);
+  $stmt = $conn->prepare("INSERT INTO sales_history (medicine_id, quantity, cost_price, selling_price total, user_id) VALUES (?, ?, ?, ?, ?, ?)");
+  $stmt->bind_param('iidddi', $medicine_id, $quantity, $cost_price, $selling_price, $total, $_SESSION['user_id']);
 
   if (!$stmt->execute()) {
     echo json_encode(['status' => 'error', 'message' => 'Error: ' . $stmt->error]);

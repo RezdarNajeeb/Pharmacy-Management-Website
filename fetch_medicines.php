@@ -45,9 +45,10 @@ if (!empty($search_value)) {
 $columns = [
   2 => 'name',
   3 => 'category',
-  4 => 'price',
-  5 => 'quantity',
-  6 => 'expiry_date',
+  4 => 'cost_price',
+  5 => 'selling_price',
+  6 => 'quantity',
+  7 => 'expiry_date',
 ];
 
 $order_column = $columns[$_POST['order'][0]['column']];

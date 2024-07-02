@@ -1,15 +1,15 @@
 <?php
 require_once 'includes/db.php';
 
-if (!isset($_GET['id'])) {
+if (!isset($_GET['barcode'])) {
   echo json_encode(['status' => 'error', 'message' => 'Invalid request']);
   exit();
 }
 
-$id = intval($_GET['id']);
+$barcode = $_GET['barcode'];
 
-$stmt = $conn->prepare("SELECT id, name, price FROM medicines WHERE id = ?");
-$stmt->bind_param('i', $id);
+$stmt = $conn->prepare("SELECT id, name, cost_price, selling_price FROM medicines WHERE barcode = ?");
+$stmt->bind_param('s', $barcode);
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -19,7 +19,7 @@ if ($result->num_rows === 0) {
 }
 
 $medicine = $result->fetch_assoc();
-echo json_encode(['status' => 'success', 'id' => $medicine['id'], 'name' => $medicine['name'], 'price' => $medicine['price']]);
+echo json_encode(['status' => 'success', 'medicine' => $medicine]);
 
 $stmt->close();
 $conn->close();

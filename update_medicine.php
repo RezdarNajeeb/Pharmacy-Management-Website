@@ -9,14 +9,23 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+  $currency = $_POST['currency'];
+  $exchange_rate = $_POST['exchange_rate'];
   $id = $_POST['id'];
   $name = $_POST['name'];
   $category = $_POST['category'];
-  $price = $_POST['price'];
+  $cost_price = $_POST['cost_price'];
+  $selling_price = $_POST['selling_price'];
   $quantity = $_POST['quantity'];
   $expiry_date = $_POST['expiry_date'];
   $barcode = $_POST['barcode'];
   $existing_image = $_POST['existing_image'];
+
+  // convert cost price and selling price to USD if currency is USD
+  if ($currency == 'USD') {
+    $cost_price = $cost_price * $exchange_rate;
+    $selling_price = $selling_price * $exchange_rate;
+  }
 
   // Handle image upload
   if (!empty($_FILES['image']['name'])) {
@@ -31,8 +40,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $image = $existing_image;
   }
 
-  $stmt = $conn->prepare("UPDATE medicines SET name=?, category=?, price=?, quantity=?, expiry_date=?, barcode=?, image=? WHERE id=?");
-  $stmt->bind_param("ssdisssi", $name, $category, $price, $quantity, $expiry_date, $barcode, $image, $id);
+  $stmt = $conn->prepare("UPDATE medicines SET name=?, category=?, cost_price=?, selling_price=?, quantity=?, expiry_date=?, barcode=?, image=? WHERE id=?");
+  $stmt->bind_param("ssddisssi", $name, $category, $cost_price, $selling_price, $quantity, $expiry_date, $barcode, $image, $id);
 
   if ($stmt->execute()) {
     // Log the activity

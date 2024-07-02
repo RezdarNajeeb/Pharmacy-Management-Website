@@ -23,6 +23,37 @@ $warningCount = $warningResult->fetch_assoc()['warning_count'];
     </div>
   </div>
 
+
+  <?php
+  // Fetch the current exchange rate
+  $query = "SELECT rate FROM exchange_rates WHERE currency = 'USD'";
+  $result = $conn->query($query);
+
+  if ($result->num_rows > 0) {
+    $exchange_rate = $result->fetch_assoc()['rate'];
+  } else {
+    $exchange_rate = "Not available"; // Handle case where rate is not set
+  }
+  ?>
+
+  <div class="currency-selector">
+    <select id="currency-select">
+      <option value="USD">USD ($)</option>
+      <option value="IQD">IQD (د.ع)</option>
+    </select>
+  </div>
+
+
+  <div class="exchange-rate">
+    <span style="color:white;" id="exchange-rate" data-exchange-rate="<?php echo htmlspecialchars($exchange_rate); ?>">Exchange Rate (USD to IQD): <?php echo htmlspecialchars($exchange_rate); ?></span>
+    <!-- Add a form to update the exchange rate -->
+    <form action="../update_exchange_rate.php" method="post">
+      <input type="number" name="new_rate" step="any" placeholder="Enter new rate">
+      <button type="submit">Update</button>
+    </form>
+  </div>
+
+
   <nav class="navbar">
     <ul>
       <li><a href="dashboard.php">زانیارییەکان</a></li>

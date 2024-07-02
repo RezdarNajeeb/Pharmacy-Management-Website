@@ -10,12 +10,21 @@ if (!isset($_SESSION['user_id'])) {
 
 // Handle form submission for adding a medicine
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
+  $currency = $_POST['currency'];
+  $exchange_rate = $_POST['exchange_rate'];
   $name = $_POST['name'];
   $category = $_POST['category'];
-  $price = $_POST['price'];
+  $cost_price = $_POST['cost_price'];
+  $selling_price = $_POST['selling_price'];
   $quantity = $_POST['quantity'];
   $expiry_date = $_POST['expiry_date'];
   $barcode = $_POST['barcode'];
+
+  // convert cost price and selling price to USD if currency is USD
+  if ($currency == 'USD') {
+    $cost_price = $cost_price * $exchange_rate;
+    $selling_price = $selling_price * $exchange_rate;
+  }
 
   // Handle image upload
   $image = $_FILES['image']['name'];
@@ -23,8 +32,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
   $target_file = $target_dir . basename($image);
 
   if (move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
-    $stmt = $conn->prepare("INSERT INTO medicines (name, category, price, quantity, expiry_date, barcode, image) VALUES (?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("ssdisss", $name, $category, $price, $quantity, $expiry_date, $barcode, $image);
+    $stmt = $conn->prepare("INSERT INTO medicines (name, category, cost_price, selling_price, quantity, expiry_date, barcode, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("ssddisss", $name, $category, $cost_price, $selling_price, $quantity, $expiry_date, $barcode, $image);
 
     if ($stmt->execute()) {
       echo "Medicine added successfully.";
@@ -65,9 +74,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
       <div class="add-medicine">
         <h2 class="title">زیادکردنی دەرمان</h2>
         <form id="add-medicine-form" method="post" enctype="multipart/form-data">
+          <input type="hidden" name="currency" value="USD">
+          <input type="hidden" name="exchange_rate" value="1450">
           <input type="text" name="name" placeholder="ناوی دەرمان" required>
           <input type="text" name="category" placeholder="پۆل" required>
-          <input type="number" name="price" min="0" placeholder="نرخ" required>
+          <input type="number" name="cost_price" min="0" placeholder="نرخی کڕین" required>
+          <input type="number" name="selling_price" min="0" placeholder="نرخی فرۆشتن" required>
           <input type="number" name="quantity" min="0" placeholder="بڕ" required>
           <input type="date" name="expiry_date" placeholder="بەسەرچوونی" required>
           <input type="text" name="barcode" id="barcode" placeholder="بارکۆد" required>
@@ -86,7 +98,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
             <th>وێنە</th>
             <th>ناو</th>
             <th>پۆل</th>
-            <th>نرخ</th>
+            <th>نرخی کڕین</th>
+            <th>نرخی فرۆشتن</th>
             <th>بڕ</th>
             <th>بەسەرچوونی</th>
             <th>بارکۆد</th>
@@ -107,12 +120,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
       <form action="../update_medicine.php" id="edit-medicine-form" method="post" enctype="multipart/form-data">
         <input type="hidden" name="id" id="edit-id">
         <input type="hidden" name="existing_image" id="existing-image">
+        <input type="hidden" name="currency" value="USD">
+        <input type="hidden" name="exchange_rate" value="1450">
         <div>
           <img id="current-img" src="" alt="Current Image" style="max-width: 100px; max-height: 100px;">
         </div>
         <input type="text" name="name" id="edit-name" placeholder="ناوی دەرمان" required>
         <input type="text" name="category" id="edit-category" placeholder="پۆل" required>
-        <input type="number" name="price" id="edit-price" placeholder="نرخ" required>
+        <input type="number" name="cost_price" id="edit-cost_price" placeholder="نرخی کڕین" required>
+        <input type="number" name="selling_price" id="edit-selling_price" placeholder="نرخی فرۆشتن" required>
         <input type="number" name="quantity" id="edit-quantity" placeholder="بڕ" required>
         <input type="date" name="expiry_date" id="edit-expiry_date" placeholder="بەسەرچوونی" required>
         <input type="text" name="barcode" id="edit-barcode" placeholder="بارکۆد" required>
@@ -140,8 +156,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
         },
         "columnDefs": [{
             "orderable": false,
-            "targets": [0, 1, 7, 8]
-          } // Disable sorting for specific columns
+            "targets": [0, 1, 8, 9]
+          }, // Disable sorting for specific columns
+          {
+            "visible": false,
+            "targets": [8] // Hide the barcode column
+          }
         ],
         "order": [
           [2, 'asc']
@@ -165,7 +185,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
             "data": "category"
           },
           {
-            "data": "price"
+            "data": "cost_price",
+            "render": function(data) {
+              return (data / <?= $exchange_rate ?>).toFixed(2) + ' $<br><br>' + parseFloat(data).toFixed(0) + ' د.ع';
+            }
+          },
+          {
+            "data": "selling_price",
+            "render": function(data) {
+              return (data / <?= $exchange_rate ?>).toFixed(2) + ' $<br><br>' + parseFloat(data).toFixed(0) + ' د.ع';
+            }
           },
           {
             "data": "quantity"
@@ -188,25 +217,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
               `;
             }
           }
-        ]
+        ],
+        "initComplete": function(settings, json) {
+          // Focus on the search input field after DataTables has fully loaded
+          $('.dataTables_filter input').focus();
+        },
+        "scrollY": "500px", // Set vertical scrollable area height
+        "scrollX": true, // Enable horizontal scrolling
+        "scrollCollapse": true, // Collapse the table to fit the content if less than set height
+        "scrollXInner": "100%", // Allow horizontal scrolling to extend beyond the table width
       });
     });
 
-    // Function to focus the search input field
-    // Use setTimeout to ensure DataTables has fully rendered before focusing
-    function focusSearchField() {
-      setTimeout(function() {
-        $('.dataTables_filter input').focus();
-      }, 100);
-    }
-
-    // Focus on page load
-    focusSearchField();
-
-    // Focus after page reload (optional, assuming DataTables maintains state)
-    $(window).on('load', function() {
-      focusSearchField();
-    });
 
     function showEditMedicineModal(id) {
       // Fetch the medicine details and fill the form
@@ -223,7 +245,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
           $('#edit-name').val(medicine.name);
           $('#current-img').attr('src', `../uploads/${medicine.image}`);
           $('#edit-category').val(medicine.category);
-          $('#edit-price').val(medicine.price);
+          $('#edit-cost_price').val(medicine.cost_price);
+          $('#edit-selling_price').val(medicine.selling_price);
           $('#edit-quantity').val(medicine.quantity);
           $('#edit-expiry_date').val(medicine.expiry_date);
           $('#edit-barcode').val(medicine.barcode);
@@ -236,6 +259,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
     function closeEditMedicineModal() {
       $('#edit-medicine-modal').css('visibility', 'hidden');
     }
+
+
+
+    function updateFormValues() {
+      const currency = $('#currency-select').val();
+      const exchangeRate = $('#exchange-rate').data('exchange-rate');
+
+      // Update both forms
+      ['#add-medicine-form', '#edit-medicine-form'].forEach(formSelector => {
+        // Update currency
+        $(`${formSelector} input[name="currency"]`).val(currency);
+        // Update exchange rate
+        $(`${formSelector} input[name="exchange_rate"]`).val(exchangeRate);
+      });
+    }
+
+    // Initial update
+    updateFormValues();
+
+    // Update on currency select change
+    $('#currency-select').on('change', updateFormValues);
   </script>
 </body>
 

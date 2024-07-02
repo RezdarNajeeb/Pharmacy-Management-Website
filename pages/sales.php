@@ -25,22 +25,11 @@ if (!isset($_SESSION['user_id'])) {
   <div class="sales-container">
     <h2>Current Sales</h2>
     <form id="sales-form">
-      <label for="medicine-id">Medicine</label>
-      <select id="medicine-id" name="medicine_id" required>
-        <option value="">Select Medicine</option>
-        <?php
-        $stmt = $conn->prepare("SELECT id, name FROM medicines");
-        $stmt->execute();
-        $result = $stmt->get_result();
-        while ($row = $result->fetch_assoc()) {
-          echo '<option value="' . htmlspecialchars($row['id']) . '">' . htmlspecialchars($row['name']) . '</option>';
-        }
-        $stmt->close();
-        ?>
-      </select>
+      <label for="medicine-barcode">Barcode</label>
+      <input type="text" id="medicine-barcode" name="barcode" placeholder="Enter barcode" required>
 
       <label for="quantity">Quantity</label>
-      <input type="number" id="quantity" name="quantity" min="1" required>
+      <input type="number" id="quantity" name="quantity" min="1" value="1" required>
 
       <button type="submit">Add to Sale</button>
     </form>
@@ -50,7 +39,8 @@ if (!isset($_SESSION['user_id'])) {
         <tr>
           <th>Medicine</th>
           <th>Quantity</th>
-          <th>Price</th>
+          <th>Cost Price</th>
+          <th>Selling Price</th>
           <th>Total</th>
           <th>Actions</th>
         </tr>
@@ -60,14 +50,12 @@ if (!isset($_SESSION['user_id'])) {
       </tbody>
     </table>
 
-    <h3>Total: $<span id="total-price">0.00</span></h3>
+    <h3>Total: $<span id="total-price-usd">0.00</span> | IQD<span id="total-price-iqd">0</span></h3>
 
     <button id="finalize-sale">Finalize Sale</button>
   </div>
 
-  <?php
-  require_once '../includes/footer.php';
-  ?>
+  <?php require_once '../includes/footer.php'; ?>
 
   <script src="../js/lib/jquery-3.7.1.min.js"></script>
   <script src="../js/scripts.js"></script>
