@@ -1,9 +1,9 @@
 <?php
 session_start();
-require_once 'includes/db.php';
+require_once '../../includes/db.php';
 
 if (!isset($_SESSION['user_id'])) {
-  header('Location: ../login.php');
+  header('Location: ../../../../pages/login.php');
   exit();
 }
 

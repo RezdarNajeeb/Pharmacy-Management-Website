@@ -47,7 +47,7 @@ $warningCount = $warningResult->fetch_assoc()['warning_count'];
   <div class="exchange-rate">
     <span style="color:white;" id="exchange-rate" data-exchange-rate="<?php echo htmlspecialchars($exchange_rate); ?>">Exchange Rate (USD to IQD): <?php echo htmlspecialchars($exchange_rate); ?></span>
     <!-- Add a form to update the exchange rate -->
-    <form action="../update_exchange_rate.php" method="post">
+    <form action="../modules/utilities/update_exchange_rate.php" method="post">
       <input type="number" name="new_rate" step="any" placeholder="Enter new rate">
       <button type="submit">Update</button>
     </form>
@@ -67,7 +67,7 @@ $warningCount = $warningResult->fetch_assoc()['warning_count'];
   <div id="user-box">
     <span><?php echo $currentUsername; ?></span>
     <button id="update-user">گۆڕانکاری</button>
-    <a href="../logout.php">چوونەدەرەوە</a>
+    <a href="../modules/users/logout.php">چوونەدەرەوە</a>
   </div>
 
   <div class="logo">
@@ -81,7 +81,7 @@ $warningCount = $warningResult->fetch_assoc()['warning_count'];
   <div class="modal-content">
     <i class="fas fa-times close"></i>
     <h2>گۆڕانکاری</h2>
-    <form id="account-form" method="POST" action="../update_user.php">
+    <form id="account-form" method="POST" action="../modules/users/update_user.php">
       <label for="new-username">ناوی نوێ:</label>
       <input type="text" id="new-username" name="new_username" value="<?php echo $currentUsername; ?>" required>
       <label for="current-password">وشەی نهێنی ئێستا</label>

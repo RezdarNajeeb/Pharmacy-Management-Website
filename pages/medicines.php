@@ -4,7 +4,7 @@ session_start();
 
 // Check if the user is logged in
 if (!isset($_SESSION['user_id'])) {
-  header("Location: ../login.php");
+  header("Location: login.php");
   exit();
 }
 
@@ -117,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
   <div id="edit-medicine-modal" class="modal">
     <div class="modal-content">
       <i class="close fas fa-times" onclick="closeEditMedicineModal()"></i>
-      <form action="../update_medicine.php" id="edit-medicine-form" method="post" enctype="multipart/form-data">
+      <form action="../modules/medicines/update_medicine.php" id="edit-medicine-form" method="post" enctype="multipart/form-data">
         <input type="hidden" name="id" id="edit-id">
         <input type="hidden" name="existing_image" id="existing-image">
         <input type="hidden" name="currency" value="USD">
@@ -148,7 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
         "processing": true,
         "serverSide": true,
         "ajax": {
-          "url": "../fetch_medicines.php",
+          "url": "../modules/medicines/fetch_medicines.php",
           "type": "POST"
         },
         "language": {
@@ -210,7 +210,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
             "render": function(data) {
               return `
               <button type="button" class="edit-button" onclick="showEditMedicineModal(${data})">دەستکاری</button>
-                <form action="../delete_medicine.php" method="post" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                <form action="../modules/medicines/delete_medicine.php" method="post" onsubmit="return confirm('Are you sure you want to delete this item?');">
                 <input type="hidden" name="id" value="${data}">
                 <button type="submit" class="delete-button">سڕینەوە</button>
                 </form>
@@ -233,7 +233,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
     function showEditMedicineModal(id) {
       // Fetch the medicine details and fill the form
       $.ajax({
-        url: '../edit_medicine.php',
+        url: '../modules/medicines/edit_medicine.php',
         type: 'POST',
         data: {
           id: id

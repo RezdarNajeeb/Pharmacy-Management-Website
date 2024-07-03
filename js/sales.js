@@ -25,7 +25,7 @@ $(document).ready(function () {
 
   function addSaleItem(barcode, quantity) {
     $.ajax({
-      url: "../get_medicine_details.php",
+      url: "../modules/sales/get_medicine_details.php",
       method: "GET",
       data: { barcode: barcode },
       dataType: "json",
@@ -169,7 +169,7 @@ $(document).ready(function () {
     };
 
     $.ajax({
-      url: "../finalize_sale.php",
+      url: "../modules/sales/finalize_sale.php",
       method: "POST",
       contentType: "application/json",
       data: JSON.stringify(saleData), // Convert the sales array to a JSON string

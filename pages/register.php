@@ -1,5 +1,5 @@
 <?php
-require_once 'includes/db.php';
+require_once '../includes/db.php';
 
 if (isset($_POST['register'])) {
   $username = $conn->real_escape_string($_POST['username']);
@@ -45,7 +45,7 @@ if (isset($_POST['register'])) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>دروستکردنی هەژمار</title>
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="../css/styles.css">
 </head>
 
 <body>
@@ -67,8 +67,8 @@ if (isset($_POST['register'])) {
     </form>
   </div>
 
-  <script src="js/lib/jquery-3.7.1.min.js"></script>
-  <script src="js/validate.js"></script>
+  <script src="../js/lib/jquery-3.7.1.min.js"></script>
+  <script src="../js/validate.js"></script>
 </body>
 
 </html>

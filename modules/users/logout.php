@@ -1,8 +1,8 @@
 <?php
-require_once 'includes/db.php';
+require_once '../../includes/db.php';
 session_start();
 if (!isset($_SESSION['user_id'])) {
-  header("Location: login.php");
+  header("Location: ../../../../pages/login.php");
   exit();
 }
 
@@ -22,5 +22,5 @@ if (isset($_COOKIE['remember_me'])) {
 
 session_unset();
 session_destroy();
-header("Location: login.php");
+header("Location: ../../../../pages/login.php");
 exit();

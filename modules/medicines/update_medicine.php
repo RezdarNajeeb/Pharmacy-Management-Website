@@ -1,10 +1,10 @@
 <?php
-require_once 'includes/db.php';
+require_once '../../includes/db.php';
 session_start();
 
 // Check if the user is logged in
 if (!isset($_SESSION['user_id'])) {
-  header("Location: login.php");
+  header("Location: ../../../../pages/login.php");
   exit();
 }
 
@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   // Handle image upload
   if (!empty($_FILES['image']['name'])) {
     $image = $_FILES['image']['name'];
-    $target_dir = "uploads/";
+    $target_dir = "../../uploads/";
     $target_file = $target_dir . basename($image);
     if (!move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
       echo "Error uploading image.";
@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt_log->execute();
     $stmt_log->close();
 
-    header("Location: pages/medicines.php");
+    header("Location: ../../../../pages/medicines.php");
   } else {
     echo "Error: " . $stmt->error;
   }
@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $stmt->close();
 } else {
   echo "داواکارییەکەت هەڵەیە.";
-  header("Location: pages/medicines.php");
+  header("Location: ../../../../pages/medicines.php");
 }
 
 $conn->close();

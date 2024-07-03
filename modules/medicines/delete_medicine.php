@@ -1,9 +1,9 @@
 <?php
-require_once 'includes/db.php';
+require_once '../../includes/db.php';
 session_start();
 
 if (!isset($_SESSION['user_id'])) {
-  header("Location: login.php");
+  header("Location: ../../../../pages/login.php");
   exit();
 }
 
@@ -24,8 +24,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $stmt->bind_param("i", $id);
   if ($stmt->execute()) {
     // If the medicine is successfully deleted, delete the image file
-    if ($imageFilename && file_exists("uploads/" . $imageFilename)) {
-      unlink("uploads/" . $imageFilename);
+    if ($imageFilename && file_exists("../../uploads" . $imageFilename)) {
+      unlink("../../uploads/" . $imageFilename);
     }
 
     // Log the activity
@@ -36,16 +36,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt_log->close();
 
     echo "دەرمان بەسەرکەوتوی سڕایەوە.";
-    header("Location: pages/medicines.php");
+    header("Location: ../../../../pages/medicines.php");
   } else {
     echo "هەڵەیەک ڕوویدا: " . $stmt->error;
-    header("Location: pages/medicines.php");
+    header("Location: ../../../../pages/medicines.php");
   }
 
   $stmt->close();
 } else {
   echo "داواکارییەکەت هەڵەیە.";
-  header("Location: pages/medicines.php");
+  header("Location: ../../../../pages/medicines.php");
 }
 
 $conn->close();

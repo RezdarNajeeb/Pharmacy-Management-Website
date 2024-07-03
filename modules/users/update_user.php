@@ -1,9 +1,9 @@
 <?php
-require_once 'includes/db.php';
+require_once '../../includes/db.php';
 session_start();
 
 if (!isset($_SESSION['user_id'])) {
-  header("Location: login.php");
+  header("Location: ../../../../pages/login.php");
   exit();
 }
 
@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
   if ($stmt->execute()) {
     $_SESSION['username'] = $new_username;
-    header("Location: pages/dashboard.php");
+    header("Location: ../../../../pages/dashboard.php");
     exit();
   } else {
     echo "هەڵەیەک ڕوویدا.";

@@ -1,5 +1,5 @@
 <?php
-require_once 'includes/db.php';
+require_once '../../includes/db.php';
 
 if (!isset($_GET['barcode'])) {
   echo json_encode(['status' => 'error', 'message' => 'Invalid request']);

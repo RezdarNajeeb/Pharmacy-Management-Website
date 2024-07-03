@@ -1,5 +1,5 @@
 <?php
-require_once 'includes/db.php';
+require_once '../includes/db.php';
 session_start();
 
 // Check for remember me cookie
@@ -16,7 +16,7 @@ if (isset($_COOKIE['remember_me'])) {
     if (password_verify($token, $user['remember_token'])) {
       $_SESSION['user_id'] = $user['id'];
       $_SESSION['username'] = $user['username'];
-      header("Location: pages/dashboard.php");
+      header("Location: dashboard.php");
       exit();
     }
   }
@@ -50,7 +50,7 @@ if (isset($_POST['login'])) {
         $stmt->execute();
       }
 
-      header("Location: pages/dashboard.php");
+      header("Location: dashboard.php");
       exit();
     } else {
       echo "وشەی نهێنی هەڵەیە.";
@@ -71,7 +71,7 @@ if (isset($_POST['login'])) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>چوونەژوورەوە</title>
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="../css/styles.css">
 </head>
 
 <body>
@@ -95,8 +95,8 @@ if (isset($_POST['login'])) {
     </form>
   </div>
 
-  <script src="js/lib/jquery-3.7.1.min.js"></script>
-  <script src="js/validate.js"></script>
+  <script src="../js/lib/jquery-3.7.1.min.js"></script>
+  <script src="../js/validate.js"></script>
 
 </body>
 

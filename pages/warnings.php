@@ -4,7 +4,7 @@ session_start();
 
 // Check if the user is logged in
 if (!isset($_SESSION['user_id'])) {
-  header("Location: ../login.php");
+  header("Location: login.php");
   exit();
 }
 
@@ -115,7 +115,7 @@ if (!isset($_SESSION['user_id'])) {
         e.preventDefault();
 
         $.ajax({
-          url: '../update_settings.php',
+          url: '../modules/utilities/update_settings.php',
           method: 'POST',
           data: {
             warning_quantity: $('#warning_quantity').val(),

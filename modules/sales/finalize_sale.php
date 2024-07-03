@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'includes/db.php';
+require_once '../../includes/db.php';
 
 if (!isset($_SESSION['user_id'])) {
   echo json_encode(['status' => 'error', 'message' => 'Unauthorized']);
