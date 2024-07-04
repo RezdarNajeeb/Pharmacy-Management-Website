@@ -1,49 +1,82 @@
 $(document).ready(function () {
   // form validation
   var form = $("form");
+
   function validateForm() {
     var username = $.trim($("#username").val());
     var password = $.trim($("#password").val());
 
+    var usernameError = $("#username-error");
+    var passwordError = $("#password-error");
+    var confirmPasswordError = $("#confirm-password-error");
+
     var passwordRegex = new RegExp(
-      "^(?=.*d)(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{8,}$"
+      "^(?=.*\\d)(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{8,}$"
     );
     var usernameRegex = new RegExp("^[a-zA-Z].*$");
 
-    if (username === "" || password === "") {
-      alert("تکایە هەموو خانەکان پڕبکەوە.");
+    if (username === "" && password === "") {
+      usernameError.text("ناوی بەکارهێنەر پێویستە پڕبکرێتەوە.");
+      passwordError.text("وشەی نهێنی پێویستە پڕبکرێتەوە.");
       return false;
+    } else {
+      if (username === "") {
+        passwordError.text("");
+        usernameError.text("ناوی بەکارهێنەر پێویستە پڕبکرێتەوە.");
+        return false;
+      } else {
+        usernameError.text("");
+      }
+      if (password === "") {
+        usernameError.text("");
+        passwordError.text("وشەی نهێنی پێویستە پڕبکرێتەوە.");
+        return false;
+      } else {
+        passwordError.text("");
+      }
     }
 
     if (form.attr("id") == "register-form") {
       var confirm_password = $.trim($("#confirm_password").val());
 
       if (confirm_password === "") {
-        alert("تکایە هەموو خانەکان پڕبکەوە.");
+        confirmPasswordError.text("وشەی نهێنی دڵنیایی پێویستە پڕبکرێتەوە.");
         return false;
+      } else {
+        confirmPasswordError.text("");
       }
 
       if (password !== confirm_password) {
-        alert("وشەی نهێنی و وشەی نهێنیی دڵنیایی وەک یەک نین.");
+        confirmPasswordError.text(
+          "وشەی نهێنی و وشەی نهێنیی دڵنیایی وەک یەک نین."
+        );
         return false;
+      } else {
+        confirmPasswordError.text("");
       }
     }
 
     if (username.length < 3) {
-      alert("ناوی بەکارهێنەر پێویستە بەلایەنی کەمەوە ٣ پیت بێت.");
+      usernameError.text("ناوی بەکارهێنەر پێویستە بەلایەنی کەمەوە ٣ پیت بێت.");
       return false;
+    } else {
+      usernameError.text("");
     }
 
     if (!passwordRegex.test(password)) {
-      alert(
+      passwordError.text(
         "وشەی نهێنی پێویستە بەلایەنی کەمەوە ٨ پیت بێت و بەلایەنی کەمەوە ژمارەیەک و پیتێک و هێمایەکی تێدابێت."
       );
       return false;
+    } else {
+      passwordError.text("");
     }
 
     if (!usernameRegex.test(username)) {
-      alert("ناوی بەکارهێنەر پێویستە بە پیت دەست پێبکات.");
+      usernameError.text(" ناوی بەکارهێنەر پێویستە بە پیت دەست پێبکات.");
       return false;
+    } else {
+      usernameError.text("");
     }
     return true;
   }

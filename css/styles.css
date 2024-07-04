@@ -1,15 +1,35 @@
 /* Color Palette With General Configurations */
 :root {
-  --primary-color: #4caf50;
-  --secondary-color: #ffc107;
+  --primary-color: #71c9ce;
+  --secondary-color: #a6e3e9;
   --background-color: #f9f9f9;
   --text-color: #333333;
-  --red-color: #c92424;
-  --header-footer-bg-color: #2c3e50;
-  --hover-color: #3498db;
+  --red: #ec4848;
+  --light-green: #6dcc70;
+  --light-blue: #5a9bd4;
   --border: 1px solid #ccc;
   --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   --base-font-size: 10px;
+}
+
+/* slideOut Animation from right */
+@keyframes slideOut {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* slideIn Animation from right */
+@keyframes slideIn {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(110%);
+  }
 }
 
 /* Scrollbar Styles */
@@ -22,11 +42,11 @@
 }
 
 ::-webkit-scrollbar-track {
-  background-color: #f1f1f1;
+  background-color: #f9f9f9;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: var(--hover-color);
+  background-color: var(--secondary-color);
 }
 
 /* General Font Size */
@@ -53,9 +73,11 @@ body {
   margin-top: 2rem;
 }
 
-.edit-button, .delete-button, .add-button {
+.light-blue-btn,
+.red-btn,
+.light-green-btn {
   font-size: 2rem;
-  padding: 0.5rem 1rem;
+  padding: 0.5em 1em;
   color: #fff;
   border: none;
   border-radius: 0.5rem;
@@ -63,36 +85,34 @@ body {
   transition: background-color 0.3s;
 }
 
-.add-button {
-  background-color: var(--primary-color);
+.light-green-btn {
+  background-color: var(--light-green);
 }
 
-.add-button:hover {
-  background-color: #4caf50;
+.light-green-btn:hover {
+  background-color: #359b39;
 }
 
-.delete-button {
-  background-color: var(--red-color);
+.red-btn {
+  background-color: var(--red);
 }
 
-.delete-button:hover {
-  background-color: #c92424;
+.red-btn:hover {
+  background-color: #b42828;
 }
 
-.edit-button {
-  background-color: var(--secondary-color);
+.light-blue-btn {
+  background-color: var(--light-blue);
 }
 
-.edit-button:hover {
-  background-color: #ff9800;
+.light-blue-btn:hover {
+  background-color: #3a6e9d;
 }
 
 /* auth-forms styles */
 .auth-forms-container {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: grid;
+  place-items: center;
   height: 100vh;
 }
 
@@ -100,7 +120,8 @@ body {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  min-width: 40rem;
+  width: 80%;
+  max-width: 40rem;
   padding: 2rem;
   background-color: #fff;
   border-radius: 0.5rem;
@@ -110,50 +131,146 @@ body {
 .auth-forms-container form h2 {
   font-size: 3rem;
   text-align: center;
-  margin: 0 0 1rem 0;
+  margin: 0 0 2rem 0;
 }
 
-.auth-forms-container form label {
-  font-size: 2rem;
+.auth-forms-container form .input-control {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+  gap: 1rem;
 }
 
-.auth-forms-container form input {
-  padding: 1rem;
+.auth-forms-container form .input-control label {
+  font-size: 1.8rem;
+}
+
+.auth-forms-container form .input-control .input {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.auth-forms-container form .input-control .input input {
+  width: 100%;
+  padding: 1rem 1rem 1rem 3rem;
+  font-size: 1.6rem;
   border: var(--border);
   border-radius: 0.5rem;
 }
 
-.auth-forms-container form button {
+.auth-forms-container form .input-control i {
   font-size: 2rem;
-  padding: 1rem;
-  background-color: var(--hover-color);
-  color: #fff;
-  border: none;
-  border-radius: 0.5rem;
-  margin-top: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s;
+  position: absolute;
+  left: 1rem;
 }
 
-.auth-forms-container form button:hover {
-  background-color: #2980b9;
+.auth-forms-container form .input-control span {
+  font-size: 1.6rem;
+  color: var(--red);
+}
+
+.auth-forms-container form .show-pass-cont,
+.auth-forms-container form .remember-me-cont {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.auth-forms-container form .show-pass-cont label,
+.auth-forms-container form .remember-me-cont label {
+  font-size: 1.8rem;
+  cursor: pointer;
+}
+
+.auth-forms-container form .show-pass-cont input,
+.auth-forms-container form .remember-me-cont input {
+  cursor: pointer;
+}
+
+.auth-forms-container form p {
+  font-size: 1.8rem;
+  text-align: center;
+  color: var(--text-color);
 }
 
 .auth-forms-container form a {
-  font-size: 2rem;
-  padding: 1rem;
-  background-color: var(--primary-color);
-  color: #fff;
-  border: none;
-  border-radius: 0.5rem;
-  text-align: center;
+  font-size: 1.8rem;
   text-decoration: none;
-  cursor: pointer;
-  transition: background-color 0.3s;
 }
 
-.auth-forms-container form a:hover {
-  background-color: #359b39;
+.auth-forms-container #login-form a {
+  color: var(--light-green);
+}
+
+.auth-forms-container #register-form a {
+  color: var(--light-blue);
+}
+
+/* Message Styles slideout from right then slide in after 3s */
+
+.messages {
+  position: fixed;
+  top: 2rem;
+  right: 1rem;
+  z-index: 1000;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  max-width: 20rem;
+  min-width: 20rem;
+  animation: slideOut 0.7s forwards, slideIn 0.6s forwards 3s;
+}
+
+.message {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  gap: 1rem;
+  padding: 1rem;
+  font-size: 1.6rem;
+  font-weight: 600;
+  background-color: #fff;
+  box-shadow: var(--box-shadow);
+  border-radius: 0.5rem;
+}
+
+.message .icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  color: #fff;
+  background-color: var(--red);
+  font-size: 1.5rem;
+}
+
+.message.error {
+  color: var(--red);
+}
+
+.message.success {
+  color: var(--light-green);
+}
+
+.messages:has(.message.success) .icon {
+  background-color: var(--light-green);
+}
+
+.message.info {
+  color: var(--light-blue);
+}
+
+.messages:has(.message.info) .icon {
+  background-color: var(--light-blue);
 }
 
 /* Header Styles */
@@ -275,25 +392,6 @@ header #user-box a {
 
 header #user-box a:hover {
   background-color: #b42828;
-}
-
-/* message style */
-.message {
-  text-align: center;
-  font-size: 2rem;
-  padding: 1rem;
-  margin: 1rem 0;
-  border-radius: 0.5rem;
-}
-
-.message.success {
-  background-color: #4caf50;
-  color: #fff;
-}
-
-.message.error {
-  background-color: var(--red-color);
-  color: #fff;
 }
 
 /* Modal Styles For Updating User Account*/
@@ -480,7 +578,7 @@ header #user-box a:hover {
   border-radius: 0.5rem;
 }
 
-#medicines-table tbody tr td button{
+#medicines-table tbody tr td button {
   padding: 1rem;
 }
 

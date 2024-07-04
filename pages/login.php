@@ -2,6 +2,8 @@
 require_once '../includes/db.php';
 session_start();
 
+$messages = [];
+
 // Check for remember me cookie
 if (isset($_COOKIE['remember_me'])) {
   $token = $_COOKIE['remember_me'];
@@ -53,10 +55,10 @@ if (isset($_POST['login'])) {
       header("Location: dashboard.php");
       exit();
     } else {
-      echo "وشەی نهێنی هەڵەیە.";
+      $messages[] = ['type' => 'error', 'message' => "وشەی نهێنی هەڵەیە."];
     }
   } else {
-    echo "هیچ هەژمارێک بەم ناوەوە نییە.";
+    $messages[] = ['type' => 'info', 'message' => "هیچ هەژمارێک بەم ناوەوە نییە."];
   }
 
   $stmt->close();
@@ -71,27 +73,48 @@ if (isset($_POST['login'])) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>چوونەژوورەوە</title>
+  <link rel="stylesheet" href="../assets/fontawesome-free-6.5.2-web/css/all.min.css">
   <link rel="stylesheet" href="../css/styles.css">
 </head>
 
 <body>
+  <?php require_once '../includes/messages.php'; ?>
+
   <div class="auth-forms-container">
     <form method="post" action="login.php" id="login-form">
       <h2>چوونەژوورەوە</h2>
-      <label for="username">ناوی بەکارهێنەر:</label>
-      <input type="text" id="username" name="username" required>
-      <label for="password">وشەی نهێنی:</label>
-      <input type="password" id="password" name="password" required>
+
+      <div class="input-control">
+        <label for="username">ناوی بەکارهێنەر:</label>
+        <div class="input">
+          <input type="text" id="username" name="username" required>
+          <i class="fa fa-user"></i>
+        </div>
+        <span id="username-error"></span>
+      </div>
+
+      <div class="input-control">
+        <label for="password">وشەی نهێنی:</label>
+        <div class="input">
+          <input type="password" id="password" name="password" required>
+          <i class="fa fa-lock"></i>
+        </div>
+        <span id="password-error"></span>
+      </div>
+
       <div class="show-pass-cont">
         <label for="show-password">پیشاندانی وشەی نهێنی</label>
         <input type="checkbox" id="show-password">
       </div>
+
       <div class="remember-me-cont">
         <label for="remember">منت لەبیر بێت</label>
         <input type="checkbox" id="remember" name="remember">
       </div>
-      <button type="submit" name="login">بچۆ ژوورەوە</button>
-      <a href="register.php">دروستکردنی هەژمار</a>
+
+      <button type="submit" class="light-blue-btn" name="login">بچۆ ژوورەوە</button>
+
+      <p>هەژمارت نییە؟ <a href="register.php">هەژمارێک دروست بکە</a></p>
     </form>
   </div>
 
