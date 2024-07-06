@@ -15,7 +15,8 @@ if (isset($_COOKIE['remember_me'])) {
 
   if ($result->num_rows > 0) {
     $user = $result->fetch_assoc();
-    if (password_verify($token, $user['remember_token'])) {
+    // Direct comparison since the token is hashed in the database
+    if ($token === $user['remember_token']) {
       $_SESSION['user_id'] = $user['id'];
       $_SESSION['username'] = $user['username'];
       header("Location: dashboard.php");
@@ -43,12 +44,13 @@ if (isset($_POST['login'])) {
       $_SESSION['username'] = $user['username'];
 
       if ($remember) {
-        $token = password_hash(bin2hex(random_bytes(32)), PASSWORD_BCRYPT); // Generate a secure token
+        $token = bin2hex(random_bytes(32)); // Generate a secure token
+        $hashedToken = password_hash($token, PASSWORD_DEFAULT); // Hash the token for storage
         $expires = time() + (86400 * 30); // 30 days
         setcookie('remember_me', $token, $expires, "/", "", true, true); // Secure and HttpOnly flags
 
         $stmt = $conn->prepare("UPDATE users SET remember_token = ? WHERE id = ?");
-        $stmt->bind_param("si", $token, $user['id']);
+        $stmt->bind_param("si", $hashedToken, $user['id']);
         $stmt->execute();
       }
 

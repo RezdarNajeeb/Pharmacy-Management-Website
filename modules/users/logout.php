@@ -6,21 +6,27 @@ if (!isset($_SESSION['user_id'])) {
   exit();
 }
 
-// before logout user delete remember me token
+// Before logout, delete the remember me token
 if (isset($_COOKIE['remember_me'])) {
-  $id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
+  $id = $_SESSION['user_id'];
   $token = $_COOKIE['remember_me'];
-  $stmt = $conn->prepare("UPDATE users SET remember_token = '' WHERE remember_token = ? AND id = ?;");
-  $stmt->bind_param("si", $token, $id);
+
+  // Prepare to clear the remember_token for the logged-in user
+  $stmt = $conn->prepare("UPDATE users SET remember_token = '' WHERE id = ?;");
+  $stmt->bind_param("i", $id);
   $stmt->execute();
 
   $stmt->close();
   $conn->close();
 
-  setcookie('remember_me', '', time() - (86400 * 30), "/", "", true, true);
+  // Securely remove the remember_me cookie
+  setcookie('remember_me', '', time() - 3600, "/", "", true, true); // Expire the cookie
 }
 
+// Clear all session data
 session_unset();
 session_destroy();
+
+// Redirect to the login page
 header("Location: ../../../../pages/login.php");
 exit();

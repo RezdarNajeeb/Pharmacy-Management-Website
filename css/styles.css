@@ -111,6 +111,9 @@ body {
 
 /* auth-forms styles */
 .auth-forms-container {
+  background-image: url("../assets/images/background.jpg");
+  background-size: cover;
+  background-position: center;
   display: grid;
   place-items: center;
   height: 100vh;
@@ -123,7 +126,7 @@ body {
   width: 80%;
   max-width: 40rem;
   padding: 2rem;
-  background-color: #fff;
+  background-color: #f9f9f9;
   border-radius: 0.5rem;
   box-shadow: var(--box-shadow);
 }
@@ -209,7 +212,6 @@ body {
 }
 
 /* Message Styles slideout from right then slide in after 3s */
-
 .messages {
   position: fixed;
   top: 2rem;
