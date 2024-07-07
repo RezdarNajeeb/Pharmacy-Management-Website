@@ -1,4 +1,20 @@
 $(document).ready(function () {
+  function highlightCurrentPageLink() {
+    // Get the current page URL
+    var currentUrl = window.location.pathname;
+    // Get the filename from the URL
+    var filename = currentUrl.substring(currentUrl.lastIndexOf("/") + 1);
+
+    $(".navbar ul li a").each(function () {
+      var link = $(this).attr("href");
+      if (link === filename) {
+        $(this).css("background-color", "var(--background-color)");
+      }
+    });
+  }
+
+  highlightCurrentPageLink();
+
   function handleUpdateAccountModal() {
     var modal = $("#account-modal");
     var updateUserBtn = $("#update-user");

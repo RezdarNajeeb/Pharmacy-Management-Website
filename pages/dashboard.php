@@ -17,8 +17,6 @@ $query = "
 ";
 $result = $conn->query($query);
 $stats = $result->fetch_assoc();
-
-include '../includes/header.php';
 ?>
 
 <!DOCTYPE html>
@@ -29,35 +27,41 @@ include '../includes/header.php';
     <title>زانیارییەکان</title>
     <link rel="stylesheet" href="../assets/fontawesome-free-6.5.2-web/css/all.min.css">
     <link rel="stylesheet" href="../css/styles.css">
-    <link rel="stylesheet" href="../css/dashboard.css"> <!-- Externalized CSS -->
 </head>
 <body>
+    <?php require_once '../includes/header.php'; ?>
+
     <div class="dashboard">
-        <h1>داشبۆرد</h1>
+        <h1 class="title">زانیارییەکان</h1>
         <div class="stats">
-            <div class="stat">
-                <h2>هەموو دەرمانەکان</h2>
-                <p><?php echo $stats['total_medicines']; ?></p>
-            </div>
-            <div class="stat">
-                <h2>هەموو فرۆشتنەکان</h2>
-                <p><?php echo $stats['total_sales']; ?></p>
-            </div>
-            <div class="stat">
-                <h2>کەمترین ستۆک</h2>
-                <p><?php echo $stats['low_stock_medicines']; ?></p>
-            </div>
-            <div class="stat">
-                <h2>نزیك بە بەسەرچوون</h2>
-                <p><?php echo $stats['upcoming_expiries']; ?></p>
-            </div>
-        </div>
-        <div class="quick-links">
-            <!-- Quick links remain unchanged -->
+            <a href="medicines.php">
+                <div class="stat">
+                    <h2>هەموو دەرمانەکان</h2>
+                    <p><?php echo $stats['total_medicines']; ?></p>
+                </div>
+            </a>
+            <a href="sales_history.php">
+                <div class="stat">
+                    <h2>هەموو فرۆشتنەکان</h2>
+                    <p><?php echo $stats['total_sales']; ?></p>
+                </div>
+            </a>
+            <a href="warnings.php">
+                <div class="stat">
+                    <h2>دەرمانە کەمبووەکان</h2>
+                    <p><?php echo $stats['low_stock_medicines']; ?></p>
+                </div>
+            </a>
+            <a href="warnings.php">
+                <div class="stat">
+                    <h2>نزیك بە بەسەرچوون</h2>
+                    <p><?php echo $stats['upcoming_expiries']; ?></p>
+                </div>
+            </a>
         </div>
     </div>
 
-    <?php include('../includes/footer.php'); ?>
+    <?php require_once '../includes/footer.php'; ?>
 
     <script src="../js/lib/jquery-3.7.1.min.js"></script>
     <script src="../js/scripts.js"></script>

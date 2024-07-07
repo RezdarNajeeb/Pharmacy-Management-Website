@@ -19,26 +19,6 @@ if (!isset($_SESSION['user_id'])) {
   <title>warnings</title>
   <link rel="stylesheet" href="../assets/fontawesome-free-6.5.2-web/css/all.min.css">
   <link rel="stylesheet" href="../css/styles.css">
-
-  <style>
-    .notifications-icon {
-      position: relative;
-      color: #ff0000;
-      text-decoration: none;
-      font-size: 1.5rem;
-    }
-
-    .notification-count {
-      position: absolute;
-      top: -5px;
-      right: -5px;
-      background-color: red;
-      color: white;
-      border-radius: 50%;
-      padding: 2px 5px;
-      font-size: 0.75rem;
-    }
-  </style>
 </head>
 
 <body>

@@ -14,15 +14,28 @@ $warningCount = $warningResult->fetch_assoc()['warning_count'];
   <div class="icons">
     <div class="icon" id="user-icon">
       <i class="fas fa-user"></i>
-      <a href="../pages/warnings.php" class="notifications-icon">
-        <i class="fas fa-exclamation-circle"></i>
-        <?php if ($warningCount > 0) : ?>
-          <span class="notification-count"><?php echo $warningCount; ?></span>
-        <?php endif; ?>
-      </a>
     </div>
+
+    <a href="../pages/warnings.php" class="icon" id="notifications-icon">
+      <i class="fas fa-exclamation-circle"></i>
+      <?php if ($warningCount > 0) : ?>
+        <span class="notification-count"><?php echo $warningCount; ?></span>
+      <?php endif; ?>
+    </a>
+
+    <a href="../pages/settings.php" class="icon" id="settings-icon">
+      <i class="fas fa-cog"></i>
+    </a>
+
   </div>
 
+  <div class="currency-selector">
+    <label for="currency-select">دراو</label>
+    <select id="currency-select">
+      <option value="USD">$</option>
+      <option value="IQD">د.ع</option>
+    </select>
+  </div>
 
   <?php
   // Fetch the current exchange rate
@@ -30,26 +43,18 @@ $warningCount = $warningResult->fetch_assoc()['warning_count'];
   $result = $conn->query($query);
 
   if ($result->num_rows > 0) {
-    $exchange_rate = $result->fetch_assoc()['rate'];
+    $exchange_rate = number_format($result->fetch_assoc()['rate'], 2);
   } else {
-    $exchange_rate = "Not available"; // Handle case where rate is not set
+    $exchange_rate = "نەزانراوە"; // Handle case where rate is not set
   }
   ?>
 
-  <div class="currency-selector">
-    <select id="currency-select">
-      <option value="USD">USD ($)</option>
-      <option value="IQD">IQD (د.ع)</option>
-    </select>
-  </div>
-
-
   <div class="exchange-rate">
-    <span style="color:white;" id="exchange-rate" data-exchange-rate="<?php echo htmlspecialchars($exchange_rate); ?>">Exchange Rate (USD to IQD): <?php echo htmlspecialchars($exchange_rate); ?></span>
+    <span id="exchange-rate" data-exchange-rate="<?php echo htmlspecialchars($exchange_rate); ?>">1 دۆلار = <?php echo htmlspecialchars($exchange_rate); ?> دینار</span>
     <!-- Add a form to update the exchange rate -->
     <form action="../modules/utilities/update_exchange_rate.php" method="post">
-      <input type="number" name="new_rate" step="any" placeholder="Enter new rate">
-      <button type="submit">Update</button>
+      <input type="number" name="new_rate" step="any" placeholder="بەهای ئەمڕۆ">
+      <button type="submit">گۆڕین</button>
     </form>
   </div>
 
