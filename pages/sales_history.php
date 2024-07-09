@@ -20,7 +20,10 @@ if (!isset($_SESSION['user_id'])) {
 </head>
 
 <body>
-  <?php require_once '../includes/header.php' ?>
+  <?php
+  require_once '../includes/header.php';
+  require_once '../includes/messages.php'
+  ?>
 
   <div class="sales-history-container">
     <h1 class="title">مێژووی فرۆشتنەکان</h1>
@@ -71,6 +74,7 @@ if (!isset($_SESSION['user_id'])) {
 
   <script src="../js/lib/jquery-3.7.1.min.js"></script>
   <script src="../js/scripts.js"></script>
+  <script src="../js/delete_all.js"></script>
 </body>
 
 </html>

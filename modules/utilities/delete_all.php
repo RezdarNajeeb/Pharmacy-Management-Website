@@ -17,12 +17,12 @@ if (isset($_POST['table']) && isset($_POST['days'])) {
       $sql = "DELETE FROM $table WHERE created_at < '$threshold_date'";
       if ($conn->query($sql) === TRUE) {
         if ($conn->affected_rows > 0) {
-          $_SESSION['messages'][] = ["type" => 'success', "message" => 'Records deleteddd successfully.'];
+          $_SESSION['messages'][] = ["type" => 'success', "message" => 'زانیارییەکان بەسەرکەوتوویی سڕانەوە'];
         } else {
-          $_SESSION['messages'][] = ["type" => 'info', "message" => 'No records to delete.'];
+          $_SESSION['messages'][] = ["type" => 'info', "message" => "هیچ زانیارییەک ماوەکەی لە $days ڕۆژ زیاتر نییە تا بتوانیت بیسڕیتەوە."];
         }
       } else {
-        $_SESSION['messages'][] = ["type" => 'error', "message" => 'An error occurred.'];
+        $_SESSION['messages'][] = ["type" => 'error', "message" => 'کێشەیەک ڕویدا.'];
       }
     } else {
       // Get the next run timestamp from the database
@@ -36,7 +36,7 @@ if (isset($_POST['table']) && isset($_POST['days'])) {
           $sql = "DELETE FROM $table WHERE created_at < '$threshold_date'";
 
           if ($conn->query($sql) === TRUE) {
-            $_SESSION['messages'][] = ["type" => 'success', "message" => 'Records deleted successfully.'];
+            $_SESSION['messages'][] = ["type" => 'success', "message" => 'زانیارییەکان بەسەرکەوتوویی سڕانەوە'];
 
             // Update the next run timestamp
             $newNextRun = date('Y-m-d H:i:s', strtotime("+$days days"));
@@ -45,20 +45,20 @@ if (isset($_POST['table']) && isset($_POST['days'])) {
             $stmt->execute();
             $stmt->close();
           } else {
-            $_SESSION['messages'][] = ["type" => 'error', "message" => 'An error occurred.'];
+            $_SESSION['messages'][] = ["type" => 'error', "message" => 'کێشەیەک ڕویدا.'];
           }
         } else {
-          $_SESSION['messages'][] = ["type" => 'info', "message" => 'Not yet time to delete records.'];
+          $_SESSION['messages'][] = ["type" => 'info', "message" => 'هێشتا کاتی سڕینەوەی زانیارییەکان نەهاتووە.'];
         }
       } else {
-        $_SESSION['messages'][] = ["type" => 'error', "message" => 'Missing next run timestamp.'];
+        $_SESSION['messages'][] = ["type" => 'error', "message" => 'کێشەیەک ڕویدا: نازانرێت کاتی سڕینەوەی زانیارییەکان کەیە.'];
       }
     }
   } else {
-    $_SESSION['messages'][] = ["type" => 'error', "message" => 'Invalid table name.'];
+    $_SESSION['messages'][] = ["type" => 'error', "message" => 'ناتوانیت زانیارییەکانی ئەم خشتە بسڕیتەوە.'];
   }
 } else {
-  $_SESSION['messages'][] = ["type" => 'error', "message" => 'Missing table or days parameter.'];
+  $_SESSION['messages'][] = ["type" => 'error', "message" => 'ناتوانیت زانیارییەکانی ئەم خشتە بسڕیتەوە.'];
 }
 
 $conn->close();
