@@ -10,8 +10,9 @@ $(function () {
 
   const deleteTableData = (days, isImmediate = false) => {
     $.post(apiUrl, { table: getTable(), days, isImmediate })
-      .done(() => {
+      .done((data) => {
         if (isImmediate) window.location.reload();
+        alert(data);
       })
       .fail((xhr, status, error) => console.error(`Error: ${status} ${error}`));
   };

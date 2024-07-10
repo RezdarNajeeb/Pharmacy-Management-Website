@@ -1,31 +1,31 @@
 <?php
-require_once '../../includes/db.php';
 session_start();
+require_once '../../includes/db.php';
 
 if (isset($_POST['table']) && isset($_POST['days'])) {
   $table = $_POST['table'];
   $days = intval($_POST['days']);
-  $userId = $_SESSION['user_id']; // Assuming user ID is stored in the session
+  $userId = $_SESSION['user_id'];
 
-  // Calculate the new threshold date based on the days parameter
   $threshold_date = date('Y-m-d H:i:s', strtotime("-$days days"));
 
-  // Validate table name to prevent SQL injection
   $allowed_tables = ['user_activities', 'sales_history'];
   if (in_array($table, $allowed_tables)) {
     if ($_POST['isImmediate'] == 'true') {
-      $sql = "DELETE FROM $table WHERE created_at < '$threshold_date'";
-      if ($conn->query($sql) === TRUE) {
-        if ($conn->affected_rows > 0) {
-          $_SESSION['messages'][] = ["type" => 'success', "message" => 'زانیارییەکان بەسەرکەوتوویی سڕانەوە'];
+      $sql = "DELETE FROM $table WHERE created_at <= ?";
+      $stmt = $conn->prepare($sql);
+      $stmt->bind_param("s", $threshold_date);
+      if ($stmt->execute()) {
+        if ($stmt->affected_rows > 0) {
+          $_SESSION['messages'][] = ["type" => 'success', "message" => 'زانیارییەکان بەسەرکەوتووی سڕانەوە'];
         } else {
           $_SESSION['messages'][] = ["type" => 'info', "message" => "هیچ زانیارییەک ماوەکەی لە $days ڕۆژ زیاتر نییە تا بتوانیت بیسڕیتەوە."];
         }
       } else {
         $_SESSION['messages'][] = ["type" => 'error', "message" => 'کێشەیەک ڕویدا.'];
       }
+      $stmt->close();
     } else {
-      // Get the next run timestamp from the database
       $result = $conn->query("SELECT next_run FROM next_delete_all WHERE user_id = $userId");
 
       if ($result->num_rows > 0) {
@@ -33,12 +33,12 @@ if (isset($_POST['table']) && isset($_POST['days'])) {
         $nextRun = strtotime($row['next_run']);
 
         if (time() >= $nextRun) {
-          $sql = "DELETE FROM $table WHERE created_at < '$threshold_date'";
+          $sql = "DELETE FROM $table WHERE created_at <= ?";
+          $stmt = $conn->prepare($sql);
+          $stmt->bind_param("s", $threshold_date);
+          if ($stmt->execute()) {
+            $_SESSION['messages'][] = ["type" => 'success', "message" => 'زانیارییەکان بەسەرکەوتووی سڕانەوە'];
 
-          if ($conn->query($sql) === TRUE) {
-            $_SESSION['messages'][] = ["type" => 'success', "message" => 'زانیارییەکان بەسەرکەوتوویی سڕانەوە'];
-
-            // Update the next run timestamp
             $newNextRun = date('Y-m-d H:i:s', strtotime("+$days days"));
             $stmt = $conn->prepare("UPDATE next_delete_all SET next_run = ? WHERE user_id = ?");
             $stmt->bind_param("si", $newNextRun, $userId);
