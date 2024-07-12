@@ -85,7 +85,7 @@ $warningCount = $warningResult->fetch_assoc()['warning_count'];
 <div id="account-modal" class="modal">
   <div class="modal-content">
     <i class="fas fa-times close"></i>
-    <h2>گۆڕانکاری</h2>
+    <h2 class="title">گۆڕانکاری</h2>
     <form id="account-form" method="POST" action="../modules/users/update_user.php">
       <label for="new-username">ناوی نوێ:</label>
       <input type="text" id="new-username" name="new_username" value="<?php echo $currentUsername; ?>" required>

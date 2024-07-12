@@ -86,19 +86,22 @@ $(function () {
       var fileName = $(this).prop("files")[0].name;
       $("#image-name").text(fileName + " هەڵبژێردراوە");
     });
-
-    // for edit-medicine
-    $("#edit-image").on("change", function () {
-      var fileName = $(this).prop("files")[0].name;
-      $("#edit-image-name").text(fileName + " هەڵبژێردراوە");
-    });
-
-    // for system profile
-    $("#sys-image").on("change", function () {
-      var fileName = $(this).prop("files")[0].name;
-      $("#sys-image-name").text(fileName + " هەڵبژێردراوە");
-    });
   }
 
   updateFileNameDisplay();
+
+  function setupImagePreview(inputSelector, imageSelector) {
+    $(inputSelector).change(function () {
+      if (this.files && this.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          $(imageSelector).attr("src", e.target.result);
+        };
+        reader.readAsDataURL(this.files[0]);
+      }
+    });
+  }
+
+  setupImagePreview("#profileImageInput", "#profileImage");
+  setupImagePreview("#edit-image", "#current-img");
 });

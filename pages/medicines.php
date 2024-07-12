@@ -137,6 +137,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
         <input type="hidden" name="exchange_rate" value="1450">
         <div class="current-img-cont">
           <img id="current-img" src="" alt="Current Image">
+          <label for="edit-image" class="edit-icon"><i class="fa-regular fa-pen-to-square"></i></label>
+          <input type="file" id="edit-image" name="image" accept="image/*" style="display: none;">
         </div>
         <input type="text" name="name" id="edit-name" placeholder="ناوی دەرمان" required>
         <input type="text" name="category" id="edit-category" placeholder="پۆل" required>
@@ -144,11 +146,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
         <input type="number" name="selling_price" id="edit-selling_price" placeholder="نرخی فرۆشتن" required>
         <input type="number" name="quantity" id="edit-quantity" placeholder="بڕ" required>
         <input type="date" name="expiry_date" id="edit-expiry_date" placeholder="بەسەرچوونی" required>
-        <div class="file-upload">
-          <input type="file" name="image" id="edit-image" class="file-input" accept="image/*">
-          <label for="edit-image" class="light-blue-btn">وێنەیەک هەڵبژێرە</label>
-          <span id="edit-image-name" class="file-name">هیچ وێنەیەک هەڵنەبژێردراوە</span>
-        </div>
         <input type="text" name="barcode" id="edit-barcode" placeholder="بارکۆد" required>
         <button type="submit" class="light-blue-btn">نوێکردنەوە</button>
       </form>
