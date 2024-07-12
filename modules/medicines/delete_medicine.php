@@ -1,6 +1,7 @@
 <?php
-require_once '../../includes/db.php';
 session_start();
+require_once '../../includes/db.php';
+require_once '../utilities/log_user_activity.php';
 
 if (!isset($_SESSION['user_id'])) {
   header("Location: ../../../../pages/login.php");
@@ -29,13 +30,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     // Log the activity
-    $activity = "Deleted medicine with name " . $medicine['name'];
-    $stmt_log = $conn->prepare("INSERT INTO user_activities (user_id, activity) VALUES (?, ?)");
-    $stmt_log->bind_param("is", $_SESSION['user_id'], $activity);
-    $stmt_log->execute();
-    $stmt_log->close();
+    logUserActivity("دەرمانێکی سڕییەوە بە ناوی " . $medicine['name'] . ".");
 
-    $_SESSION['messages'][] = ["type" => 'success', "message" => 'دەرمانەکە بەسەرکەوتویی سڕایەوە.'];
+    $_SESSION['messages'][] = ["type" => 'success', "message" => 'دەرمانەکە بەسەرکەوتوویی سڕایەوە.'];
   } else {
     $_SESSION['messages'][] = ["type" => 'error', "message" => 'کێشەیەک ڕوویدا.'];
   }

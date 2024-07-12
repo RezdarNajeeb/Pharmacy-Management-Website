@@ -11,12 +11,17 @@ $query = "
     SELECT 
         (SELECT COUNT(*) FROM medicines) AS total_medicines,
         (SELECT COUNT(*) FROM sales_history) AS total_sales,
-        (SELECT COUNT(*) FROM medicines WHERE quantity <= (SELECT warning_quantity FROM settings WHERE id = 1)) AS low_stock_medicines,
-        (SELECT COUNT(*) FROM medicines WHERE expiry_date <= DATE_ADD(NOW(), INTERVAL (SELECT warning_expiry_days FROM settings WHERE id = 1) DAY)) AS upcoming_expiries
+        (SELECT COUNT(*) FROM medicines WHERE quantity <= (SELECT warning_quantity FROM warning_settings WHERE id = 1)) AS low_stock_medicines,
+        (SELECT COUNT(*) FROM medicines WHERE expiry_date <= DATE_ADD(NOW(), INTERVAL (SELECT warning_expiry_days FROM warning_settings WHERE id = 1) DAY)) AS upcoming_expiries
     FROM dual
 ";
 $result = $conn->query($query);
 $stats = $result->fetch_assoc();
+
+$sql = "SELECT * FROM system_profile WHERE id = 1";
+$result = $conn->query($sql);
+$system_profile = $result->fetch_assoc();
+
 ?>
 
 <!DOCTYPE html>
@@ -32,8 +37,17 @@ $stats = $result->fetch_assoc();
 
 <body>
     <?php require_once '../includes/header.php'; ?>
+    <?php require_once '../includes/messages.php'; ?>
 
     <div class="dashboard">
+        <div class="sys-profile">
+            <div class="sys-img">
+                <img src=<?= "../uploads/" . $system_profile['image'] ?> alt="profile">
+            </div>
+            <h1 class="sys-name"><?= $system_profile['name'] ?></h1>
+            <h3 class="sys-user">بەکارهێنەر: <span><?php echo $_SESSION['username'] ?></span></h3>
+        </div>
+
         <h2 class="title">زانیارییەکان</h2>
         <div class="stats">
             <a href="medicines.php">

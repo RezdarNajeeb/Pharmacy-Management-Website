@@ -12,7 +12,6 @@ $(function () {
     $.post(apiUrl, { table: getTable(), days, isImmediate })
       .done((data) => {
         if (isImmediate) window.location.reload();
-        alert(data);
       })
       .fail((xhr, status, error) => console.error(`Error: ${status} ${error}`));
   };
@@ -24,7 +23,7 @@ $(function () {
 
     const nextRunDate = new Date(Date.now() + milliseconds).toISOString();
     localStorage.setItem("nextRun", nextRunDate);
-    $.post(updateUrl, { nextRun: nextRunDate });
+    $.post(updateUrl, { nextRun: nextRunDate, tableName: getTable() });
   };
 
   const initialize = () => {

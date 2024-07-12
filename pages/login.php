@@ -1,6 +1,6 @@
 <?php
-require_once '../includes/db.php';
 session_start();
+require_once '../includes/db.php';
 
 $_SESSION['messages'] = [];
 
@@ -19,6 +19,7 @@ if (isset($_COOKIE['remember_me'])) {
     if ($token === $user['remember_token']) {
       $_SESSION['user_id'] = $user['id'];
       $_SESSION['username'] = $user['username'];
+
       header("Location: dashboard.php");
       exit();
     }

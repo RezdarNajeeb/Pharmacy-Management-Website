@@ -1,6 +1,7 @@
 <?php
-require_once '../../includes/db.php';
 session_start();
+require_once '../../includes/db.php';
+require_once '../utilities/log_user_activity.php';
 
 // Check if the user is logged in
 if (!isset($_SESSION['user_id'])) {
@@ -34,8 +35,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $target_file = $target_dir . basename($image);
     if (!move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
       $_SESSION['messages'][] = ["type" => 'error', "message" => 'هەڵگرتنی وێنەکە کێشەی تێکەوت.'];
-      echo json_encode(["type" => 'error', "message" => 'هەڵگرتنی وێنەکە کێشەی تێکەوت.']);
-      exit();
     }
   } else {
     $image = $existing_image;
@@ -46,11 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
   if ($stmt->execute()) {
     // Log the activity
-    $activity = "Updated medicine with name $name";
-    $stmt_log = $conn->prepare("INSERT INTO user_activities (user_id, activity) VALUES (?, ?)");
-    $stmt_log->bind_param("is", $_SESSION['user_id'], $activity);
-    $stmt_log->execute();
-    $stmt_log->close();
+    logUserActivity("دەرمانێکی نوێکردەوە بە ناوی $name.");
 
     $_SESSION['messages'][] = ["type" => 'success', "message" => 'دەرمانەکە بەسەرکەوتویی نوێ کرایەوە.'];
   } else {

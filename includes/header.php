@@ -3,14 +3,14 @@
 // Fetch warning count
 $warningQuery = "
     SELECT COUNT(*) AS warning_count FROM medicines 
-    WHERE quantity <= (SELECT warning_quantity FROM settings WHERE id = 1) 
-    OR expiry_date <= DATE_ADD(NOW(), INTERVAL (SELECT warning_expiry_days FROM settings WHERE id = 1) DAY)
+    WHERE quantity <= (SELECT warning_quantity FROM warning_settings WHERE id = 1) 
+    OR expiry_date <= DATE_ADD(NOW(), INTERVAL (SELECT warning_expiry_days FROM warning_settings WHERE id = 1) DAY)
 ";
 $warningResult = $conn->query($warningQuery);
 $warningCount = $warningResult->fetch_assoc()['warning_count'];
 ?>
 
-<header>
+<header id="header">
   <div class="icons">
     <div class="icon" id="user-icon">
       <i class="fas fa-user"></i>

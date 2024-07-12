@@ -1,6 +1,7 @@
 <?php
-require_once '../../includes/db.php';
 session_start();
+require_once '../../includes/db.php';
+require_once '../utilities/log_user_activity.php';
 
 if (!isset($_SESSION['user_id'])) {
   header("Location: ../../../../pages/login.php");
@@ -22,11 +23,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   if ($result->num_rows > 0) {
     $row = $result->fetch_assoc();
     if (!password_verify($current_password, $row['password'])) {
-      echo "<script>alert('وشەی نهێنی ئێستا هەڵەیە.')</script>";
+      $_SESSION['messages'][] = ['type' => 'error', 'message' => 'وشەی نهێنی ئێستا هەڵەیە.'];
       exit();
     }
   } else {
-    echo "هەڵەیەک ڕوویدا.";
+    $_SESSION['messages'][] = ['type' => 'error', 'message' => 'هەڵەیەک ڕوویدا.'];
     exit();
   }
 
@@ -36,10 +37,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
   if ($stmt->execute()) {
     $_SESSION['username'] = $new_username;
+
+    // Log user activity
+    logUserActivity("زانیارییەکانی خۆی نوێکردەوە.");
+
+    $_SESSION['messages'][] = ['type' => 'success', 'message' => 'زانیارییەکانت بەسەرکەوتوویی نوێکرانەوە.'];
     header("Location: ../../../../pages/dashboard.php");
     exit();
   } else {
-    echo "هەڵەیەک ڕوویدا.";
+    $_SESSION['messages'][] = ['type' => 'error', 'message' => 'هەڵەیەک ڕوویدا.'];
   }
 
   $stmt->close();

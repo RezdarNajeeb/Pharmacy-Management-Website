@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once '../../includes/db.php';
+require_once 'log_user_activity.php';
 
 if (isset($_POST['table']) && isset($_POST['days'])) {
   $table = $_POST['table'];
@@ -17,6 +18,9 @@ if (isset($_POST['table']) && isset($_POST['days'])) {
       $stmt->bind_param("s", $threshold_date);
       if ($stmt->execute()) {
         if ($stmt->affected_rows > 0) {
+          // log user activity
+          logUserActivity("زانیارییەکانی خشتەی $table سڕییەوە.");
+
           $_SESSION['messages'][] = ["type" => 'success', "message" => 'زانیارییەکان بەسەرکەوتووی سڕانەوە'];
         } else {
           $_SESSION['messages'][] = ["type" => 'info', "message" => "هیچ زانیارییەک ماوەکەی لە $days ڕۆژ زیاتر نییە تا بتوانیت بیسڕیتەوە."];
@@ -26,7 +30,10 @@ if (isset($_POST['table']) && isset($_POST['days'])) {
       }
       $stmt->close();
     } else {
-      $result = $conn->query("SELECT next_run FROM next_delete_all WHERE user_id = $userId");
+      $stmt = $conn->prepare("SELECT next_run FROM next_delete_all WHERE user_id = ? AND table_name = ?");
+      $stmt->bind_param("is", $userId, $table);
+      $stmt->execute();
+      $result = $stmt->get_result();
 
       if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
@@ -40,8 +47,8 @@ if (isset($_POST['table']) && isset($_POST['days'])) {
             $_SESSION['messages'][] = ["type" => 'success', "message" => 'زانیارییەکان بەسەرکەوتووی سڕانەوە'];
 
             $newNextRun = date('Y-m-d H:i:s', strtotime("+$days days"));
-            $stmt = $conn->prepare("UPDATE next_delete_all SET next_run = ? WHERE user_id = ?");
-            $stmt->bind_param("si", $newNextRun, $userId);
+            $stmt = $conn->prepare("UPDATE next_delete_all SET next_run = ? WHERE user_id = ? AND table_name = ?");
+            $stmt->bind_param("sis", $newNextRun, $userId, $table);
             $stmt->execute();
             $stmt->close();
           } else {

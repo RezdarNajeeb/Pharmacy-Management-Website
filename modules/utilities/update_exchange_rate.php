@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once '../../includes/db.php';
+require_once 'log_user_activity.php';
 
 if (!isset($_SESSION['user_id'])) {
   header('Location: ../../../../pages/login.php');
@@ -17,16 +18,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   if ($stmt->execute()) {
     // Log the activity
-    $activity = "Updated USD to IQD exchange rate to $new_rate";
-    $stmt_log = $conn->prepare("INSERT INTO user_activities (user_id, activity) VALUES (?, ?)");
-    $stmt_log->bind_param("is", $_SESSION['user_id'], $activity);
-    $stmt_log->execute();
-    $stmt_log->close();
+    logUserActivity("بەهای دیناری بۆ 1 دۆلار کرد بە $new_rate دینار.");
 
-    echo json_encode(['status' => 'success', 'message' => 'Exchange rate updated successfully']);
-    header('Location: ' . $_SERVER['HTTP_REFERER']);
+    $_SESSION['messages'][] = ['type' => 'success', 'message' => 'بەهای دینار بۆ 1 دۆلار بەسەرکەوتووی نوێکرایەوە.'];
+
+    header('Location: ' . $_SERVER['HTTP_REFERER']); // Redirect back to the previous page
   } else {
-    echo json_encode(['status' => 'error', 'message' => 'Failed to update exchange rate']);
+    $_SESSION['messages'][] = ['type' => 'error', 'message' => 'هەڵەیەک ڕوویدا.'];
   }
 
   $stmt->close();

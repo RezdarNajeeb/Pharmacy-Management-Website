@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once '../../includes/db.php';
 
 if (!isset($_GET['barcode'])) {
@@ -14,7 +15,7 @@ $stmt->execute();
 $result = $stmt->get_result();
 
 if ($result->num_rows === 0) {
-  echo json_encode(['status' => 'error', 'message' => 'Medicine not found']);
+  $_SESSION['messages'][] = ['type' => 'error', 'message' => 'هیچ دەرمانێک بەم بارکۆدە نەدۆزرایەوە.'];
   exit();
 }
 

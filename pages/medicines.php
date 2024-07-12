@@ -1,6 +1,7 @@
 <?php
-require_once '../includes/db.php';
 session_start();
+require_once '../includes/db.php';
+require_once '../modules/utilities/log_user_activity.php';
 
 // Check if the user is logged in
 if (!isset($_SESSION['user_id'])) {
@@ -36,14 +37,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
     $stmt->bind_param("ssddisss", $name, $category, $cost_price, $selling_price, $quantity, $expiry_date, $barcode, $image);
 
     if ($stmt->execute()) {
-      echo "Medicine added successfully.";
+      // Log the user activity
+      logUserActivity("دەرمانێکی زیادکرد بە ناوی $name.");
+
+      $_SESSION['messages'][] = [
+        'type' => 'success',
+        'message' => 'دەرمانێکی نوێ زیادکرا.'
+      ];
     } else {
-      echo "Error: " . $stmt->error;
+      $_SESSION['messages'][] = [
+        'type' => 'error',
+        'message' => 'هەڵەیەک ڕویدا لە زیادکردنی دەرمان.'
+      ];
     }
 
     $stmt->close();
   } else {
-    echo "Error uploading image.";
+    $_SESSION['messages'][] = [
+      'type' => 'error',
+      'message' => 'هەڵەیەک ڕویدا لە بارکردنی وێنە.'
+    ];
   }
 }
 ?>
@@ -313,7 +326,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
             id: id
           },
           success: function(response) {
-            
+
           },
           error: function(xhr, status, error) {
             console.error('Error:', error); // Debugging: log the error

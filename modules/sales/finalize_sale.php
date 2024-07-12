@@ -1,6 +1,7 @@
 <?php
-require_once '../../includes/db.php';
 session_start();
+require_once '../../includes/db.php';
+require_once '../utilities/log_user_activity.php';
 
 if (!isset($_SESSION['user_id'])) {
   echo json_encode(['status' => 'error', 'message' => 'Unauthorized']);
@@ -34,13 +35,6 @@ foreach ($sales as $sale) {
     $_SESSION['messages'][] = ['type' => 'error', 'message' => 'کێشەیەک ڕوویدا: ' . $stmt->error];
     exit();
   }
-
-  // Log the activity
-  $activity = "Added sale for medicine with name $medicine_name and quantity $quantity";
-  $stmt_log = $conn->prepare("INSERT INTO user_activities (user_id, activity) VALUES (?, ?)");
-  $stmt_log->bind_param("is", $_SESSION['user_id'], $activity);
-  $stmt_log->execute();
-  $stmt_log->close();
 
   // Update the quantity in the medicines table
   $stmt = $conn->prepare("UPDATE medicines SET quantity = quantity - ? WHERE id = ?");

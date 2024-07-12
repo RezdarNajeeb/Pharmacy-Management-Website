@@ -1,6 +1,7 @@
 <?php
-require_once '../../includes/db.php';
 session_start();
+require_once '../../includes/db.php';
+require_once '../utilities/log_user_activity.php';
 
 if (!isset($_SESSION['user_id'])) {
   header("Location: ../../../../pages/login.php");
@@ -27,6 +28,9 @@ if (isset($_COOKIE['remember_me'])) {
 // Clear all session data
 session_unset();
 session_destroy();
+
+//log the activity
+logUserActivity("چووە دەرەوە لە سیستەمەکە.");
 
 // Redirect to the login page
 header("Location: ../../../../pages/login.php");
