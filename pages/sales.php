@@ -71,6 +71,9 @@ if (!isset($_SESSION['user_id'])) {
         </thead>
         <tbody>
           <!-- Sales items will be added here dynamically -->
+           <tr>
+            <td colspan="7"> هیچ دەرمانێک لە لیستی فرۆشتندا نییە. </td>
+           </tr>
         </tbody>
       </table>
     </div>

@@ -57,6 +57,7 @@ $(function () {
     const selectedValue = getDays();
     localStorage.setItem(`${getTable()}Select`, selectedValue);
     setDeleteInterval(selectedValue);
+    window.location.reload();
   });
 
   initialize();

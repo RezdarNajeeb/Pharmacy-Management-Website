@@ -52,7 +52,7 @@ if (!isset($_SESSION['user_id'])) {
         <label for="warning_quantity">کەمترین بڕ:</label>
         <input type="number" id="warning_quantity" name="warning_quantity" value="<?php echo htmlspecialchars($warning_quantity); ?>">
       </div>
-      
+
       <div>
         <label for="warning_expiry_days">کەمترین ڕۆژ:</label>
         <input type="number" id="warning_expiry_days" name="warning_expiry_days" value="<?php echo htmlspecialchars($warning_expiry_days); ?>">
@@ -72,15 +72,20 @@ if (!isset($_SESSION['user_id'])) {
         </tr>
       </thead>
       <tbody>
-        <?php while ($row = $warningMedicinesResult->fetch_assoc()) : ?>
-          <tr>
-            <td><img src="../uploads/<?php echo htmlspecialchars($row['image']); ?>" alt="Medicine Image"></td>
-            <td><?php echo htmlspecialchars($row['name']); ?></td>
-            <td><?php echo htmlspecialchars($row['category']); ?></td>
-            <td <?php echo $row['quantity'] <= $warning_quantity ? "style='background-color: #FCDB58'" : "" ?>><?php echo htmlspecialchars($row['quantity']); ?></td>
-            <td <?php echo strtotime($row['expiry_date']) <= strtotime(date('Y-m-d', strtotime("+$warning_expiry_days days"))) ? "style='background-color: #ff9966'" : "" ?>><?php echo htmlspecialchars($row['expiry_date']); ?></td>
-          </tr>
-        <?php endwhile; ?>
+        <?php
+        if ($warningMedicinesResult->num_rows === 0) {
+          echo "<tr><td colspan='5'>هیچ زانیاریەک نییە</td></tr>";
+        } else {
+          while ($row = $warningMedicinesResult->fetch_assoc()) : ?>
+            <tr>
+              <td><img src="../uploads/<?php echo htmlspecialchars($row['image']); ?>" alt="Medicine Image"></td>
+              <td><?php echo htmlspecialchars($row['name']); ?></td>
+              <td><?php echo htmlspecialchars($row['category']); ?></td>
+              <td <?php echo $row['quantity'] <= $warning_quantity ? "style='background-color: #FCDB58'" : "" ?>><?php echo htmlspecialchars($row['quantity']); ?></td>
+              <td <?php echo strtotime($row['expiry_date']) <= strtotime(date('Y-m-d', strtotime("+$warning_expiry_days days"))) ? "style='background-color: #ff9966'" : "" ?>><?php echo htmlspecialchars($row['expiry_date']); ?></td>
+            </tr>
+        <?php endwhile;
+        } ?>
       </tbody>
     </table>
   </div>

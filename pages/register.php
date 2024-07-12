@@ -88,8 +88,8 @@ if (isset($_POST['register'])) {
       </div>
 
       <div class="show-pass-cont">
-        <label for="show-password">پیشاندانی وشەی نهێنی</label>
         <input type="checkbox" id="show-password">
+        <label for="show-password">پیشاندانی وشەی نهێنی</label>
       </div>
 
       <button type="submit" name="register" class="light-green-btn">دروستکردن</button>

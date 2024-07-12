@@ -2,7 +2,7 @@ $(function () {
   $(window).scroll(function () {
     var header = $("#header");
     var scrollTop = $(this).scrollTop();
-    header.toggleClass("fixed", scrollTop > 0);
+    header.toggleClass("sticky", scrollTop > 0);
   });
 
   function highlightCurrentPageLink() {
@@ -21,22 +21,39 @@ $(function () {
 
   highlightCurrentPageLink();
 
-  function handleUpdateAccountModal() {
-    var modal = $("#account-modal");
-    var updateUserBtn = $("#update-user");
-    var closeBtn = $(".close");
+  // Set the currency select value from localStorage if it exists
+  var savedCurrency = localStorage.getItem("currency");
+  if (savedCurrency) {
+    $("#currency-select").val(savedCurrency);
+  }
 
-    // When click on the updateUserBtn, show the modal
-    updateUserBtn.click(function () {
+  // Update localStorage and reload the page when the currency is changed
+  $("#currency-select").change(function () {
+    var currency = $(this).val();
+    localStorage.setItem("currency", currency);
+    location.reload();
+  });
+
+  function setupModalHandlers(
+    modalSelector,
+    triggerBtnSelector,
+    closeBtnSelector
+  ) {
+    var modal = $(modalSelector);
+    var triggerBtn = $(triggerBtnSelector);
+    var closeBtn = $(closeBtnSelector);
+
+    // Show the modal
+    triggerBtn.click(function () {
       modal.css("visibility", "visible");
     });
 
-    // When click on the closeBtn, close the modal
+    // Close the modal with the close button
     closeBtn.click(function () {
       modal.css("visibility", "hidden");
     });
 
-    // When click anywhere in the document outside the modal, close the modal
+    // Close the modal by clicking outside of it
     $(window).click(function (event) {
       if (event.target == modal[0]) {
         modal.css("visibility", "hidden");
@@ -44,7 +61,8 @@ $(function () {
     });
   }
 
-  handleUpdateAccountModal();
+  setupModalHandlers("#account-modal", "#update-user", ".close");
+  setupModalHandlers("#edit-medicine-modal", null, null); // Assuming there's a trigger button and close button specific to this modal
 
   function handleUserBox() {
     var userIcon = $("#user-icon");

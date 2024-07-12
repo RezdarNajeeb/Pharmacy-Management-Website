@@ -68,7 +68,7 @@ $(document).ready(function () {
       },
       error: function (xhr, status, error) {
         console.error("Error fetching medicine details:", error);
-        alert("Failed to fetch medicine details.");
+        window.location.reload();
       },
     });
   }
@@ -78,48 +78,54 @@ $(document).ready(function () {
     let totalPriceUSD = 0;
     let totalPriceIQD = 0;
 
-    sales.forEach((sale, index) => {
-      const row = $("<tr></tr>");
-
-      row.append(
-        `<td><img src="../uploads/${sale.image}" alt="${sale.name}"></td>`
+    if (sales.length === 0) {
+      salesTableBody.append(
+        "<tr><td colspan='7'>هیچ دەرمانێک لە لیستی فرۆشتندا نییە.</td></tr>"
       );
-      row.append(`<td>${sale.name}</td>`);
-      row.append(`<td>${sale.quantity}</td>`);
-      row.append(
-        `<td> 
+    } else {
+      sales.forEach((sale, index) => {
+        const row = $("<tr></tr>");
+
+        row.append(
+          `<td><img src="../uploads/${sale.image}" alt="${sale.name}"></td>`
+        );
+        row.append(`<td>${sale.name}</td>`);
+        row.append(`<td>${sale.quantity}</td>`);
+        row.append(
+          `<td> 
           ${(sale.costPrice / exchangeRate).toFixed(2)} $
           <br><br>
           ${sale.costPrice.toFixed(2)} د.ع
         </td>`
-      );
-      row.append(
-        `<td> 
+        );
+        row.append(
+          `<td> 
           ${(sale.sellingPrice / exchangeRate).toFixed(2)} $
           <br><br>
           ${sale.sellingPrice.toFixed(2)} د.ع
         </td>`
-      );
-      row.append(
-        `<td>
+        );
+        row.append(
+          `<td>
           ${sale.totalUSD.toFixed(2)} $
           <br><br>
           ${sale.totalIQD.toFixed(2)} د.ع
         </td>`
-      );
-      row.append(
-        `<td>
+        );
+        row.append(
+          `<td>
           <div class="actions">
             <button type="button" class="remove-sale red-btn" data-index="${index}">سڕینەوە</button> 
             <button type="button" class="reduce-quantity light-blue-btn" data-index="${index}">کەمکردنەوە</button>
           </div>
         </td>`
-      );
+        );
 
-      salesTableBody.append(row);
-      totalPriceUSD += sale.totalUSD;
-      totalPriceIQD += sale.totalIQD;
-    });
+        salesTableBody.append(row);
+        totalPriceUSD += sale.totalUSD;
+        totalPriceIQD += sale.totalIQD;
+      });
+    }
 
     totalPriceUSDElement.text(totalPriceUSD.toFixed(2));
     totalPriceIQDElement.text(totalPriceIQD.toFixed(2));

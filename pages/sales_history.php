@@ -50,6 +50,9 @@ if (!isset($_SESSION['user_id'])) {
         $stmt = $conn->prepare("SELECT medicines.image, medicines.name, sales_history.quantity, sales_history.cost_price, sales_history.selling_price, sales_history.total, sales_history.discount, sales_history.discounted_total, users.username, sales_history.created_at FROM sales_history JOIN medicines ON sales_history.medicine_id = medicines.id JOIN users ON sales_history.user_id = users.id ORDER BY sales_history.created_at DESC");
         $stmt->execute();
         $result = $stmt->get_result();
+        if($result->num_rows === 0) {
+          echo '<tr><td colspan="10">هیچ فرۆشتنێک نەدۆزرایەوە</td></tr>';
+        }
         while ($row = $result->fetch_assoc()) {
           echo '<tr>';
           echo '<td><img src="../uploads/' . htmlspecialchars($row['image']) . '"</td>';

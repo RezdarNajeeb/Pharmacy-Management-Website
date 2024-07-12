@@ -33,7 +33,7 @@ $warningCount = $warningResult->fetch_assoc()['warning_count'];
     <label for="currency-select">دراو</label>
     <select id="currency-select">
       <option value="USD">$</option>
-      <option value="IQD" selected>د.ع</option>
+      <option value="IQD">د.ع</option>
     </select>
   </div>
 

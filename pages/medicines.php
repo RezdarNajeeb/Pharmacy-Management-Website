@@ -1,5 +1,6 @@
 <?php
 session_start();
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT); // Set MySQLi to throw exceptions
 require_once '../includes/db.php';
 require_once '../modules/utilities/log_user_activity.php';
 
@@ -36,19 +37,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
     $stmt = $conn->prepare("INSERT INTO medicines (name, category, cost_price, selling_price, quantity, expiry_date, barcode, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
     $stmt->bind_param("ssddisss", $name, $category, $cost_price, $selling_price, $quantity, $expiry_date, $barcode, $image);
 
-    if ($stmt->execute()) {
-      // Log the user activity
-      logUserActivity("دەرمانێکی زیادکرد بە ناوی $name.");
+    try {
+      if ($stmt->execute() === TRUE) {
+        // Log the user activity
+        logUserActivity("دەرمانێکی زیادکرد بە ناوی $name.");
 
-      $_SESSION['messages'][] = [
-        'type' => 'success',
-        'message' => 'دەرمانێکی نوێ زیادکرا.'
-      ];
-    } else {
+        $_SESSION['messages'][] = [
+          'type' => 'success',
+          'message' => 'دەرمانێکی نوێ زیادکرا.'
+        ];
+      }
+    } catch (mysqli_sql_exception $e) {
+      // Log the error
+      // change the language of $e->getMessage() to Kurdish
+      error_log("Error adding medicine: " . $e->getMessage());
+
       $_SESSION['messages'][] = [
         'type' => 'error',
         'message' => 'هەڵەیەک ڕویدا لە زیادکردنی دەرمان.'
       ];
+
+      // Redirect to the same page to show the error message
+      header("Location: medicines.php");
+      exit();
     }
 
     $stmt->close();
@@ -166,7 +177,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
           "type": "POST"
         },
         "language": {
-          "url": "https://cdn.datatables.net/plug-ins/1.10.25/i18n/Kurdish.json"
+          "url": "https://cdn.datatables.net/plug-ins/1.10.25/i18n/Kurdish.json",
+          "emptyTable": "هیچ دەرمانێک لە سیستەمەکەدا نییە."
         },
         "columnDefs": [{
             "orderable": false,
@@ -246,6 +258,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
     });
 
 
+
     function updateFormValues() {
       const currency = $('#currency-select').val();
       const exchangeRate = $('#exchange-rate').data('exchange-rate');
@@ -259,11 +272,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
       });
     }
 
-    // Initial update
-    updateFormValues();
+    updateFormValues(); // Ensure form values are updated on page load
 
-    // Update on currency select change
-    $('#currency-select').on('change', updateFormValues);
+    // Update form values when the currency is changed
+    $("#currency-select").on('change', function() {
+      var currency = $(this).val();
+      updateFormValues(); // Update form values before reloading to ensure consistency
+    });
 
     function showEditMedicineModal(id) {
       // Fetch the medicine details and fill the form

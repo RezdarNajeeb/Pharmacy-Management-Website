@@ -43,6 +43,9 @@ if (!isset($_SESSION['user_id'])) {
         $stmt = $conn->prepare("SELECT users.username, user_activities.activity, user_activities.created_at FROM user_activities JOIN users ON user_activities.user_id = users.id ORDER BY user_activities.created_at DESC");
         $stmt->execute();
         $result = $stmt->get_result();
+        if ($result->num_rows === 0) {
+          echo '<tr><td colspan="3">هیچ چالاکییەک نەدۆزرایەوە</td></tr>';
+        }
         while ($row = $result->fetch_assoc()) {
           echo '<tr>';
           echo '<td>' . htmlspecialchars($row['username']) . '</td>';

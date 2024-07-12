@@ -25,12 +25,12 @@ if (isset($_COOKIE['remember_me'])) {
   setcookie('remember_me', '', time() - 3600, "/", "", true, true); // Expire the cookie
 }
 
+//log the activity
+logUserActivity("چووە دەرەوە لە سیستەمەکە.");
+
 // Clear all session data
 session_unset();
 session_destroy();
-
-//log the activity
-logUserActivity("چووە دەرەوە لە سیستەمەکە.");
 
 // Redirect to the login page
 header("Location: ../../../../pages/login.php");

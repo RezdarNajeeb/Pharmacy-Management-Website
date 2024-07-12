@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once '../includes/db.php';
+require_once '../modules/utilities/log_user_activity.php';
 
 $_SESSION['messages'] = [];
 
@@ -19,6 +20,9 @@ if (isset($_COOKIE['remember_me'])) {
     if ($token === $user['remember_token']) {
       $_SESSION['user_id'] = $user['id'];
       $_SESSION['username'] = $user['username'];
+
+      // Log the user activity
+      logUserActivity("چووە ناو سیستەمەکە لەڕێی منت لەبیر بێت.");
 
       header("Location: dashboard.php");
       exit();
@@ -54,6 +58,9 @@ if (isset($_POST['login'])) {
         $stmt->bind_param("si", $hashedToken, $user['id']);
         $stmt->execute();
       }
+
+      // Log the user activity
+      logUserActivity("چووە ناو سیستەمەکە.");
 
       header("Location: dashboard.php");
       exit();
@@ -106,13 +113,13 @@ if (isset($_POST['login'])) {
       </div>
 
       <div class="show-pass-cont">
-        <label for="show-password">پیشاندانی وشەی نهێنی</label>
         <input type="checkbox" id="show-password">
+        <label for="show-password">پیشاندانی وشەی نهێنی</label>
       </div>
 
       <div class="remember-me-cont">
-        <label for="remember">منت لەبیر بێت</label>
         <input type="checkbox" id="remember" name="remember">
+        <label for="remember">منت لەبیر بێت</label>
       </div>
 
       <button type="submit" class="light-blue-btn" name="login">بچۆ ژوورەوە</button>
