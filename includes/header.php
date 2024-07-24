@@ -33,7 +33,7 @@ $warningCount = $warningResult->fetch_assoc()['warning_count'];
     <label for="currency-select">دراو</label>
     <select id="currency-select">
       <option value="USD">$</option>
-      <option value="IQD">د.ع</option>
+      <option value="IQD" selected>د.ع</option>
     </select>
   </div>
 
@@ -43,7 +43,7 @@ $warningCount = $warningResult->fetch_assoc()['warning_count'];
   $result = $conn->query($query);
 
   if ($result->num_rows > 0) {
-    $exchange_rate = number_format($result->fetch_assoc()['rate'], 2);
+    $exchange_rate = $result->fetch_assoc()['rate'];
   } else {
     $exchange_rate = "نەزانراوە"; // Handle case where rate is not set
   }
@@ -65,7 +65,7 @@ $warningCount = $warningResult->fetch_assoc()['warning_count'];
       <li><a href="medicines.php">دەرمانەکان</a></li>
       <li><a href="sales.php">فرۆشتن</a></li>
       <li><a href="sales_history.php">مێژووی فرۆشتن</a></li>
-      <li><a href="user_tracking.php">چالاکی بەکارهێنەرەکان</a></li>
+      <li><a href="user_activities.php">چالاکی بەکارهێنەرەکان</a></li>
     </ul>
   </nav>
 
@@ -77,7 +77,7 @@ $warningCount = $warningResult->fetch_assoc()['warning_count'];
 
   <div class="logo">
     <a href="dashboard.php">
-      <img src="../assets/images/logo.jpg" alt="Logo">
+      <img src="../assets/images/logo.png" alt="Logo">
     </a>
   </div>
 </header>
@@ -93,7 +93,7 @@ $warningCount = $warningResult->fetch_assoc()['warning_count'];
       <input type="password" id="current-password" name="current_password" required>
       <label for="new-password">وشەی نهێنی نوێ:</label>
       <input type="password" id="new-password" name="new_password" required>
-      <button type="submit">نوێکردنەوە</button>
+      <button type="submit" class="light-blue-btn">نوێکردنەوە</button>
     </form>
   </div>
 </div>

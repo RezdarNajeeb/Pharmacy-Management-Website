@@ -11,7 +11,7 @@ if (!isset($_SESSION['user_id'])) {
 // Handle form submission for adding a medicine
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
   $currency = $_POST['currency'];
-  $exchange_rate = $_POST['exchange_rate'];
+  $exchange_rate = floatval($_POST['exchange_rate']);
   $name = $_POST['name'];
   $category = $_POST['category'];
   $cost_price = $_POST['cost_price'];
@@ -61,43 +61,42 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
 </head>
 
 <body>
-  <?php include '../includes/header.php'; ?>
+  <?php
+  require_once '../includes/header.php';
+  require_once '../includes/messages.php';
+  ?>
 
   <div class="medicines-container">
 
     <div class="right-side-container">
-      <div class="info-content">
-        <h1>دەرمانخانەی سەردەشت</h1>
-        <img src="../assets/images/logo.jpg" alt="logo">
-      </div>
-
-      <div class="add-medicine">
-        <h2 class="title">زیادکردنی دەرمان</h2>
-        <form id="add-medicine-form" method="post" enctype="multipart/form-data">
-          <input type="hidden" name="currency" value="USD">
-          <input type="hidden" name="exchange_rate" value="1450">
-          <input type="text" name="name" placeholder="ناوی دەرمان" required>
-          <input type="text" name="category" placeholder="پۆل" required>
-          <input type="number" name="cost_price" min="0" placeholder="نرخی کڕین" required>
-          <input type="number" name="selling_price" min="0" placeholder="نرخی فرۆشتن" required>
-          <input type="number" name="quantity" min="0" placeholder="بڕ" required>
-          <input type="date" name="expiry_date" placeholder="بەسەرچوونی" required>
-          <input type="text" name="barcode" id="barcode" placeholder="بارکۆد" required>
-          <input type="file" name="image" accept="image/*" required>
-          <button type="submit" name="add_medicine">زیادکردنی دەرمان</button>
-        </form>
-      </div>
+      <h2 class="title">زیادکردنی دەرمان</h2>
+      <form id="add-medicine-form" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="currency" value="USD">
+        <input type="hidden" name="exchange_rate" value="1450">
+        <input type="text" name="name" placeholder="ناوی دەرمان" required>
+        <input type="text" name="category" placeholder="جۆر" required>
+        <input type="number" name="cost_price" min="0" placeholder="نرخی کڕین" required>
+        <input type="number" name="selling_price" min="0" placeholder="نرخی فرۆشتن" required>
+        <input type="number" name="quantity" min="0" placeholder="بڕ" required>
+        <input type="date" name="expiry_date" placeholder="بەسەرچوونی" required>
+        <div class="file-upload">
+          <input type="file" name="image" id="image-input" class="file-input" accept="image/*">
+          <label for="image-input" class="light-blue-btn file-choose-btn">وێنەیەک هەڵبژێرە</label>
+          <span id="image-name" class="file-name">هیچ وێنەیەک هەڵنەبژێردراوە</span>
+        </div>
+        <input type="text" name="barcode" id="barcode" placeholder="بارکۆد" required>
+        <button type="submit" class="light-green-btn" name="add_medicine">زیادکردنی دەرمان</button>
+      </form>
     </div>
 
     <div class="left-side-container">
-      <h2 class="title">دەرمانەکان</h2>
-      <table id="medicines-table">
+      <table id="medicines-table" class="display">
         <thead>
           <tr>
             <th>#</th>
             <th>وێنە</th>
             <th>ناو</th>
-            <th>پۆل</th>
+            <th>جۆر</th>
             <th>نرخی کڕین</th>
             <th>نرخی فرۆشتن</th>
             <th>بڕ</th>
@@ -117,13 +116,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
   <div id="edit-medicine-modal" class="modal">
     <div class="modal-content">
       <i class="close fas fa-times" onclick="closeEditMedicineModal()"></i>
-      <form action="../modules/medicines/update_medicine.php" id="edit-medicine-form" method="post" enctype="multipart/form-data">
+      <h2 class="title">نوێکردنەوەی دەرمان</h2>
+      <form id="edit-medicine-form" method="post" enctype="multipart/form-data">
         <input type="hidden" name="id" id="edit-id">
         <input type="hidden" name="existing_image" id="existing-image">
         <input type="hidden" name="currency" value="USD">
         <input type="hidden" name="exchange_rate" value="1450">
-        <div>
-          <img id="current-img" src="" alt="Current Image" style="max-width: 100px; max-height: 100px;">
+        <div class="current-img-cont">
+          <img id="current-img" src="" alt="Current Image">
         </div>
         <input type="text" name="name" id="edit-name" placeholder="ناوی دەرمان" required>
         <input type="text" name="category" id="edit-category" placeholder="پۆل" required>
@@ -131,9 +131,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
         <input type="number" name="selling_price" id="edit-selling_price" placeholder="نرخی فرۆشتن" required>
         <input type="number" name="quantity" id="edit-quantity" placeholder="بڕ" required>
         <input type="date" name="expiry_date" id="edit-expiry_date" placeholder="بەسەرچوونی" required>
+        <div class="file-upload">
+          <input type="file" name="image" id="edit-image" class="file-input" accept="image/*">
+          <label for="edit-image" class="light-blue-btn">وێنەیەک هەڵبژێرە</label>
+          <span id="edit-image-name" class="file-name">هیچ وێنەیەک هەڵنەبژێردراوە</span>
+        </div>
         <input type="text" name="barcode" id="edit-barcode" placeholder="بارکۆد" required>
-        <input type="file" name="image" id="edit-image" accept="image/*">
-        <button type="submit">نوێکردنەوەی دەرمان</button>
+        <button type="submit" class="light-blue-btn">نوێکردنەوە</button>
       </form>
     </div>
   </div>
@@ -175,7 +179,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
           {
             "data": "image",
             "render": function(data) {
-              return `<img src="../uploads/${data}" alt="Medicine Image" width="50">`;
+              return `<img src="../uploads/${data}" alt="Medicine Image" class="image">`;
             }
           },
           {
@@ -209,11 +213,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
             "data": "id",
             "render": function(data) {
               return `
-              <button type="button" class="edit-button" onclick="showEditMedicineModal(${data})">دەستکاری</button>
-                <form action="../modules/medicines/delete_medicine.php" method="post" onsubmit="return confirm('Are you sure you want to delete this item?');">
-                <input type="hidden" name="id" value="${data}">
-                <button type="submit" class="delete-button">سڕینەوە</button>
+              <div class="actions">
+                <button type="button" class="light-blue-btn" onclick="showEditMedicineModal(${data})">نوێکردنەوە</button>
+                <form method="post" id="delete-medicine-form" onsubmit="deleteMedicine(${data});">
+                  <input type="submit" value="سڕینەوە" class="red-btn"></input>
                 </form>
+              </div>
               `;
             }
           }
@@ -221,14 +226,34 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
         "initComplete": function(settings, json) {
           // Focus on the search input field after DataTables has fully loaded
           $('.dataTables_filter input').focus();
+          $('#medicines-table_wrapper').prepend('<h2 class="title">دەرمانەکان</h2>');
         },
-        "scrollY": "500px", // Set vertical scrollable area height
+        "scrollY": "330px", // Set vertical scrollable area height
         "scrollX": true, // Enable horizontal scrolling
         "scrollCollapse": true, // Collapse the table to fit the content if less than set height
         "scrollXInner": "100%", // Allow horizontal scrolling to extend beyond the table width
       });
     });
 
+
+    function updateFormValues() {
+      const currency = $('#currency-select').val();
+      const exchangeRate = $('#exchange-rate').data('exchange-rate');
+
+      // Update both forms
+      ['#add-medicine-form', '#edit-medicine-form'].forEach(formSelector => {
+        // Update currency
+        $(`${formSelector} input[name="currency"]`).val(currency);
+        // Update exchange rate
+        $(`${formSelector} input[name="exchange_rate"]`).val(exchangeRate);
+      });
+    }
+
+    // Initial update
+    updateFormValues();
+
+    // Update on currency select change
+    $('#currency-select').on('change', updateFormValues);
 
     function showEditMedicineModal(id) {
       // Fetch the medicine details and fill the form
@@ -260,26 +285,43 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
       $('#edit-medicine-modal').css('visibility', 'hidden');
     }
 
+    $("#edit-medicine-form").on('submit', function(e) {
+      e.preventDefault();
 
-
-    function updateFormValues() {
-      const currency = $('#currency-select').val();
-      const exchangeRate = $('#exchange-rate').data('exchange-rate');
-
-      // Update both forms
-      ['#add-medicine-form', '#edit-medicine-form'].forEach(formSelector => {
-        // Update currency
-        $(`${formSelector} input[name="currency"]`).val(currency);
-        // Update exchange rate
-        $(`${formSelector} input[name="exchange_rate"]`).val(exchangeRate);
+      $.ajax({
+        url: '../modules/medicines/update_medicine.php',
+        type: 'POST',
+        data: new FormData(this),
+        contentType: false,
+        processData: false,
+        success: function(response) {
+          location.reload();
+        },
+        error: function(xhr, status, error) {
+          alert(xhr.responseText);
+        },
       });
+    });
+
+
+    function deleteMedicine(id) {
+      if (confirm('دڵنیایت کە دەتەوێت ئەم دەرمانە بسڕیتەوە؟')) {
+        $.ajax({
+          url: '../modules/medicines/delete_medicine.php',
+          type: 'POST',
+          data: {
+            id: id
+          },
+          success: function(response) {
+            
+          },
+          error: function(xhr, status, error) {
+            console.error('Error:', error); // Debugging: log the error
+            alert('Failed to delete the medicine. Please try again.');
+          }
+        });
+      }
     }
-
-    // Initial update
-    updateFormValues();
-
-    // Update on currency select change
-    $('#currency-select').on('change', updateFormValues);
   </script>
 </body>
 

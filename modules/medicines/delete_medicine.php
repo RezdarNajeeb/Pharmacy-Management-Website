@@ -35,17 +35,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt_log->execute();
     $stmt_log->close();
 
-    echo "دەرمان بەسەرکەوتوی سڕایەوە.";
-    header("Location: ../../../../pages/medicines.php");
+    $_SESSION['messages'][] = ["type" => 'success', "message" => 'دەرمانەکە بەسەرکەوتویی سڕایەوە.'];
   } else {
-    echo "هەڵەیەک ڕوویدا: " . $stmt->error;
-    header("Location: ../../../../pages/medicines.php");
+    $_SESSION['messages'][] = ["type" => 'error', "message" => 'کێشەیەک ڕوویدا.'];
   }
 
   $stmt->close();
 } else {
-  echo "داواکارییەکەت هەڵەیە.";
-  header("Location: ../../../../pages/medicines.php");
+  $_SESSION['messages'][] = ["type" => 'error', "message" => 'تکایە دووبارە هەوڵ بدەوە.'];
 }
 
 $conn->close();

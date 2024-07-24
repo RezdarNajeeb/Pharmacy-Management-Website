@@ -9,7 +9,7 @@ $(document).ready(function () {
   const discountedTotalPriceIQDElement = $("#discounted-total-price-iqd");
   const discountField = $("#discount");
 
-  $("#sales-form").on("submit", function (event) {
+  $("#add-sale-form").on("submit", function (event) {
     event.preventDefault();
 
     const barcode = $("#medicine-barcode").val().trim();
@@ -38,6 +38,7 @@ $(document).ready(function () {
         const medicine = data.medicine;
         const id = medicine.id;
         const name = medicine.name;
+        const image = medicine.image;
         const costPrice = parseFloat(medicine.cost_price);
         const sellingPrice = parseFloat(medicine.selling_price);
 
@@ -54,6 +55,7 @@ $(document).ready(function () {
           sales.push({
             id,
             name,
+            image,
             quantity,
             costPrice,
             sellingPrice,
@@ -79,26 +81,39 @@ $(document).ready(function () {
     sales.forEach((sale, index) => {
       const row = $("<tr></tr>");
 
+      row.append(
+        `<td><img src="../uploads/${sale.image}" alt="${sale.name}"></td>`
+      );
       row.append(`<td>${sale.name}</td>`);
       row.append(`<td>${sale.quantity}</td>`);
       row.append(
-        `<td>IQD${sale.costPrice.toFixed(2)}<br>
-          $${(sale.costPrice / exchangeRate).toFixed(2)}
+        `<td> 
+          ${(sale.costPrice / exchangeRate).toFixed(2)} $
+          <br><br>
+          ${sale.costPrice.toFixed(2)} د.ع
         </td>`
       );
       row.append(
-        `<td>IQD${sale.sellingPrice.toFixed(2)}<br>
-          $${(sale.sellingPrice / exchangeRate).toFixed(2)}
+        `<td> 
+          ${(sale.sellingPrice / exchangeRate).toFixed(2)} $
+          <br><br>
+          ${sale.sellingPrice.toFixed(2)} د.ع
         </td>`
       );
       row.append(
-        `<td>$${sale.totalUSD.toFixed(2)}<br>
-          IQD${sale.totalIQD.toFixed(2)}
+        `<td>
+          ${sale.totalUSD.toFixed(2)} $
+          <br><br>
+          ${sale.totalIQD.toFixed(2)} د.ع
         </td>`
       );
       row.append(
-        `<td><button type="button" class="remove-sale" data-index="${index}">Remove</button> 
-         <button type="button" class="reduce-quantity" data-index="${index}">Reduce Quantity</button></td>`
+        `<td>
+          <div class="actions">
+            <button type="button" class="remove-sale red-btn" data-index="${index}">سڕینەوە</button> 
+            <button type="button" class="reduce-quantity light-blue-btn" data-index="${index}">کەمکردنەوە</button>
+          </div>
+        </td>`
       );
 
       salesTableBody.append(row);
@@ -173,14 +188,10 @@ $(document).ready(function () {
       method: "POST",
       contentType: "application/json",
       data: JSON.stringify(saleData), // Convert the sales array to a JSON string
-      dataType: "json",
-      success: function (data) {
-        alert(data.message);
-
-        if (data.status === "success") {
-          sales.length = 0;
-          updateSalesTable();
-        }
+      success: function (response) {
+        location.reload();
+        sales.length = 0;
+        updateSalesTable();
       },
       error: function (xhr, status, error) {
         console.error("Error finalizing sale:", error);

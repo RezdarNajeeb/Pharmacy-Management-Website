@@ -8,7 +8,7 @@ if (!isset($_GET['barcode'])) {
 
 $barcode = $_GET['barcode'];
 
-$stmt = $conn->prepare("SELECT id, name, cost_price, selling_price FROM medicines WHERE barcode = ?");
+$stmt = $conn->prepare("SELECT id, name, image, cost_price, selling_price FROM medicines WHERE barcode = ?");
 $stmt->bind_param('s', $barcode);
 $stmt->execute();
 $result = $stmt->get_result();

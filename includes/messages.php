@@ -1,8 +1,8 @@
 <?php
-if ($messages !== []) {
+if ($_SESSION['messages'] !== []) {
 ?>
   <div class="messages">
-    <?php foreach ($messages as $message) : ?>
+    <?php foreach ($_SESSION['messages'] as $message) : ?>
       <div class="message <?php echo htmlspecialchars($message['type'], ENT_QUOTES, 'UTF-8'); ?>">
         <?php
         if ($message['type'] === 'error') {
@@ -15,7 +15,10 @@ if ($messages !== []) {
         ?>
         <span><?php echo htmlspecialchars($message['message'], ENT_QUOTES, 'UTF-8'); ?></span>
       </div>
-    <?php endforeach; ?>
+    <?php
+    endforeach;
+    $_SESSION['messages'] = [];
+    ?>
   </div>
 <?php
 }

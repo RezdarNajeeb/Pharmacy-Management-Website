@@ -1,6 +1,6 @@
 <?php
 require_once '../../includes/db.php';
-header('Content-Type: application/json');
+session_start();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id'])) {
   $medicineId = $_POST['id'];

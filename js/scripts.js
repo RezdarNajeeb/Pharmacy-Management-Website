@@ -72,4 +72,19 @@ $(document).ready(function () {
   }
 
   handleUserBox();
+
+  function updateFileNameDisplay() {
+    $("#image-input").on("change", function () {
+      // .prop() is used to get the value of properties means attributes of the element
+      var fileName = $(this).prop("files")[0].name;
+      $("#image-name").text(fileName+" هەڵبژێردراوە");
+    });
+
+    $("#edit-image").on("change", function () {
+      var fileName = $(this).prop("files")[0].name;
+      $("#edit-image-name").text(fileName+" هەڵبژێردراوە");
+    });
+  }
+
+  updateFileNameDisplay();
 });

@@ -1,6 +1,6 @@
 <?php
-session_start();
 require_once '../../includes/db.php';
+session_start();
 
 if (!isset($_SESSION['user_id'])) {
   echo json_encode(['status' => 'error', 'message' => 'Unauthorized']);
@@ -10,7 +10,7 @@ if (!isset($_SESSION['user_id'])) {
 $data = json_decode(file_get_contents('php://input'), true); // Get the JSON data sent to the server
 
 if (empty($data)) {
-  echo json_encode(['status' => 'error', 'message' => 'No data provided']);
+  $_SESSION['messages'][] = ['type' => 'error', 'message' => 'هیچ زانیارییەک نەدۆزرایەوە.'];
   exit();
 }
 
@@ -20,6 +20,7 @@ $discounted_total = floatval($data['discountedTotalIQD']);
 
 foreach ($sales as $sale) {
   $medicine_id = intval($sale['id']);
+  $medicine_image = $sale['image'];
   $medicine_name = $sale['name'];
   $quantity = intval($sale['quantity']);
   $cost_price = floatval($sale['costPrice']);
@@ -30,7 +31,7 @@ foreach ($sales as $sale) {
   $stmt->bind_param('iidddddi', $medicine_id, $quantity, $cost_price, $selling_price, $total, $discount, $discounted_total, $_SESSION['user_id']);
 
   if (!$stmt->execute()) {
-    echo json_encode(['status' => 'error', 'message' => 'Error: ' . $stmt->error]);
+    $_SESSION['messages'][] = ['type' => 'error', 'message' => 'کێشەیەک ڕوویدا: ' . $stmt->error];
     exit();
   }
 
@@ -46,12 +47,12 @@ foreach ($sales as $sale) {
   $stmt->bind_param('ii', $quantity, $medicine_id);
 
   if (!$stmt->execute()) {
-    echo json_encode(['status' => 'error', 'message' => 'Error: ' . $stmt->error]);
+    $_SESSION['messages'][] = ['type' => 'error', 'message' => 'کێشەیەک ڕوویدا: ' . $stmt->error];
     exit();
   }
 }
 
-echo json_encode(['status' => 'success', 'message' => 'Sale finalized successfully']);
+$_SESSION['messages'][] = ['type' => 'success', 'message' => 'فرۆشتنەکە بەسەرکەوتویی تۆمارکرا.'];
 
 $stmt->close();
 $conn->close();

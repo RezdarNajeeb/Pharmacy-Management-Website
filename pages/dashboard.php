@@ -21,6 +21,7 @@ $stats = $result->fetch_assoc();
 
 <!DOCTYPE html>
 <html lang="ckb" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,11 +29,12 @@ $stats = $result->fetch_assoc();
     <link rel="stylesheet" href="../assets/fontawesome-free-6.5.2-web/css/all.min.css">
     <link rel="stylesheet" href="../css/styles.css">
 </head>
+
 <body>
     <?php require_once '../includes/header.php'; ?>
 
     <div class="dashboard">
-        <h1 class="title">زانیارییەکان</h1>
+        <h2 class="title">زانیارییەکان</h2>
         <div class="stats">
             <a href="medicines.php">
                 <div class="stat">
@@ -66,4 +68,5 @@ $stats = $result->fetch_assoc();
     <script src="../js/lib/jquery-3.7.1.min.js"></script>
     <script src="../js/scripts.js"></script>
 </body>
+
 </html>

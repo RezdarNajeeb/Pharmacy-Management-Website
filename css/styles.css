@@ -8,6 +8,7 @@
   --light-green: #6dcc70;
   --light-blue: #5a9bd4;
   --border: 1px solid #ccc;
+  --border-tc: 1px solid var(--text-color);
   --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   --base-font-size: 10px;
 }
@@ -223,7 +224,7 @@ body {
   justify-content: center;
   align-items: center;
   gap: 1rem;
-  max-width: 20rem;
+  max-width: 30rem;
   min-width: 20rem;
   animation: slideOut 0.7s forwards, slideIn 0.6s forwards 3s;
 }
@@ -400,7 +401,7 @@ header #notifications-icon {
   position: relative;
 }
 
-header #notifications-icon .notification-count{
+header #notifications-icon .notification-count {
   position: absolute;
   top: -0.4rem;
   right: -0.4rem;
@@ -421,7 +422,7 @@ header #notifications-icon .notification-count{
   align-items: center;
   gap: 0.5rem;
   border-radius: 0.5rem;
-  padding: 0 .5rem;
+  padding: 0 0.5rem;
 }
 
 .currency-selector label {
@@ -432,19 +433,19 @@ header #notifications-icon .notification-count{
   font-size: 2rem;
   background-color: var(--background-color);
   padding: 0.5rem;
-  border: 1px solid var(--text-color);
+  border: var(--border-tc);
   border-width: 0 1px 0 0;
 }
 
 .exchange-rate {
   width: 20rem;
-  padding: .5rem;
+  padding: 0.5rem;
   background-color: var(--background-color);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: .5rem;
-  border-radius: .5rem;
+  gap: 0.5rem;
+  border-radius: 0.5rem;
 }
 
 .exchange-rate span {
@@ -455,28 +456,28 @@ header #notifications-icon .notification-count{
 .exchange-rate form {
   width: 100%;
   display: flex;
-  gap: .5rem;
+  gap: 0.5rem;
 }
 
 .exchange-rate form input {
   width: 50%;
-  padding: .5rem;
-  border: 1px solid var(--text-color);
-  border-radius: .5rem;
+  padding: 0.5rem;
+  border: var(--border-tc);
+  border-radius: 0.5rem;
 }
 
 .exchange-rate form button {
   width: 50%;
-  padding: .5rem 0;
+  padding: 0.5rem 0;
   background-color: var(--text-color);
   color: #fff;
   border: none;
-  border-radius: .5rem;
+  border-radius: 0.5rem;
   cursor: pointer;
   transition: background-color 0.3s;
-} 
+}
 
-/* Modal Styles For Updating User Account*/
+/* Modal Styles For Updating User Account and Medicines */
 .modal {
   display: flex;
   justify-content: center;
@@ -487,7 +488,7 @@ header #notifications-icon .notification-count{
   top: 0;
   width: 100%;
   height: 100%;
-  overflow: auto;
+  overflow: hidden;
   background-color: rgba(0, 0, 0, 0.4);
   visibility: hidden;
 }
@@ -505,7 +506,7 @@ header #notifications-icon .notification-count{
 }
 
 .close {
-  color: var(--red-color);
+  color: var(--red);
   font-size: 3rem;
   align-self: flex-end;
   transition: transform 0.3s;
@@ -517,14 +518,13 @@ header #notifications-icon .notification-count{
 }
 
 .modal-content h2 {
-  text-align: center;
-  font-size: 3rem;
-  margin-bottom: 1rem;
+  margin-top: 0;
 }
 
 .modal-content form {
   display: flex;
   flex-direction: column;
+  gap: 0.5rem;
 }
 
 .modal-content label {
@@ -537,22 +537,6 @@ header #notifications-icon .notification-count{
   border: var(--border);
   border-radius: 0.5rem;
   margin-bottom: 1rem;
-}
-
-.modal-content button {
-  font-size: 2rem;
-  padding: 1rem;
-  background-color: var(--secondary-color);
-  color: #fff;
-  border: none;
-  margin-top: 1rem;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.modal-content button:hover {
-  background-color: #ff9800;
 }
 
 /* Dashboard Styles */
@@ -602,7 +586,7 @@ header #notifications-icon .notification-count{
   background-image: url("../assets/images/out\ of\ stock.jpg");
 }
 
-.stats a:last-child .stat{
+.stats a:last-child .stat {
   background-image: url("../assets/images/medicine\ expire.jpg");
 }
 
@@ -611,21 +595,21 @@ header #notifications-icon .notification-count{
   background-color: var(--text-color);
   color: var(--background-color);
   padding: 1rem 5rem;
-  border-radius: .5rem;
+  border-radius: 0.5rem;
 }
 
 .stat p {
   font-size: 2rem;
   font-weight: bold;
   padding: 1rem 5rem;
-  border-radius: .5rem;
+  border-radius: 0.5rem;
   background-color: var(--background-color);
 }
-
 
 /* Medicine Styles */
 .medicines-container {
   display: flex;
+  gap: 2rem;
 }
 
 /* Right Side Container */
@@ -633,103 +617,379 @@ header #notifications-icon .notification-count{
   width: 25%;
   display: flex;
   flex-direction: column;
-  flex-wrap: wrap;
+  align-items: center;
+  gap: 2rem;
   border-left: 5px solid var(--primary-color);
-  background-color: #fff;
-  padding: 2rem;
-}
-
-.right-side-container .info-content {
-  text-align: center;
-  border-bottom: 5px solid var(--primary-color);
-  border-radius: 0.5rem;
-}
-
-.right-side-container .info-content h1 {
-  color: var(--hover-color);
-  font-size: 3.5rem;
-  margin-bottom: 1rem;
-}
-
-.right-side-container .info-content img {
-  width: 20rem;
-  height: 20rem;
-  border-radius: 50%;
-  box-shadow: var(--box-shadow);
-  margin-bottom: 1rem;
-}
-
-/* Add Medicine Container */
-.add-medicine {
-  display: flex;
-  flex-direction: column;
-  row-gap: 2.5rem;
+  background-color: var(--background-color);
 }
 
 /* Add Medicine Form */
 #add-medicine-form {
-  max-width: 30rem;
   display: flex;
   flex-direction: column;
-  row-gap: 2rem;
+  gap: 0.9rem;
 }
 
-#add-medicine-form input,
-#add-medicine-form button {
+#add-medicine-form input {
   padding: 1rem;
   font-size: 1.6rem;
   border: var(--border);
   border-radius: 0.5rem;
 }
 
-#add-medicine-form button {
-  background-color: var(--primary-color);
-  color: #fff;
-  cursor: pointer;
-  transition: background-color 0.3s;
+.file-upload {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
 }
 
-#add-medicine-form button:hover {
-  background-color: var(--hover-color);
+/* Hide the default file input */
+.file-input {
+  display: none;
+}
+
+/* Style the file upload button */
+.file-choose-btn {
+  padding: 1rem 1.2rem;
+  font-size: 1.8rem;
+}
+
+/* Style the file name display */
+.file-name {
+  font-size: 1.6rem;
 }
 
 /* Left Side Container */
 .left-side-container {
+  display: flex;
+  flex-direction: column;
   width: 75%;
-  padding: 0 2rem;
-  overflow: hidden;
+  padding-left: 2rem;
 }
 
-/* Medicines Table */
+/* Medicines Table Wrapper*/
 #medicines-table {
-  border-collapse: collapse; /* Remove Space Between Table Cells */
-  font-size: 1.6rem;
+  border-collapse: collapse;
 }
 
-#medicines-table thead {
-  background-color: var(--primary-color);
-  color: white;
-}
-
-#medicines-table thead tr th {
-  text-align: center;
-  padding: 1rem;
-  font-weight: bold;
-}
-
-#medicines-table tbody tr {
-  text-align: center;
-  border-bottom: 1px solid var(--secondary-color);
-  background-color: #fff;
-}
-
-#medicines-table tbody tr td img {
-  max-width: 100%;
+.dataTables_wrapper {
   border-radius: 0.5rem;
 }
 
-#medicines-table tbody tr td button {
+.dataTables_wrapper .title {
+  margin-bottom: 2rem;
+}
+
+/* Search box styling and Length menu styling */
+.dataTables_wrapper .dataTables_filter label,
+.dataTables_wrapper .dataTables_length label {
+  font-size: 1.6rem;
+  font-weight: bold;
+}
+
+.dataTables_wrapper .dataTables_filter input,
+.dataTables_wrapper .dataTables_length select {
+  font-size: 1.6rem;
+  padding: 0.5rem;
+  border: var(--border-tc);
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* Pagination styling */
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+  font-weight: bold;
+  padding: 0.5em 1em;
+  margin: 0.4rem;
+  background-color: var(--text-color);
+  color: #fff !important;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+/* Info styling */
+.dataTables_wrapper .dataTables_info {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+/* The Table itself Styles */
+.dataTables_scrollHead thead tr th,
+.dataTables_scrollBody tbody tr td {
+  font-size: 1.6rem;
+  text-align: center;
+}
+
+.dataTables_scrollHead thead tr th::after,
+.dataTables_scrollHead thead tr th::before {
+  color: var(--text-color);
+}
+
+.dataTables_scrollHead thead {
+  background-color: var(--secondary-color);
+}
+
+.dataTables_scrollBody tbody tr {
+  border-bottom: 2px solid var(--secondary-color);
+  background-color: #fff !important;
+}
+
+.dataTables_scrollBody tbody tr td .image {
+  width: 8rem;
+  border-radius: 0.5rem;
+}
+
+.dataTables_scrollBody tbody tr td:has(.actions) {
+  width: 15%;
+}
+
+.dataTables_scrollBody tbody tr td .actions {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.dataTables_scrollBody tbody tr td .actions * {
+  width: 100%;
+}
+
+#edit-medicine-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(10rem, 1fr));
+  gap: 0.5rem;
+}
+
+#edit-medicine-form .current-img-cont {
+  width: 30%;
+  margin: 0 auto;
+  grid-row: 1;
+  grid-column: 1 / 3;
+}
+
+#edit-medicine-form .current-img-cont img {
+  width: 100%;
+}
+
+#edit-medicine-form .file-upload {
+  grid-row: 5;
+  grid-column: 1 / 3;
+}
+
+#edit-medicine-form #edit-barcode {
+  grid-row: 6;
+  grid-column: 1 / 3;
+}
+
+#edit-medicine-form button {
+  grid-row: 7;
+  grid-column: 1 / 3;
+}
+
+/* Sales Styles */
+.sales-container {
+  display: flex;
+  gap: 2rem;
+}
+
+/* Right Side Container */
+.right-cont {
+  width: 25%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border-left: 5px solid var(--primary-color);
+}
+
+.top {
   padding: 1rem;
+}
+
+/* Add Sale Form */
+#add-sale-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.right-cont .input-control {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.right-cont label {
+  font-size: 1.8rem;
+}
+
+.right-cont input {
+  padding: 1rem;
+  font-size: 1.6rem;
+  border: var(--border);
+  border-radius: 0.5rem;
+}
+
+.top button {
+  margin-top: 1rem;
+}
+
+.bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border-top: 5px solid var(--primary-color);
+  padding: 1rem;
+}
+
+.bottom h3:first-of-type {
+  margin-top: 1.8rem;
+}
+
+.bottom h3:last-of-type {
+  margin-bottom: 0.8rem;
+}
+
+.bottom h3 {
+  font-size: 1.8rem;
+}
+
+.bottom h3:first-of-type span {
+  color: var(--light-green);
+}
+
+.bottom h3:last-of-type span {
+  color: var(--red);
+}
+
+/* Left Side Container */
+.left-cont {
+  display: flex;
+  flex-direction: column;
+  width: 75%;
+  padding: 2rem;
+}
+
+/* This table used in sales, sales history, and user tracking */
+.normal-table {
+  border-collapse: collapse;
+  width: 80%;
+  margin: 0 auto;
+  table-layout: fixed;
+  background-color: var(--background-color);
+}
+
+.normal-table thead {
+  background-color: var(--secondary-color);
+}
+
+.normal-table thead th,
+.normal-table tbody tr td {
+  font-size: 1.6rem;
+  text-align: center;
+}
+
+.normal-table tbody {
+  display: block;
+  max-height: calc(100vh - 25rem);
+  overflow-y: auto; /* Enables vertical scroll */
+}
+
+.normal-table thead th {
+  padding: 1.5rem 0;
+}
+
+.normal-table tbody tr td {
+  padding: 0.5rem;
+}
+
+.normal-table tbody tr,
+.normal-table thead tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed; /* Ensures consistent column width */
+  border-bottom: 2px solid var(--secondary-color);
+}
+
+.normal-table tbody tr td img {
+  width: 10rem;
+  border-radius: 0.5rem;
+}
+
+.normal-table tbody tr td:has(.actions) {
+  width: 15%;
+}
+
+.normal-table tbody tr td .actions {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.normal-table tbody tr td .actions * {
+  width: 100%;
+}
+
+/* User Tracking Styles and Sales History Styles */
+.sales-history-container,
+.user-tracking-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  overflow-y: hidden;
+  background-image: url("../assets/images/sales.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding-bottom: 1rem;
+}
+
+.user-tracking-container {
+  background-image: url("../assets/images/user_tracking.jpg");
+}
+
+.sales-history-container h1,
+.user-tracking-container h1 {
+  text-align: center;
+  margin-right: auto;
+  margin-left: auto;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background-color: var(--background-color);
+}
+
+/* Delete all option in user tracking and sales history */
+.delete-all-container {
+  max-width: fit-content;
+  display: flex;
+  align-items: center;
+  margin: 0 auto;
+  gap: 1rem;
+  background-color: var(--background-color);
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+
+.delete-by-day {
+  display: flex;
+  gap: .5rem;
+  border: var(--border-tc);
+  padding: .85rem;
+  border-radius: .5rem;
+}
+
+.delete-by-day label {
+  font-size: 1.8rem;
+}
+
+.delete-by-day select {
+  background-color: var(--background-color);
+  font-size: 1.8rem;
+  border: var(--border-tc);
+  border-radius: .5rem;
 }
 
 /* Footer Styles */

@@ -1,7 +1,8 @@
 <?php
 require_once '../includes/db.php';
+session_start();
 
-$messages = [];
+$_SESSION['messages'] = [];
 
 if (isset($_POST['register'])) {
   $username = $conn->real_escape_string($_POST['username']);
@@ -24,16 +25,16 @@ if (isset($_POST['register'])) {
       $stmt->bind_param("ss", $username, $password);
 
       if ($stmt->execute()) {
-        $messages[] = ['type' => 'success', 'message' => "هەژمارەکەت بەسەرکەوتویی دروستکرا."];
+        $_SESSION['messages'][] = ['type' => 'success', 'message' => "هەژمارەکەت بەسەرکەوتویی دروستکرا."];
         header("refresh:2;url=login.php");
       } else {
-        $messages[] = ['type' => 'error', 'message' => "کێشەیەک ڕوویدا، هەژمارەکەت دروست نەبوو."];
+        $_SESSION['messages'][] = ['type' => 'error', 'message' => "کێشەیەک ڕوویدا، هەژمارەکەت دروست نەبوو."];
       }
     } else {
-      $messages[] = ['type' => 'error', 'message' => "ئەم ناوە پێشتر بەکارهێنراوە."];
+      $_SESSION['messages'][] = ['type' => 'error', 'message' => "ئەم ناوە پێشتر بەکارهێنراوە."];
     }
   } else {
-    $messages[] = ['type' => 'error', 'message' => "وشەی نهێنی و وشەی نهێنیی دڵنیایی وەک یەک نین."];
+    $_SESSION['messages'][] = ['type' => 'error', 'message' => "وشەی نهێنی و وشەی نهێنیی دڵنیایی وەک یەک نین."];
   }
 
   $stmt->close();

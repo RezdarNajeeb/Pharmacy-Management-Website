@@ -2,7 +2,7 @@
 require_once '../includes/db.php';
 session_start();
 
-$messages = [];
+$_SESSION['messages'] = [];
 
 // Check for remember me cookie
 if (isset($_COOKIE['remember_me'])) {
@@ -57,10 +57,10 @@ if (isset($_POST['login'])) {
       header("Location: dashboard.php");
       exit();
     } else {
-      $messages[] = ['type' => 'error', 'message' => "وشەی نهێنی هەڵەیە."];
+      $_SESSION['messages'][] = ['type' => 'error', 'message' => "وشەی نهێنی هەڵەیە."];
     }
   } else {
-    $messages[] = ['type' => 'info', 'message' => "هیچ هەژمارێک بەم ناوەوە نییە."];
+    $_SESSION['messages'][] = ['type' => 'info', 'message' => "هیچ هەژمارێک بەم ناوەوە نییە."];
   }
 
   $stmt->close();

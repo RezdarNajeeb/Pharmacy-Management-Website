@@ -33,7 +33,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $target_dir = "../../uploads/";
     $target_file = $target_dir . basename($image);
     if (!move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
-      echo "Error uploading image.";
+      $_SESSION['messages'][] = ["type" => 'error', "message" => 'هەڵگرتنی وێنەکە کێشەی تێکەوت.'];
+      echo json_encode(["type" => 'error', "message" => 'هەڵگرتنی وێنەکە کێشەی تێکەوت.']);
       exit();
     }
   } else {
@@ -51,15 +52,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt_log->execute();
     $stmt_log->close();
 
-    header("Location: ../../../../pages/medicines.php");
+    $_SESSION['messages'][] = ["type" => 'success', "message" => 'دەرمانەکە بەسەرکەوتویی نوێ کرایەوە.'];
   } else {
-    echo "Error: " . $stmt->error;
+    $_SESSION['messages'][] = ["type" => 'error', "message" => 'کێشەیەک ڕوویدا.'];
   }
 
   $stmt->close();
 } else {
-  echo "داواکارییەکەت هەڵەیە.";
-  header("Location: ../../../../pages/medicines.php");
+  $_SESSION['messages'][] = ["type" => 'error', "message" => 'تکایە دوبارە هەوڵ بدەوە.'];
 }
 
 $conn->close();
