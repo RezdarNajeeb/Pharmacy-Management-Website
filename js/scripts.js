@@ -122,4 +122,79 @@ $(function () {
 
   setupImagePreview("#profileImageInput", "#profileImage");
   setupImagePreview("#edit-image", "#current-img");
+
+  // Unified validation function
+  function validateForm(form) {
+    let isValid = true;
+
+    // Error messages corresponding to each field
+    const errorMessages = [
+      "ناوی دەرمان پێویستە پڕبکرێتەوە.",
+      "جۆر پێویستە پڕبکرێتەوە.",
+      "نرخی کڕین پێویستە پڕبکرێتەوە.",
+      "نرخی فرۆشتن پێویستە پڕبکرێتەوە.",
+      "بڕ پێویستە پڕبکرێتەوە.",
+      "بەسەرچوونی پێویستە پڕبکرێتەوە.",
+      "بارکۆد پێویستە پڕبکرێتەوە.",
+    ];
+
+    // Clear previous error messages
+    form.find(".error-field").remove();
+
+    // Common validation rules for edit and add medicine forms
+    const fields = form.find(".field");
+
+    fields.each(function (index) {
+      const value = $(this).val().trim();
+      if (!value && errorMessages[index]) {
+        const errorMessage = `<span class="error-field">${errorMessages[index]}</span>`;
+        $(errorMessage).insertAfter(this).css("display", "block");
+        isValid = false;
+      }
+
+      // Barcode specific validation
+      if (index === errorMessages.length - 1 && value) {
+        if (value.length !== 13) {
+          const errorMessage = `<span class="error-field">بارکۆد پێویستە لە ١٣ پیت بێت.</span>`;
+          $(errorMessage).insertAfter(this).css("display", "block");
+          isValid = false;
+        } else if (isNaN(value)) {
+          const errorMessage = `<span class="error-field">بارکۆد پێویستە تەنها ژمارە بێت.</span>`;
+          $(errorMessage).insertAfter(this).css("display", "block");
+          isValid = false;
+        }
+      }
+    });
+
+    return isValid;
+  }
+
+  // Form submit event handler
+  $("#edit-medicine-form, #add-medicine-form").on("submit", function (event) {
+    const form = $(this);
+    const formId = form.attr("id"); // Get the form ID correctly
+
+    if (!validateForm(form)) {
+      event.preventDefault();
+    } else {
+      if (formId === "edit-medicine-form") {
+        event.preventDefault(); // Prevent the default form submission
+
+        // Handle AJAX request for the edit-medicine-form
+        $.ajax({
+          url: "../modules/medicines/update_medicine.php",
+          type: "POST",
+          data: new FormData(this),
+          contentType: false,
+          processData: false,
+          success: function (response) {
+            location.reload(); // Reload the page on success
+          },
+          error: function (xhr, status, error) {
+            alert(xhr.responseText); // Show error message on failure
+          },
+        });
+      }
+    }
+  });
 });

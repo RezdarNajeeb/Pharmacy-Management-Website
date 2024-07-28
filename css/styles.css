@@ -184,9 +184,14 @@ body {
   left: 1rem;
 }
 
-.auth-forms-container form .input-control span {
+.auth-forms-container form .input-control span, .error-field {
+  display: none;
   font-size: 1.6rem;
-  color: var(--red);
+  font-weight: bold;
+  background-color: var(--red);
+  color: #fff;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
 }
 
 .auth-forms-container form .show-pass-cont,
@@ -741,7 +746,14 @@ header #notifications-icon .notification-count {
 
 /* Hide the default file input */
 .file-input {
-  display: none;
+  display: block;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  right: 10rem;
+  z-index: -1;
 }
 
 /* Style the file upload button */

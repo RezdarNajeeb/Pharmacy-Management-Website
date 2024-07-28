@@ -94,21 +94,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
 
     <div class="right-side-container">
       <h2 class="title">زیادکردنی دەرمان</h2>
-      <form id="add-medicine-form" method="post" enctype="multipart/form-data">
+      <form action="medicines.php" id="add-medicine-form" method="post" enctype="multipart/form-data">
         <input type="hidden" name="currency" value="USD">
         <input type="hidden" name="exchange_rate" value="1450">
-        <input type="text" name="name" placeholder="ناوی دەرمان" required>
-        <input type="text" name="category" placeholder="جۆر" required>
-        <input type="number" name="cost_price" min="0" placeholder="نرخی کڕین" required>
-        <input type="number" name="selling_price" min="0" placeholder="نرخی فرۆشتن" required>
-        <input type="number" name="quantity" min="0" placeholder="بڕ" required>
-        <input type="date" name="expiry_date" placeholder="بەسەرچوونی" required>
+        <input type="text" class="field" name="name" placeholder="ناوی دەرمان" required>
+        <input type="text" class="field" name="category" placeholder="جۆر" required>
+        <input type="number" class="field" name="cost_price" min="1" placeholder="نرخی کڕین" required>
+        <input type="number" class="field" name="selling_price" min="1" placeholder="نرخی فرۆشتن" required>
+        <input type="number" class="field" name="quantity" min="1" placeholder="بڕ" required>
+        <input type="date" class="field" name="expiry_date" placeholder="بەسەرچوونی" required>
         <div class="file-upload">
-          <input type="file" name="image" id="image-input" class="file-input" accept="image/*">
+          <input type="file" name="image" id="image-input" class="file-input" accept="image/*" required>
           <label for="image-input" class="light-blue-btn file-choose-btn">وێنەیەک هەڵبژێرە</label>
           <span id="image-name" class="file-name">هیچ وێنەیەک هەڵنەبژێردراوە</span>
         </div>
-        <input type="text" name="barcode" id="barcode" placeholder="بارکۆد" required>
+        <input type="text" class="field" name="barcode" id="barcode" placeholder="بارکۆد" required>
         <button type="submit" class="light-green-btn" name="add_medicine">زیادکردنی دەرمان</button>
       </form>
     </div>
@@ -149,15 +149,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
         <div class="current-img-cont">
           <img id="current-img" src="" alt="Current Image">
           <label for="edit-image" class="edit-icon"><i class="fa-regular fa-pen-to-square"></i></label>
-          <input type="file" id="edit-image" name="image" accept="image/*" style="display: none;">
+          <input type="file" id="edit-image" name="image" accept="image/*" class="file-input">
         </div>
-        <input type="text" name="name" id="edit-name" placeholder="ناوی دەرمان" required>
-        <input type="text" name="category" id="edit-category" placeholder="پۆل" required>
-        <input type="number" name="cost_price" id="edit-cost_price" placeholder="نرخی کڕین" required>
-        <input type="number" name="selling_price" id="edit-selling_price" placeholder="نرخی فرۆشتن" required>
-        <input type="number" name="quantity" id="edit-quantity" placeholder="بڕ" required>
-        <input type="date" name="expiry_date" id="edit-expiry_date" placeholder="بەسەرچوونی" required>
-        <input type="text" name="barcode" id="edit-barcode" placeholder="بارکۆد" required>
+        <input type="text" name="name" id="edit-name" class="field" placeholder="ناوی دەرمان" required>
+        <input type="text" name="category" id="edit-category" class="field" placeholder="پۆل" required>
+        <input type="number" name="cost_price" min="1" id="edit-cost_price" class="field" placeholder="نرخی کڕین" required>
+        <input type="number" name="selling_price" min="1" id="edit-selling_price" class="field" placeholder="نرخی فرۆشتن" required>
+        <input type="number" name="quantity" min="1" id="edit-quantity" class="field" placeholder="بڕ" required>
+        <input type="date" name="expiry_date" id="edit-expiry_date" class="field" placeholder="بەسەرچوونی" required>
+        <input type="text" name="barcode" id="edit-barcode" class="field" placeholder="بارکۆد" required>
         <button type="submit" class="light-blue-btn">نوێکردنەوە</button>
       </form>
     </div>
@@ -309,24 +309,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
       $('#edit-medicine-modal').css('visibility', 'hidden');
     }
 
-    $("#edit-medicine-form").on('submit', function(e) {
-      e.preventDefault();
-
-      $.ajax({
-        url: '../modules/medicines/update_medicine.php',
-        type: 'POST',
-        data: new FormData(this),
-        contentType: false,
-        processData: false,
-        success: function(response) {
-          location.reload();
-        },
-        error: function(xhr, status, error) {
-          alert(xhr.responseText);
-        },
-      });
-    });
-
+    // update medicine in the scripts.js
 
     function deleteMedicine(id) {
       if (confirm('دڵنیایت کە دەتەوێت ئەم دەرمانە بسڕیتەوە؟')) {

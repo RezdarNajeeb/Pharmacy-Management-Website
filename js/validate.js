@@ -1,84 +1,77 @@
 $(document).ready(function () {
-  // form validation
+  // Form validation
   var form = $("form");
+  var usernameError = $("#username-error");
+  var passwordError = $("#password-error");
+  var confirmPasswordError = $("#confirm-password-error");
+
+  var passwordRegex = /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{8,}$/;
+  var usernameRegex = /^[a-zA-Z].*$/;
+
+  function showError(element, message) {
+    element.css("display", "block").text(message);
+  }
+
+  function hideError(element) {
+    element.css("display", "none").text("");
+  }
 
   function validateForm() {
     var username = $.trim($("#username").val());
     var password = $.trim($("#password").val());
 
-    var usernameError = $("#username-error");
-    var passwordError = $("#password-error");
-    var confirmPasswordError = $("#confirm-password-error");
+    var valid = true;
 
-    var passwordRegex = new RegExp(
-      "^(?=.*\\d)(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{8,}$"
-    );
-    var usernameRegex = new RegExp("^[a-zA-Z].*$");
-
-    if (username === "" && password === "") {
-      usernameError.text("ناوی بەکارهێنەر پێویستە پڕبکرێتەوە.");
-      passwordError.text("وشەی نهێنی پێویستە پڕبکرێتەوە.");
-      return false;
+    if (username === "") {
+      showError(usernameError, "ناوی بەکارهێنەر پێویستە پڕبکرێتەوە.");
+      valid = false;
+    } else if (username.length < 3) {
+      showError(
+        usernameError,
+        "ناوی بەکارهێنەر پێویستە بەلایەنی کەمەوە ٣ پیت بێت."
+      );
+      valid = false;
+    } else if (!usernameRegex.test(username)) {
+      showError(usernameError, " ناوی بەکارهێنەر پێویستە بە پیت دەست پێبکات.");
+      valid = false;
     } else {
-      if (username === "") {
-        passwordError.text("");
-        usernameError.text("ناوی بەکارهێنەر پێویستە پڕبکرێتەوە.");
-        return false;
-      } else {
-        usernameError.text("");
-      }
-      if (password === "") {
-        usernameError.text("");
-        passwordError.text("وشەی نهێنی پێویستە پڕبکرێتەوە.");
-        return false;
-      } else {
-        passwordError.text("");
-      }
+      hideError(usernameError);
     }
 
-    if (form.attr("id") == "register-form") {
-      var confirm_password = $.trim($("#confirm_password").val());
-
-      if (confirm_password === "") {
-        confirmPasswordError.text("وشەی نهێنی دڵنیایی پێویستە پڕبکرێتەوە.");
-        return false;
-      } else {
-        confirmPasswordError.text("");
-      }
-
-      if (password !== confirm_password) {
-        confirmPasswordError.text(
-          "وشەی نهێنی و وشەی نهێنیی دڵنیایی وەک یەک نین."
-        );
-        return false;
-      } else {
-        confirmPasswordError.text("");
-      }
-    }
-
-    if (username.length < 3) {
-      usernameError.text("ناوی بەکارهێنەر پێویستە بەلایەنی کەمەوە ٣ پیت بێت.");
-      return false;
-    } else {
-      usernameError.text("");
-    }
-
-    if (!passwordRegex.test(password)) {
-      passwordError.text(
+    if (password === "") {
+      showError(passwordError, "وشەی نهێنی پێویستە پڕبکرێتەوە.");
+      valid = false;
+    } else if (!passwordRegex.test(password)) {
+      showError(
+        passwordError,
         "وشەی نهێنی پێویستە بەلایەنی کەمەوە ٨ پیت بێت و بەلایەنی کەمەوە ژمارەیەک و پیتێک و هێمایەکی تێدابێت."
       );
-      return false;
+      valid = false;
     } else {
-      passwordError.text("");
+      hideError(passwordError);
     }
 
-    if (!usernameRegex.test(username)) {
-      usernameError.text(" ناوی بەکارهێنەر پێویستە بە پیت دەست پێبکات.");
-      return false;
-    } else {
-      usernameError.text("");
+    if (form.attr("id") === "register-form") {
+      var confirmPassword = $.trim($("#confirm_password").val());
+
+      if (confirmPassword === "") {
+        showError(
+          confirmPasswordError,
+          "وشەی نهێنی دڵنیایی پێویستە پڕبکرێتەوە."
+        );
+        valid = false;
+      } else if (password !== confirmPassword) {
+        showError(
+          confirmPasswordError,
+          "وشەی نهێنی و وشەی نهێنیی دڵنیایی وەک یەک نین."
+        );
+        valid = false;
+      } else {
+        hideError(confirmPasswordError);
+      }
     }
-    return true;
+
+    return valid;
   }
 
   form.submit(function () {
