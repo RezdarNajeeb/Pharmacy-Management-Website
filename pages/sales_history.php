@@ -28,8 +28,6 @@ if (!isset($_SESSION['user_id'])) {
   <div class="sales-history-container">
     <h1 class="title">مێژووی فرۆشتنەکان</h1>
 
-    <?php require_once '../includes/delete_all_container.php' ?>
-
     <table id="sales-history-table" class="normal-table">
       <thead>
         <tr>

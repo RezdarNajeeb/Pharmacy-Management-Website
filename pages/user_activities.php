@@ -28,8 +28,6 @@ if (!isset($_SESSION['user_id'])) {
   <div class="user-tracking-container">
     <h1 class="title">چالاکی بەکارهێنەرەکان</h1>
 
-    <?php require_once '../includes/delete_all_container.php' ?>
-
     <table id="user-activity-table" class="normal-table">
       <thead>
         <tr>
