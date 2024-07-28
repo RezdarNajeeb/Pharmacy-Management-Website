@@ -21,6 +21,7 @@ $(document).ready(function () {
     }
 
     addSaleItem(barcode, quantity);
+    $("#medicine-barcode").val("").focus();
   });
 
   function addSaleItem(barcode, quantity) {
