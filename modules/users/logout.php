@@ -19,7 +19,6 @@ if (isset($_COOKIE['remember_me'])) {
   $stmt->execute();
 
   $stmt->close();
-  $conn->close();
 
   // Securely remove the remember_me cookie
   setcookie('remember_me', '', time() - 3600, "/", "", true, true); // Expire the cookie
@@ -34,4 +33,5 @@ session_destroy();
 
 // Redirect to the login page
 header("Location: ../../../../pages/login.php");
+$conn->close();
 exit();

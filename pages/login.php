@@ -20,6 +20,7 @@ if (isset($_COOKIE['remember_me'])) {
     if ($token === $user['remember_token']) {
       $_SESSION['user_id'] = $user['id'];
       $_SESSION['username'] = $user['username'];
+      $_SESSION['role'] = $user['role'];
 
       // Log the user activity
       logUserActivity("چووە ناو سیستەمەکە لەڕێی منت لەبیر بێت.");
@@ -47,6 +48,7 @@ if (isset($_POST['login'])) {
     if (password_verify($password, $user['password'])) {
       $_SESSION['user_id'] = $user['id'];
       $_SESSION['username'] = $user['username'];
+      $_SESSION['role'] = $user['role'];
 
       if ($remember) {
         $token = bin2hex(random_bytes(32)); // Generate a secure token

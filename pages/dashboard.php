@@ -36,8 +36,10 @@ $system_profile = $result->fetch_assoc();
 </head>
 
 <body>
-    <?php require_once '../includes/header.php'; ?>
-    <?php require_once '../includes/messages.php'; ?>
+    <?php
+    require_once '../includes/header.php';
+    require_once '../includes/messages.php';
+    ?>
 
     <div class="dashboard">
         <div class="sys-profile">
@@ -45,7 +47,7 @@ $system_profile = $result->fetch_assoc();
                 <img src=<?= "../uploads/" . $system_profile['image'] ?> alt="profile">
             </div>
             <h1 class="sys-name"><?= $system_profile['name'] ?></h1>
-            <h3 class="sys-user">بەکارهێنەر: <span><?php echo $_SESSION['username'] ?></span></h3>
+            <h3 class="sys-user"><?= $isAdmin ? "بەڕێوەبەر: " : "بەکارهێنەر: " ?> <span><?php echo $_SESSION['username'] ?></span></h3>
         </div>
 
         <h2 class="title">زانیارییەکان</h2>
@@ -56,12 +58,14 @@ $system_profile = $result->fetch_assoc();
                     <p><?php echo $stats['total_medicines']; ?></p>
                 </div>
             </a>
-            <a href="sales_history.php">
-                <div class="stat">
-                    <h2>هەموو فرۆشتنەکان</h2>
-                    <p><?php echo $stats['total_sales']; ?></p>
-                </div>
-            </a>
+            <?php if ($isAdmin) { ?>
+                <a href="sales_history.php">
+                    <div class="stat">
+                        <h2>هەموو فرۆشتنەکان</h2>
+                        <p><?php echo $stats['total_sales']; ?></p>
+                    </div>
+                </a>
+            <?php } ?>
             <a href="warnings.php">
                 <div class="stat">
                     <h2>دەرمانە کەمبووەکان</h2>

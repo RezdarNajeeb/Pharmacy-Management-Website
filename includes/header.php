@@ -1,5 +1,7 @@
 <?php $currentUsername = isset($_SESSION['username']) ? $_SESSION['username'] : null;
 
+$isAdmin = $_SESSION['role'] === 'admin';
+
 // Fetch warning count
 $warningQuery = "
     SELECT COUNT(*) AS warning_count FROM medicines 
@@ -23,9 +25,11 @@ $warningCount = $warningResult->fetch_assoc()['warning_count'];
       <?php endif; ?>
     </a>
 
-    <a href="../pages/settings.php" class="icon" id="settings-icon">
-      <i class="fas fa-cog"></i>
-    </a>
+    <?php if ($isAdmin) { ?>
+      <a href="../pages/settings.php" class="icon" id="settings-icon">
+        <i class="fas fa-cog"></i>
+      </a>
+    <?php } ?>
 
   </div>
 
@@ -64,8 +68,10 @@ $warningCount = $warningResult->fetch_assoc()['warning_count'];
       <li><a href="dashboard.php">زانیارییەکان</a></li>
       <li><a href="medicines.php">دەرمانەکان</a></li>
       <li><a href="sales.php">فرۆشتن</a></li>
-      <li><a href="sales_history.php">مێژووی فرۆشتن</a></li>
-      <li><a href="user_activities.php">چالاکی بەکارهێنەرەکان</a></li>
+      <?php if ($isAdmin) { ?>
+        <li><a href="sales_history.php">مێژووی فرۆشتن</a></li>
+        <li><a href="user_activities.php">چالاکی بەکارهێنەرەکان</a></li>
+      <?php } ?>
     </ul>
   </nav>
 
