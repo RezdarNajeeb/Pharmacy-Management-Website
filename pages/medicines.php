@@ -260,7 +260,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
 
 
     function updateFormValues() {
-      const currency = $('#currency-select').val();
+      const currency = localStorage.getItem("currency");
       const exchangeRate = $('#exchange-rate').data('exchange-rate');
 
       // Update both forms
@@ -276,7 +276,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
 
     // Update form values when the currency is changed
     $("#currency-select").on('change', function() {
-      var currency = $(this).val();
       updateFormValues(); // Update form values before reloading to ensure consistency
     });
 

@@ -1,5 +1,5 @@
 $(document).ready(function () {
-  const currencySelect = $("#currency-select");
+  const currency = localStorage.getItem("currency");
   const exchangeRate = parseFloat($("#exchange-rate").data("exchange-rate"));
   const sales = [];
   const salesTableBody = $("#sales-table tbody");
@@ -137,10 +137,10 @@ $(document).ready(function () {
     let totalPriceIQD = parseFloat(totalPriceIQDElement.text());
     const discount = parseFloat(discountField.val()) || 0;
 
-    if (currencySelect.val() === "USD") {
+    if (currency === "USD") {
       totalPriceUSD -= discount;
       totalPriceIQD = totalPriceUSD * exchangeRate;
-    } else if (currencySelect.val() === "IQD") {
+    } else if (currency === "IQD") {
       totalPriceIQD -= discount;
       totalPriceUSD = totalPriceIQD / exchangeRate;
     }
