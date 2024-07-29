@@ -21,7 +21,6 @@ $stats = $result->fetch_assoc();
 $sql = "SELECT * FROM system_profile WHERE id = 1";
 $result = $conn->query($sql);
 $system_profile = $result->fetch_assoc();
-
 ?>
 
 <!DOCTYPE html>

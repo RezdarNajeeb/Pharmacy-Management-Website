@@ -88,9 +88,15 @@ $warningCount = $warningResult->fetch_assoc()['warning_count'];
     <a href="../modules/users/logout.php">چوونەدەرەوە</a>
   </div>
 
+  <?php
+  $sql = "SELECT * FROM system_profile WHERE id = 1";
+  $result = $conn->query($sql);
+  $system_profile = $result->fetch_assoc();
+  ?>
+
   <div class="logo">
     <a href="dashboard.php">
-      <img src="../assets/images/logo.png" alt="Logo">
+      <img src=<?= "../uploads/" . $system_profile['image'] ?> alt="profile">
     </a>
   </div>
 </header>
