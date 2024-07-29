@@ -273,7 +273,7 @@ body {
   gap: 1rem;
   max-width: 30rem;
   min-width: 20rem;
-  animation: slideOutRight 0.7s forwards, slideInRight 0.6s forwards 3s;
+  animation: slideOutRight 0.7s forwards, slideInRight 0.6s forwards 5s;
 }
 
 .message {

@@ -240,12 +240,12 @@ $(document).ready(function () {
 
     const $discountError = $("#discount-error");
 
-    if (!discount) {
+    if (isNaN(discount) || discount === null) {
       $discountError.text("داشکاندن پێویستە پڕبکرێتەوە و تەنها ژمارە بێت.");
       $discountError.css("display", "block");
       return;
-    } else if (discount < 1) {
-      $discountError.text("داشکاندن پێویستە زیاتر بێت لە ١.");
+    } else if (discount < 0) {
+      $discountError.text("داشکاندن پێویستە بەلایەنی کەمەەوە ٠ بێت.");
       $discountError.css("display", "block");
       return;
     }

@@ -49,7 +49,7 @@ if (!isset($_SESSION['user_id'])) {
       <div class="bottom">
         <div class="input-control">
           <label for="discount">داشکاندن </label>
-          <input type="text" id="discount" name="discount" min="0" value="0" >
+          <input type="text" id="discount" name="discount" min="0" value="0" required>
           <span id="discount-error" class="error-field"></span>
         </div>
 
