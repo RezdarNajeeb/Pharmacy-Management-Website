@@ -42,22 +42,29 @@ $warningCount = $warningResult->fetch_assoc()['warning_count'];
   </div>
 
   <?php
-  // Fetch the current exchange rate
+  // Fetch the current exchange rate or insert if it doesn't exist
   $query = "SELECT rate FROM exchange_rates WHERE currency = 'USD'";
   $result = $conn->query($query);
 
-  if ($result->num_rows > 0) {
-    $exchange_rate = $result->fetch_assoc()['rate'];
+  if ($result->num_rows == 0) {
+    // If no rows are returned, insert the new currency and rate
+    $insert_query = "INSERT INTO exchange_rates (currency, rate) VALUES ('USD', 1450)";
+    $conn->query($insert_query);
+    $exchange_rate = 1450;
   } else {
+    $exchange_rate = $result->fetch_assoc()['rate'];
+  }
+
+  if (!$exchange_rate) {
     $exchange_rate = "نەزانراوە"; // Handle case where rate is not set
   }
   ?>
 
   <div class="exchange-rate">
-    <span id="exchange-rate" data-exchange-rate="<?php echo htmlspecialchars($exchange_rate); ?>">1 دۆلار = <?php echo htmlspecialchars($exchange_rate); ?> دینار</span>
+    <span id="exchange-rate" data-exchange-rate="<?php echo htmlspecialchars($exchange_rate); ?>">1 دۆلار = <?php echo htmlspecialchars(number_format($exchange_rate, 2)); ?> دینار</span>
     <!-- Add a form to update the exchange rate -->
-    <form action="../modules/utilities/update_exchange_rate.php" method="post">
-      <input type="number" name="new_rate" step="any" placeholder="بەهای ئەمڕۆ">
+    <form id="update-exc-rate-form" action="../modules/utilities/update_exchange_rate.php" method="post">
+      <input type="number" id="exchange-rate-input" name="new_rate" min="1" step="any" placeholder="بەهای ئەمڕۆ" required>
       <button type="submit">گۆڕین</button>
     </form>
   </div>
@@ -93,12 +100,24 @@ $warningCount = $warningResult->fetch_assoc()['warning_count'];
     <i class="fas fa-times close"></i>
     <h2 class="title">گۆڕانکاری</h2>
     <form id="account-form" method="POST" action="../modules/users/update_user.php">
+
       <label for="new-username">ناوی نوێ:</label>
       <input type="text" id="new-username" name="new_username" value="<?php echo $currentUsername; ?>" required>
+      <span id="new-username-error" class="error-field"></span>
+
       <label for="current-password">وشەی نهێنی ئێستا</label>
       <input type="password" id="current-password" name="current_password" required>
+      <span id="current-password-error" class="error-field"></span>
+
       <label for="new-password">وشەی نهێنی نوێ:</label>
       <input type="password" id="new-password" name="new_password" required>
+      <span id="new-password-error" class="error-field"></span>
+
+      <div class="show-pass-cont">
+        <input type="checkbox" id="show-password">
+        <label for="show-password">پیشاندانی وشەی نهێنی</label>
+      </div>
+
       <button type="submit" class="light-blue-btn">نوێکردنەوە</button>
     </form>
   </div>

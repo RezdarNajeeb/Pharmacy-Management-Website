@@ -48,5 +48,8 @@ foreach ($sales as $sale) {
 
 $_SESSION['messages'][] = ['type' => 'success', 'message' => 'فرۆشتنەکە بەسەرکەوتویی تۆمارکرا.'];
 
+// Log the user activity
+logUserActivity('فرۆشتنێکی ئەنجامدا');
+
 $stmt->close();
 $conn->close();

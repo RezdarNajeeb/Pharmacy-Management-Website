@@ -48,14 +48,16 @@ if (!isset($_SESSION['user_id'])) {
 
       <h2>نوێکردنەوەی ئاگادارکردنەوەکان</h2>
 
-      <div>
-        <label for="warning_quantity">کەمترین بڕ:</label>
-        <input type="number" id="warning_quantity" name="warning_quantity" value="<?php echo htmlspecialchars($warning_quantity); ?>">
-      </div>
+      <div class="warnings-inner">
+        <div>
+          <label for="warning_quantity">کەمترین بڕ:</label>
+          <input type="number" id="warning_quantity" name="warning_quantity" min="1" value="<?php echo htmlspecialchars($warning_quantity); ?>" required>
+        </div>
 
-      <div>
-        <label for="warning_expiry_days">کەمترین ڕۆژ:</label>
-        <input type="number" id="warning_expiry_days" name="warning_expiry_days" value="<?php echo htmlspecialchars($warning_expiry_days); ?>">
+        <div>
+          <label for="warning_expiry_days">کەمترین ڕۆژ:</label>
+          <input type="number" id="warning_expiry_days" name="warning_expiry_days" min="1" value="<?php echo htmlspecialchars($warning_expiry_days); ?>" required>
+        </div>
       </div>
 
       <button type="submit" class="light-blue-btn">نوێکردنەوە</button>
@@ -95,23 +97,46 @@ if (!isset($_SESSION['user_id'])) {
   <script>
     $(function() {
       $('#warnings-form').on('submit', function(e) {
-        e.preventDefault();
-
+        e.preventDefault(); // Prevent default form submission
+    
+        let $warningQtyElement = $('#warning_quantity');
+        let $warningExpiryDaysElement = $('#warning_expiry_days');
+        let warningQty = $.trim($warningQtyElement.val());
+        let warningExpiryDays = $.trim($warningExpiryDaysElement.val());
+    
+        let errorMessage = '';
+    
+        // Clear previous error messages
+        $('.error-field').remove();
+    
+        // Validate input fields
+        if (warningQty === '' || warningExpiryDays === '') {
+          errorMessage = "<span class='error-field'>پێویستە هەموو خانەکان پڕ بکرێتەوە</span>";
+        } else if (isNaN(warningQty) || isNaN(warningExpiryDays)) {
+          errorMessage = "<span class='error-field'>پێویستە تەنها ژمارە بنووسیت.</span>";
+        } else if (parseInt(warningQty) < 1 || parseInt(warningExpiryDays) < 1) {
+          errorMessage = "<span class='error-field'>پێویستە ژمارەکە زیاتر بێت لە ١.</span>";
+        }
+    
+        // Display error message if any
+        if (errorMessage) {
+          $(errorMessage).insertAfter('#warnings-form .warnings-inner').css("display", "block");
+          return;
+        }
+    
+        // Proceed with AJAX request if no errors
         $.ajax({
           url: '../modules/warnings/update_warning_settings.php',
           method: 'POST',
           data: {
-            warning_quantity: $('#warning_quantity').val(),
-            warning_expiry_days: $('#warning_expiry_days').val()
+            warning_quantity: warningQty,
+            warning_expiry_days: warningExpiryDays
           },
-          dataType: 'json',
           success: function(response) {
-            alert(response.message);
             location.reload();
           },
           error: function(xhr, status, error) {
             console.log(xhr.responseText);
-            alert('Error: ' + error);
           }
         });
       });

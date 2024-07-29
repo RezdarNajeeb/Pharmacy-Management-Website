@@ -36,13 +36,14 @@ $systemProfile = $systemResult->fetch_assoc();
     <div class="sys-settings-section">
       <h3>پڕۆفایلی سیستەمەکە</h3>
       <form id="sys-profile-form" enctype="multipart/form-data">
+        <input type="hidden" name="existing-image" value="<?= "../uploads/" . $systemProfile['image']; ?>">
         <div class="sys-profile-image">
           <img src="<?= "../uploads/" . $systemProfile['image']; ?>" alt="System Profile Image" id="profileImage">
           <label for="profileImageInput" class="edit-icon"><i class="fa-regular fa-pen-to-square"></i></label>
-          <input type="file" id="profileImageInput" name="image" accept="image/*" style="display: none;">
+          <input type="file" id="profileImageInput" name="edit-image" accept="image/*" class="file-input">
         </div>
 
-        <input type="text" id="systemName" class="sys-profile-name" name="name" value="<?php echo htmlspecialchars($systemProfile['name'], ENT_QUOTES, 'UTF-8'); ?>">
+        <input type="text" id="systemName" class="sys-profile-name" name="name" value="<?php echo htmlspecialchars($systemProfile['name'], ENT_QUOTES, 'UTF-8'); ?>" required>
 
         <button type="submit" class="light-blue-btn">نوێکردنەوە</button>
       </form>
@@ -56,14 +57,39 @@ $systemProfile = $systemResult->fetch_assoc();
       $('#sys-profile-form').submit(function(e) {
         e.preventDefault();
 
+        const $systemNameElement = $('#systemName');
+        const systemName = $systemNameElement.val();
+        const nameRegex = /^[a-zA-Z\u0600-\u06FF][a-zA-Z0-9\u0600-\u06FF\s]*$/;
+        let errorMessage = '';
+
+        // Clear previous error messages
+        $('.error-field').remove();
+
+        if (!systemName) {
+          errorMessage = "<span class='error-field'>ناوی سیستەم پێویستە پڕبکرێتەوە.</span>";
+        } else if (!nameRegex.test(systemName)) {
+          errorMessage = "<span class='error-field'>ناوی سیستەم پێویستە بە پیت دەست پێبکات.</span>";
+        } else if (systemName.length > 25) {
+          errorMessage = "<span class='error-field'>ناوی سیستەم نابێت زیاتر لە ٢٥ پیت بێت.</span>";
+        }
+
+        if (errorMessage) {
+          $systemNameElement.after(errorMessage);
+          $('.error-field').css("display", "block");
+          return;
+        }
+
         $.ajax({
-          url: '../modules/utilities/update_system_profile.php',
+          url: '../modules/settings/update_system_profile.php',
           type: 'POST',
           data: new FormData(this),
           processData: false,
           contentType: false,
           success: function(response) {
             window.location.reload();
+          },
+          error: function(xhr, status, error) {
+            console.error(error);
           }
         });
       });

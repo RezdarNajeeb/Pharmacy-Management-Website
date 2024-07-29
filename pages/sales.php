@@ -31,13 +31,15 @@ if (!isset($_SESSION['user_id'])) {
       <div class="top">
         <form id="add-sale-form">
           <div class="input-control">
-            <label for="medicine-barcode">بارکۆد</label>
-            <input type="text" id="medicine-barcode" name="barcode" placeholder="بارکۆد بنووسە یان سکان بکە" required>
+            <label for="medicine-barcode">ناو <i class="fa-solid fa-minus"></i> بارکۆد</label>
+            <input type="text" id="add-sale-input" name="barcode" placeholder="ناوی دەرمان بنووسە یان بارکۆد سکان بکە" required>
+            <span id="sale-input-error" class="error-field"></span>
           </div>
 
           <div class="input-control">
             <label for="quantity">بڕ</label>
             <input type="number" id="quantity" name="quantity" min="1" value="1" required>
+            <span id="sale-qty-error" class="error-field"></span>
           </div>
 
           <button type="submit" class="light-green-btn">زیادیکە بۆ خشتەی فرۆشتن</button>
@@ -47,7 +49,8 @@ if (!isset($_SESSION['user_id'])) {
       <div class="bottom">
         <div class="input-control">
           <label for="discount">داشکاندن </label>
-          <input type="number" id="discount" name="discount" min="0" value="0" required>
+          <input type="text" id="discount" name="discount" min="0" value="0" >
+          <span id="discount-error" class="error-field"></span>
         </div>
 
         <h3>کۆی گشتی: <span id="total-price-usd">0.00</span> $ | <span id="total-price-iqd">0</span> د.ع</h3>
@@ -71,9 +74,9 @@ if (!isset($_SESSION['user_id'])) {
         </thead>
         <tbody>
           <!-- Sales items will be added here dynamically -->
-           <tr>
+          <tr>
             <td colspan="7"> هیچ دەرمانێک لە لیستی فرۆشتندا نییە. </td>
-           </tr>
+          </tr>
         </tbody>
       </table>
     </div>

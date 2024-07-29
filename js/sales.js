@@ -2,33 +2,64 @@ $(document).ready(function () {
   const currency = localStorage.getItem("currency");
   const exchangeRate = parseFloat($("#exchange-rate").data("exchange-rate"));
   const sales = [];
-  const salesTableBody = $("#sales-table tbody");
-  const totalPriceUSDElement = $("#total-price-usd");
-  const totalPriceIQDElement = $("#total-price-iqd");
-  const discountedTotalPriceUSDElement = $("#discounted-total-price-usd");
-  const discountedTotalPriceIQDElement = $("#discounted-total-price-iqd");
-  const discountField = $("#discount");
+
+  const $totalPriceUSDElement = $("#total-price-usd");
+  const $totalPriceIQDElement = $("#total-price-iqd");
+  const $discountedTotalPriceUSDElement = $("#discounted-total-price-usd");
+  const $discountedTotalPriceIQDElement = $("#discounted-total-price-iqd");
+  const $discountField = $("#discount");
+
+  const $saleInputElement = $("#add-sale-input");
 
   $("#add-sale-form").on("submit", function (event) {
     event.preventDefault();
 
-    const barcode = $("#medicine-barcode").val().trim();
+    const $saleInputError = $("#sale-input-error");
+    const $saleQtyError = $("#sale-qty-error");
+
+    const saleInput = $saleInputElement.val().trim();
     const quantity = parseInt($("#quantity").val());
 
-    if (!barcode || !quantity || quantity < 1) {
-      alert("Please enter a valid barcode and quantity.");
+    let barcode = null;
+    let medicineName = null;
+
+    if (isNaN(saleInput)) {
+      medicineName = saleInput;
+      if (!medicineName) {
+        $saleInputError.text("ناوی دەرمان یان بارکۆد پێویستە پڕبکرێتەوە.");
+        $saleInputError.css("display", "block");
+        return;
+      }
+    } else {
+      barcode = saleInput;
+      if (!barcode || barcode.length !== 13) {
+        $saleInputError.text(
+          !barcode
+            ? "ناوی دەرمان یان بارکۆد پێویستە پڕبکرێتەوە."
+            : "بارکۆد پێویستە لە ١٣ پیت بێت."
+        );
+        $saleInputError.css("display", "block");
+        return;
+      }
+    }
+
+    if (!quantity) {
+      $saleQtyError.text("بڕ پێویستە پڕبکرێتەوە.");
+      $saleQtyError.css("display", "block");
+      return;
+    } else if (quantity < 1) {
+      $saleQtyError.text("بڕ پێویستە زیاتر بێت لە ١.");
+      $saleQtyError.css("display", "block");
       return;
     }
 
-    addSaleItem(barcode, quantity);
-    $("#medicine-barcode").val("").focus();
-  });
+    $saleInputError.css("display", "none");
+    $saleQtyError.css("display", "none");
 
-  function addSaleItem(barcode, quantity) {
     $.ajax({
       url: "../modules/sales/get_medicine_details.php",
       method: "GET",
-      data: { barcode: barcode },
+      data: { barcode: barcode, medicine_name: medicineName },
       dataType: "json",
       success: function (data) {
         if (data.status === "error") {
@@ -72,116 +103,152 @@ $(document).ready(function () {
         window.location.reload();
       },
     });
-  }
+
+    $saleInputElement.val("").focus();
+  });
 
   function updateSalesTable() {
-    salesTableBody.empty();
+    const $salesTableBody = $("#sales-table tbody").empty();
     let totalPriceUSD = 0;
     let totalPriceIQD = 0;
 
     if (sales.length === 0) {
-      salesTableBody.append(
+      $salesTableBody.append(
         "<tr><td colspan='7'>هیچ دەرمانێک لە لیستی فرۆشتندا نییە.</td></tr>"
       );
     } else {
-      sales.forEach((sale, index) => {
-        const row = $("<tr></tr>");
+      const rows = sales
+        .map((sale, index) => {
+          totalPriceUSD += sale.totalUSD;
+          totalPriceIQD += sale.totalIQD;
 
-        row.append(
-          `<td><img src="../uploads/${sale.image}" alt="${sale.name}"></td>`
-        );
-        row.append(`<td>${sale.name}</td>`);
-        row.append(`<td>${sale.quantity}</td>`);
-        row.append(
-          `<td> 
-          ${(sale.costPrice / exchangeRate).toFixed(2)} $
-          <br><br>
-          ${sale.costPrice.toFixed(2)} د.ع
-        </td>`
-        );
-        row.append(
-          `<td> 
-          ${(sale.sellingPrice / exchangeRate).toFixed(2)} $
-          <br><br>
-          ${sale.sellingPrice.toFixed(2)} د.ع
-        </td>`
-        );
-        row.append(
-          `<td>
-          ${sale.totalUSD.toFixed(2)} $
-          <br><br>
-          ${sale.totalIQD.toFixed(2)} د.ع
-        </td>`
-        );
-        row.append(
-          `<td>
-          <div class="actions">
-            <button type="button" class="remove-sale red-btn" data-index="${index}">سڕینەوە</button> 
-            <button type="button" class="reduce-quantity light-blue-btn" data-index="${index}">کەمکردنەوە</button>
-          </div>
-        </td>`
-        );
+          return `
+                <tr>
+                    <td><img src="../uploads/${sale.image}" alt="${
+            sale.name
+          }"></td>
+                    <td>${sale.name}</td>
+                    <td>${sale.quantity}</td>
+                    <td>
+                        ${(sale.costPrice / exchangeRate).toFixed(2)} $
+                        <br><br>
+                        ${sale.costPrice.toFixed(2)} د.ع
+                    </td>
+                    <td>
+                        ${(sale.sellingPrice / exchangeRate).toFixed(2)} $
+                        <br><br>
+                        ${sale.sellingPrice.toFixed(2)} د.ع
+                    </td>
+                    <td>
+                        ${sale.totalUSD.toFixed(2)} $
+                        <br><br>
+                        ${sale.totalIQD.toFixed(2)} د.ع
+                    </td>
+                    <td>
+                        <div class="actions">
+                          <button type="button" class="increase-quantity light-green-btn" data-index="${index}">زیادکردن</button>
+                          <button type="button" class="reduce-quantity light-blue-btn" data-index="${index}">کەمکردنەوە</button>
+                          <button type="button" class="remove-sale red-btn" data-index="${index}">سڕینەوە</button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        })
+        .join("\n");
 
-        salesTableBody.append(row);
-        totalPriceUSD += sale.totalUSD;
-        totalPriceIQD += sale.totalIQD;
-      });
+      $salesTableBody.append(rows);
     }
 
-    totalPriceUSDElement.text(totalPriceUSD.toFixed(2));
-    totalPriceIQDElement.text(totalPriceIQD.toFixed(2));
+    $totalPriceUSDElement.text(totalPriceUSD.toFixed(2));
+    $totalPriceIQDElement.text(totalPriceIQD.toFixed(2));
     updateDiscountedTotals();
   }
 
   function updateDiscountedTotals() {
-    let totalPriceUSD = parseFloat(totalPriceUSDElement.text());
-    let totalPriceIQD = parseFloat(totalPriceIQDElement.text());
-    const discount = parseFloat(discountField.val()) || 0;
+    const totalPriceUSD = parseFloat($totalPriceUSDElement.text());
+    const totalPriceIQD = parseFloat($totalPriceIQDElement.text());
+    const discount = parseFloat($discountField.val()) || 0;
+
+    let discountedTotalPriceUSD = totalPriceUSD;
+    let discountedTotalPriceIQD = totalPriceIQD;
 
     if (currency === "USD") {
-      totalPriceUSD -= discount;
-      totalPriceIQD = totalPriceUSD * exchangeRate;
+      discountedTotalPriceUSD -= discount;
+      discountedTotalPriceIQD = discountedTotalPriceUSD * exchangeRate;
     } else if (currency === "IQD") {
-      totalPriceIQD -= discount;
-      totalPriceUSD = totalPriceIQD / exchangeRate;
+      discountedTotalPriceIQD -= discount;
+      discountedTotalPriceUSD = discountedTotalPriceIQD / exchangeRate;
     }
 
-    discountedTotalPriceUSDElement.text(totalPriceUSD.toFixed(2));
-    discountedTotalPriceIQDElement.text(totalPriceIQD.toFixed(2));
+    $discountedTotalPriceUSDElement.text(discountedTotalPriceUSD.toFixed(2));
+    $discountedTotalPriceIQDElement.text(discountedTotalPriceIQD.toFixed(2));
   }
 
+  // Cache jQuery selectors
+  const $document = $(document);
+  const $finalizeSaleButton = $("#finalize-sale");
+
   // Event handler to remove a sale item
-  $(document).on("click", ".remove-sale", function () {
+  $document.on("click", ".remove-sale", function () {
     const index = $(this).data("index");
-    sales.splice(index, 1);
+    sales.splice(index, 1); // splice() removes the element at the specified index
     updateSalesTable();
+
+    $saleInputElement.focus();
   });
 
   // Event handler to reduce quantity of a sale item
-  $(document).on("click", ".reduce-quantity", function () {
+  $document.on("click", ".reduce-quantity", function () {
     const index = $(this).data("index");
-    if (sales[index].quantity > 1) {
-      sales[index].quantity--;
-      sales[index].totalIQD = sales[index].quantity * sales[index].sellingPrice;
-      sales[index].totalUSD = sales[index].totalIQD / exchangeRate;
+    const saleItem = sales[index];
+
+    if (saleItem.quantity > 1) {
+      saleItem.quantity--;
+      saleItem.totalIQD = saleItem.quantity * saleItem.sellingPrice;
+      saleItem.totalUSD = saleItem.totalIQD / exchangeRate;
       updateSalesTable();
     }
+
+    $saleInputElement.focus();
+  });
+
+  // Event handler to increase quantity of a sale item
+  $document.on("click", ".increase-quantity", function () {
+    const index = $(this).data("index");
+    const saleItem = sales[index];
+
+    saleItem.quantity++;
+    saleItem.totalIQD = saleItem.quantity * saleItem.sellingPrice;
+    saleItem.totalUSD = saleItem.totalIQD / exchangeRate;
+
+    updateSalesTable();
+    $saleInputElement.focus();
   });
 
   // Event handler to finalize the sale
-  $("#finalize-sale").on("click", function () {
+  $finalizeSaleButton.on("click", function () {
     if (sales.length === 0) {
-      alert("No items in the sale.");
+      alert("هیچ دەرمانێک لە لیستی فرۆشتندا نییە.");
       return;
     }
 
-    const discount = parseFloat(discountField.val()) || 0;
-    const discountedTotalUSD = parseFloat(
-      discountedTotalPriceUSDElement.text()
-    );
-    const discountedTotalIQD = parseFloat(
-      discountedTotalPriceIQDElement.text()
-    );
+    const discount = parseFloat($discountField.val()) || 0;
+    const discountedTotalUSD =
+      parseFloat($discountedTotalPriceUSDElement.text()) || 0;
+    const discountedTotalIQD =
+      parseFloat($discountedTotalPriceIQDElement.text()) || 0;
+
+    const $discountError = $("#discount-error");
+
+    if (!discount) {
+      $discountError.text("داشکاندن پێویستە پڕبکرێتەوە و تەنها ژمارە بێت.");
+      $discountError.css("display", "block");
+      return;
+    } else if (discount < 1) {
+      $discountError.text("داشکاندن پێویستە زیاتر بێت لە ١.");
+      $discountError.css("display", "block");
+      return;
+    }
 
     const saleData = {
       sales: sales,
@@ -208,10 +275,10 @@ $(document).ready(function () {
   });
 
   // Event handler for discount input field
-  discountField.on("input", function () {
+  $discountField.on("input", function () {
     updateDiscountedTotals();
   });
 
-  // Focus on barcode input field on page load
-  $("#medicine-barcode").focus();
+  // Focus on the sale input field when the page loads
+  $saleInputElement.focus();
 });

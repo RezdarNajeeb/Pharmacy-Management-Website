@@ -97,6 +97,92 @@ $(function () {
 
   handleUserBox();
 
+  // Handle the show password checkbox for the account form
+  const showPasswordCheckbox = $("#show-password");
+  const passwordFields = $("#new-password, #current-password");
+
+  showPasswordCheckbox.on("change", function () {
+    const type = this.checked ? "text" : "password";
+    passwordFields.prop("type", type);
+  });
+
+  // Handle the account form submission
+  $("#account-form").on("submit", function (event) {
+    // Get input values
+    const newUsername = $("#new-username").val().trim();
+    const currentPassword = $("#current-password").val().trim();
+    const newPassword = $("#new-password").val().trim();
+
+    // Get error message elements
+    let $newUsernameError = $("#new-username-error");
+    let $currentPasswordError = $("#current-password-error");
+    let $newPasswordError = $("#new-password-error");
+
+    // Clear previous error messages
+    $($newUsernameError, $currentPasswordError, $newPasswordError).text("");
+
+    const usernameRegex = /^[a-zA-Z].*$/;
+    const passwordRegex = /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{8,}$/;
+
+    // Function to set error message and prevent form submission
+    function setError($element, message) {
+      $element.text(message).css("display", "block");
+      event.preventDefault();
+    }
+
+    // Validate new username
+    if (!newUsername) {
+      setError($newUsernameError, "ناوی نوێ پێویستە پڕبکرێتەوە.");
+    } else if (!usernameRegex.test(newUsername)) {
+      setError($newUsernameError, "ناوی نوێ پێویستە بە پیت دەست پێبکات.");
+    } else if (newUsername.length < 3) {
+      setError(
+        $newUsernameError,
+        "ناوی نوێ پێویستە بەلایەنی کەمەوە ٣ پیت بێت."
+      );
+    } else if (newUsername.length > 20) {
+      setError(
+        $newUsernameError,
+        "ناوی نوێ پێویستە بەلایەنی زۆرەوە ٢٠ پیت بێت."
+      );
+    }
+
+    // Validate current password
+    if (!currentPassword) {
+      setError($currentPasswordError, "وشەی نهێنی ئێستا پێویستە پڕبکرێتەوە.");
+    } else if (currentPassword.length < 8) {
+      setError(
+        $currentPasswordError,
+        "وشەی نهێنی ئێستا پێویستە بەلایەنی کەمەوە ٨ پیت بێت."
+      );
+    } else if (!passwordRegex.test(currentPassword)) {
+      setError(
+        $currentPasswordError,
+        "وشەی نهێنی ئێستا پێویستە بەلایەنی کەمەوە ٨ پیت بێت و بەلایەنی کەمەوە ژمارەیەک و پیتێک و هێمایەکی تێدابێت."
+      );
+    }
+
+    // Validate new password
+    if (!newPassword) {
+      setError($newPasswordError, "وشەی نهێنی نوێ پێویستە پڕبکرێتەوە.");
+    } else if (newPassword.length < 8) {
+      setError(
+        $newPasswordError,
+        "وشەی نهێنی نوێ پێویستە بەلایەنی کەمەوە ٨ پیت بێت."
+      );
+    } else if (!passwordRegex.test(newPassword)) {
+      setError(
+        $newPasswordError,
+        "وشەی نهێنی نوێ پێویستە بەلایەنی کەمەوە ٨ پیت بێت و بەلایەنی کەمەوە ژمارەیەک و پیتێک و هێمایەکی تێدابێت."
+      );
+    } else if (newPassword === currentPassword) {
+      setError(
+        $newPasswordError,
+        "وشەی نهێنی نوێ نابێت وەک وشەی نهێنی ئێستا بێت."
+      );
+    }
+  });
+
   function updateFileNameDisplay() {
     // for add-medicine
     $("#image-input").on("change", function () {
@@ -195,6 +281,23 @@ $(function () {
           },
         });
       }
+    }
+  });
+
+  // Update exchange rate form validation
+  $("#update-exc-rate-form").on("submit", function (event) {
+    const $excRateInput = $("#exchange-rate-input");
+    const excRate = $excRateInput.val().trim();
+
+    if (!excRate) {
+      alert("نرخی ئەمڕۆ پێویستە پڕبکرێتەوە.");
+      event.preventDefault();
+    } else if (isNaN(excRate)) {
+      alert("نرخی ئەمڕۆ پێویستە تەنها ژمارە بێت.");
+      event.preventDefault();
+    } else if (excRate <= 0) {
+      alert("نرخی ئەمڕۆ پێویستە زیاتر بێت لە ٠.");
+      event.preventDefault();
     }
   });
 });
