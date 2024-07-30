@@ -279,6 +279,106 @@ $(document).ready(function () {
     updateDiscountedTotals();
   });
 
+  $("#sales-history-table").on("click", ".view-sale-details", function () {
+    const $this = $(this);
+    const saleId = $this.data("id");
+    const number = $this.data("number");
+    const username = $this.data("username");
+    const saleDate = $this.data("sale-date");
+
+    $.ajax({
+      url: "../modules/sales/get_sale_details.php",
+      method: "GET",
+      data: { sale_id: saleId },
+      dataType: "json",
+      success: function (response) {
+        if (response.status === "error") {
+          alert(response.message);
+          return;
+        }
+
+        const $modal = $("#sale-details-modal");
+        const $saleDetails = $("#sale-details");
+
+        $modal.find("h2").text(`وردەکاریی فرۆشتنی ژمارە ${number}`).css("margin-bottom", "1rem");
+
+        const data = response.data;
+        const sale = JSON.parse(data.sale_details);
+        const totalIQD = parseFloat(data.total);
+        const discount = parseFloat(data.discount);
+        const discountedTotalIQD = parseFloat(data.discounted_total);
+
+        let saleDetailsHtml = `
+          <table>
+            <thead>
+              <tr>
+                <th>وێنە</th>
+                <th>ناو</th>
+                <th>نرخی فرۆشتن</th>
+                <th>بڕ</th>
+                <th>کۆی گشتی</th>
+              </tr>
+            </thead>
+            <tbody>
+        `;
+
+        sale.forEach(function (item) {
+          saleDetailsHtml += `
+            <tr>
+              <td><img src="../uploads/${item.image}" alt="${item.name}"></td>
+              <td>${item.name}</td>
+              <td>${item.sellingPrice}</td>
+              <td>${item.quantity}</td>
+              <td>
+                ${item.totalIQD} د.ع <br/><br/>
+                ${item.totalUSD.toFixed(2)} $
+              </td>
+            </tr>
+          `;
+        });
+
+        saleDetailsHtml += `
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="3">کۆی گشتی فرۆشتنەکە</td>
+                <td colspan="2">${totalIQD}</td>
+              </tr>
+              <tr>
+                <td colspan="3">داشکاندن</td>
+                <td colspan="2">${discount}</td>
+              </tr>
+              <tr>
+                <td colspan="3">کۆی گشتی فرۆشتنەکە دوای داشکاندن</td>
+                <td colspan="2">${discountedTotalIQD}</td>
+              </tr>
+            </tfoot>
+          </table>
+          <p>ئەم فرۆشتنە ئەنجام دراوە لەلایەن ${username} لە بەرواری ${saleDate}.</p>
+        `;
+
+        $saleDetails.html(saleDetailsHtml).css("direction", "rtl");
+
+        // Show the modal
+        $modal.css("visibility", "visible");
+      },
+      error: function (error) {
+        console.error("Error fetching sale details:", error);
+      },
+    });
+  });
+
+  $(".close").on("click", function () {
+    $("#sale-details-modal").css("visibility", "hidden");
+  });
+
+  // Close the modal by clicking outside of it
+  $(window).click(function (event) {
+    if (event.target == $("#sale-details-modal")[0]) {
+      $("#sale-details-modal").css("visibility", "hidden");
+    }
+  });
+
   // Focus on the sale input field when the page loads
   $saleInputElement.focus();
 });

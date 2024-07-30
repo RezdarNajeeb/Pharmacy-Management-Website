@@ -22,7 +22,7 @@ if (!isset($_SESSION['user_id'])) {
 <body>
   <?php
   require_once '../includes/header.php';
-  require_once '../includes/messages.php'
+  require_once '../includes/messages.php';
   ?>
 
   <div class="sales-history-container">
@@ -31,51 +31,74 @@ if (!isset($_SESSION['user_id'])) {
     <table id="sales-history-table" class="normal-table">
       <thead>
         <tr>
-          <th>وێنە</th>
-          <th>ناو</th>
-          <th>بڕ</th>
-          <th>نرخی کڕین</th>
-          <th>نرخی فرۆشتن</th>
+          <th>#</th>
           <th>کۆی گشتی</th>
           <th>داشکاندن</th>
           <th>دوای داشکاندن</th>
           <th>فرۆشراوە لەلایەن</th>
           <th>بەروار</th>
+          <th>کردار</th>
         </tr>
       </thead>
       <tbody>
         <?php
-        $stmt = $conn->prepare("SELECT medicines.image, medicines.name, sales_history.quantity, sales_history.cost_price, sales_history.selling_price, sales_history.total, sales_history.discount, sales_history.discounted_total, users.username, sales_history.created_at FROM sales_history JOIN medicines ON sales_history.medicine_id = medicines.id JOIN users ON sales_history.user_id = users.id ORDER BY sales_history.created_at DESC");
+        $stmt = $conn->prepare("SELECT sales_history.id, sales_history.total, sales_history.discount, sales_history.discounted_total, users.username, sales_history.created_at FROM sales_history JOIN users ON sales_history.user_id = users.id ORDER BY sales_history.created_at DESC");
         $stmt->execute();
         $result = $stmt->get_result();
-        if($result->num_rows === 0) {
-          echo '<tr><td colspan="10">هیچ فرۆشتنێک نەدۆزرایەوە</td></tr>';
+        if ($result->num_rows === 0) {
+          echo '<tr><td colspan="5">هیچ فرۆشتنێک نەدۆزرایەوە</td></tr>';
         }
+
+        $counter = 1;
         while ($row = $result->fetch_assoc()) {
-          echo '<tr>';
-          echo '<td><img src="../uploads/' . htmlspecialchars($row['image']) . '"</td>';
-          echo '<td>' . htmlspecialchars($row['name']) . '</td>';
-          echo '<td>' . htmlspecialchars($row['quantity']) . '</td>';
-          echo '<td>' . htmlspecialchars(number_format($row['cost_price'], 2)) . '</td>';
-          echo '<td>' . htmlspecialchars(number_format($row['selling_price'], 2)) . '</td>';
-          echo '<td>' . htmlspecialchars(number_format($row['total'], 2)) . '</td>';
-          echo '<td>' . htmlspecialchars(number_format($row['discount'], 2)) . '</td>';
-          echo '<td>' . htmlspecialchars(number_format($row['discounted_total'], 2)) . '</td>';
-          echo '<td>' . htmlspecialchars($row['username']) . '</td>';
-          echo '<td>' . htmlspecialchars($row['created_at']) . '</td>';
-          echo '</tr>';
+          $id = htmlspecialchars($row['id']);
+          $number = htmlspecialchars($counter);
+          $total = htmlspecialchars(number_format($row['total'], 2));
+          $discount = htmlspecialchars(number_format($row['discount'], 2));
+          $discountedTotal = htmlspecialchars(number_format($row['discounted_total'], 2));
+          $username = htmlspecialchars($row['username']);
+          $createdAt = htmlspecialchars($row['created_at']);
+
+          echo <<<HTML
+            <tr>
+                <td>$number</td>
+                <td>$total</td>
+                <td>$discount</td>
+                <td>$discountedTotal</td>
+                <td>$username</td>
+                <td>$createdAt</td>
+                <td>
+                    <button 
+                        data-id="$id" 
+                        data-number="$number" 
+                        data-username="$username" 
+                        data-sale-date="$createdAt" 
+                        class="light-blue-btn view-sale-details">
+                        وردەکاری
+                    </button>
+                </td>
+            </tr>
+            HTML;
+
+          $counter++;
         }
         $stmt->close();
         ?>
       </tbody>
     </table>
+
+    <div id="sale-details-modal" class="modal">
+      <div class="modal-content">
+        <i class="fas fa-times close"></i>
+        <h2 class="title"></h2>
+        <div id="sale-details"></div>
+      </div>
+    </div>
   </div>
-
-
 
   <script src="../js/lib/jquery-3.7.1.min.js"></script>
   <script src="../js/scripts.js"></script>
-  <script src="../js/delete_all.js"></script>
+  <script src="../js/sales.js"></script>
 </body>
 
 </html>

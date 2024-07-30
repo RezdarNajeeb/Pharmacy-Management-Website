@@ -3,7 +3,9 @@ session_start();
 require_once '../../includes/db.php';
 require_once '../utilities/log_user_activity.php';
 
-if (!isset($_SESSION['user_id'])) {
+$user_id = $_SESSION['user_id'];
+
+if (!isset($user_id)) {
   echo json_encode(['status' => 'error', 'message' => 'Unauthorized']);
   exit();
 }
@@ -18,11 +20,18 @@ if (empty($data)) {
 $sales = $data['sales'];
 $discount = floatval($data['discount']);
 $discounted_total = floatval($data['discountedTotalIQD']);
+$sale_details = json_encode($sales);
 
-// Prepare statements once
-$insert_stmt = $conn->prepare("INSERT INTO sales_history (medicine_id, quantity, cost_price, selling_price, total, discount, discounted_total, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-$insert_stmt->bind_param('iidddddi', $medicine_id, $quantity, $cost_price, $selling_price, $total, $discount, $discounted_total, $_SESSION['user_id']);
+// Calculate total sale amount
+$total = array_reduce($sales, function ($carry, $sale) {
+  return $carry + $sale['totalIQD'];
+}, 0);
 
+// Prepare statement to insert the entire sale record
+$insert_stmt = $conn->prepare("INSERT INTO sales_history (user_id, total, discount, discounted_total, sale_details) VALUES (?, ?, ?, ?, ?)");
+$insert_stmt->bind_param('iddds', $user_id, $total, $discount, $discounted_total, $sale_details);
+
+// Prepare statements to update medicine quantities and check warnings
 $select_medicine_stmt = $conn->prepare("SELECT quantity, expiry_date FROM medicines WHERE id = ?");
 $select_medicine_stmt->bind_param('i', $medicine_id);
 
@@ -34,16 +43,14 @@ $update_medicine_stmt->bind_param('ii', $quantity, $medicine_id);
 $conn->begin_transaction();
 
 try {
+  // Insert the sale record
+  if (!$insert_stmt->execute()) {
+    throw new Exception('کێشەیەک ڕوویدا: ' . $insert_stmt->error);
+  }
+
   foreach ($sales as $sale) {
     $medicine_id = intval($sale['id']);
     $quantity = intval($sale['quantity']);
-    $cost_price = floatval($sale['costPrice']);
-    $selling_price = floatval($sale['sellingPrice']);
-    $total = floatval($sale['totalIQD']);
-
-    if (!$insert_stmt->execute()) {
-      throw new Exception('کێشەیەک ڕوویدا: ' . $insert_stmt->error);
-    }
 
     $select_medicine_stmt->execute();
     $medicine_result = $select_medicine_stmt->get_result()->fetch_assoc();
@@ -65,7 +72,7 @@ try {
     }
 
     if ($medicine_DB_qty <= $warning_qty) {
-      $_SESSION['messages'][] = ['type' => 'info', 'message' => 'ئاگاداربە بڕی ئەم دەرمانە ' . $sale['name'] . 'گەشتووەتە بڕی ئاگادارکردنەوە.'];
+      $_SESSION['messages'][] = ['type' => 'info', 'message' => 'ئاگاداربە بڕی ئەم دەرمانە ' . $sale['name'] . ' گەشتووەتە بڕی ئاگادارکردنەوە.'];
     }
 
     if (!$update_medicine_stmt->execute()) {

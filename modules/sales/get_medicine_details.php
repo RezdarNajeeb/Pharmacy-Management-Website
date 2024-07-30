@@ -16,7 +16,7 @@ $stmt->execute();
 $result = $stmt->get_result();
 
 if ($result->num_rows === 0) {
-  $_SESSION['messages'][] = ['type' => 'error', 'message' => 'هیچ دەرمانێک بەم بارکۆدە نەدۆزرایەوە.'];
+  $_SESSION['messages'][] = ['type' => 'error', 'message' => 'هیچ دەرمانێک بەم ناوە یان بارکۆدە نەدۆزرایەوە.'];
   exit();
 }
 
