@@ -210,10 +210,9 @@ $(function () {
   setupImagePreview("#edit-image", "#current-img");
 
   // Unified validation function
-  function validateForm(form) {
+  function validateForm(form, formId) {
     let isValid = true;
 
-    // Error messages corresponding to each field
     const errorMessages = [
       "ناوی دەرمان پێویستە پڕبکرێتەوە.",
       "جۆر پێویستە پڕبکرێتەوە.",
@@ -224,30 +223,89 @@ $(function () {
       "بارکۆد پێویستە پڕبکرێتەوە.",
     ];
 
-    // Clear previous error messages
-    form.find(".error-field").remove();
+    const inputRegex = /^[a-z][a-z0-9-]*(?:[ -]?[a-z0-9-]+)*$/i;
+    const fieldSelectors = {
+      0: "ناوی دەرمان",
+      1: "جۆر",
+    };
 
-    // Common validation rules for edit and add medicine forms
+    form.find(".error-field").remove();
     const fields = form.find(".field");
+
+    const addErrorMessage = (element, message) => {
+      const errorMessage = `<span class="error-field">${message}</span>`;
+      $(errorMessage)
+        .insertAfter($(element).parent())
+        .css({
+          display: "block",
+          margin:
+            formId === "edit-medicine-form" ? "-1rem 0 1rem 0" : "0 0 1rem 0",
+        });
+
+      isValid = false;
+    };
 
     fields.each(function (index) {
       const value = $(this).val().trim();
+
       if (!value && errorMessages[index]) {
-        const errorMessage = `<span class="error-field">${errorMessages[index]}</span>`;
-        $(errorMessage).insertAfter(this).css("display", "block");
-        isValid = false;
+        addErrorMessage(this, errorMessages[index]);
+        return;
       }
 
-      // Barcode specific validation
-      if (index === errorMessages.length - 1 && value) {
+      if (fieldSelectors[index] && value && !inputRegex.test(value)) {
+        addErrorMessage(
+          this,
+          `${fieldSelectors[index]} دەبێت بە پیت دەست پێبکات و تەنها ژمارە و پیت و بۆشایی و - ڕێگەپێدراوە.`
+        );
+        return;
+      }
+
+      if (index === 6 && value) {
         if (value.length !== 13) {
-          const errorMessage = `<span class="error-field">بارکۆد پێویستە لە ١٣ پیت بێت.</span>`;
-          $(errorMessage).insertAfter(this).css("display", "block");
-          isValid = false;
+          addErrorMessage(this, "بارکۆد پێویستە ١٣ ژمارە بێت.");
         } else if (isNaN(value)) {
-          const errorMessage = `<span class="error-field">بارکۆد پێویستە تەنها ژمارە بێت.</span>`;
-          $(errorMessage).insertAfter(this).css("display", "block");
-          isValid = false;
+          addErrorMessage(this, "بارکۆد پێویستە تەنها ژمارە بێت.");
+        }
+        return;
+      }
+
+      if ((index === 2 || index === 3) && value) {
+        if (isNaN(value)) {
+          addErrorMessage(
+            this,
+            "نرخی کڕین و نرخی فرۆشتن پێویستە تەنها ژمارە بێت."
+          );
+        } else if (value <= 0 || value > 1000000) {
+          const rangeMessage =
+            value <= 0
+              ? "نرخی کڕین و نرخی فرۆشتن پێویستە زیاتر بێت لە ١."
+              : "نرخی کڕین و نرخی فرۆشتن پێویستە کەمتر بێت لە ١٠٠٠٠٠٠.";
+          addErrorMessage(this, rangeMessage);
+        }
+
+        const costPriceSelector =
+          formId === "add-form-medicine" ? "#cost_price" : "#edit-cost_price";
+        const sellingPriceSelector =
+          formId === "add-form-medicine"
+            ? "#selling_price"
+            : "#edit-selling_price";
+
+        const costingPrice = parseFloat($(costPriceSelector).val().trim());
+        const sellingPrice = parseFloat($(sellingPriceSelector).val().trim());
+
+        if (costingPrice && sellingPrice && sellingPrice <= costingPrice) {
+          if (index === 3) {
+            addErrorMessage(
+              this,
+              "نرخی فرۆشتن پێویستە زیاتر بێت لە نرخی کڕین."
+            );
+          } else {
+            addErrorMessage(
+              this,
+              "نرخی کڕین پێویستە کەمتر بێت لە نرخی فرۆشتن."
+            );
+          }
         }
       }
     });
@@ -258,29 +316,27 @@ $(function () {
   // Form submit event handler
   $("#edit-medicine-form, #add-medicine-form").on("submit", function (event) {
     const form = $(this);
-    const formId = form.attr("id"); // Get the form ID correctly
+    const formId = form.attr("id");
 
-    if (!validateForm(form)) {
+    if (!validateForm(form, formId)) {
       event.preventDefault();
-    } else {
-      if (formId === "edit-medicine-form") {
-        event.preventDefault(); // Prevent the default form submission
+    } else if (formId === "edit-medicine-form") {
+      event.preventDefault();
 
-        // Handle AJAX request for the edit-medicine-form
-        $.ajax({
-          url: "../modules/medicines/update_medicine.php",
-          type: "POST",
-          data: new FormData(this),
-          contentType: false,
-          processData: false,
-          success: function (response) {
-            location.reload(); // Reload the page on success
-          },
-          error: function (xhr, status, error) {
-            alert(xhr.responseText); // Show error message on failure
-          },
-        });
-      }
+      // Handle AJAX request for the edit-medicine-form
+      $.ajax({
+        url: "../modules/medicines/update_medicine.php",
+        type: "POST",
+        data: new FormData(this),
+        contentType: false,
+        processData: false,
+        success: function (response) {
+          location.reload(); // Reload the page on success
+        },
+        error: function (xhr, status, error) {
+          alert(xhr.responseText); // Show error message on failure
+        },
+      });
     }
   });
 

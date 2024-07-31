@@ -97,18 +97,48 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
       <form action="medicines.php" id="add-medicine-form" method="post" enctype="multipart/form-data">
         <input type="hidden" name="currency" value="USD">
         <input type="hidden" name="exchange_rate" value="1450">
-        <input type="text" class="field" name="name" placeholder="ناوی دەرمان" required>
-        <input type="text" class="field" name="category" placeholder="جۆر" required>
-        <input type="number" class="field" name="cost_price" min="1" placeholder="نرخی کڕین" required>
-        <input type="number" class="field" name="selling_price" min="1" placeholder="نرخی فرۆشتن" required>
-        <input type="number" class="field" name="quantity" min="1" placeholder="بڕ" required>
-        <input type="date" class="field" name="expiry_date" placeholder="بەسەرچوونی" required>
+
+        <div>
+          <label for="name">ناوی دەرمان</label>
+          <input type="text" class="field" name="name" id="name" placeholder="ناوی دەرمان بنووسە" required>
+        </div>
+
+        <div>
+          <label for="category">جۆر</label>
+          <input type="text" class="field" name="category" id="category" placeholder="جۆری دەرمان بنووسە" required>
+        </div>
+
+        <div>
+          <label for="cost_price">نرخی کڕین</label>
+          <input type="number" class="field" name="cost_price" id="cost_price" min="1" placeholder="نرخی کڕینی بنووسە" required>
+        </div>
+
+        <div>
+          <label for="selling_price">نرخی فرۆشتن</label>
+          <input type="number" class="field" name="selling_price" id="selling_price" min="1" placeholder="نرخی فرۆشتنی بنووسە" required>
+        </div>
+
+        <div>
+          <label for="quantity">بڕ</label>
+          <input type="number" class="field" name="quantity" id="quantity" min="1" placeholder="بڕی دەرمان بنووسە" required>
+        </div>
+
+        <div>
+          <label for="expiry_date">بەسەرچوونی</label>
+          <input type="date" class="field" name="expiry_date" id="expiry_date" placeholder="بەسەرچوونی بنووسە" required>
+        </div>
+
         <div class="file-upload">
           <input type="file" name="image" id="image-input" class="file-input" accept="image/*" required>
           <label for="image-input" class="light-blue-btn file-choose-btn">وێنەیەک هەڵبژێرە</label>
           <span id="image-name" class="file-name">هیچ وێنەیەک هەڵنەبژێردراوە</span>
         </div>
-        <input type="text" class="field" name="barcode" id="barcode" placeholder="بارکۆد" required>
+
+        <div>
+          <label for="barcode">بارکۆد</label>
+          <input type="text" class="field" name="barcode" id="barcode" placeholder="بارکۆد بنووسە یان سکان بکە" required>
+        </div>
+
         <button type="submit" class="light-green-btn" name="add_medicine">زیادکردنی دەرمان</button>
       </form>
     </div>
@@ -146,18 +176,48 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
         <input type="hidden" name="existing_image" id="existing-image">
         <input type="hidden" name="currency" value="USD">
         <input type="hidden" name="exchange_rate" value="1450">
+
         <div class="current-img-cont">
           <img id="current-img" src="" alt="Current Image">
           <label for="edit-image" class="edit-icon"><i class="fa-regular fa-pen-to-square"></i></label>
           <input type="file" id="edit-image" name="image" accept="image/*" class="file-input">
         </div>
-        <input type="text" name="name" id="edit-name" class="field" placeholder="ناوی دەرمان" required>
-        <input type="text" name="category" id="edit-category" class="field" placeholder="پۆل" required>
-        <input type="number" name="cost_price" min="1" id="edit-cost_price" class="field" placeholder="نرخی کڕین" required>
-        <input type="number" name="selling_price" min="1" id="edit-selling_price" class="field" placeholder="نرخی فرۆشتن" required>
-        <input type="number" name="quantity" min="1" id="edit-quantity" class="field" placeholder="بڕ" required>
-        <input type="date" name="expiry_date" id="edit-expiry_date" class="field" placeholder="بەسەرچوونی" required>
-        <input type="text" name="barcode" id="edit-barcode" class="field" placeholder="بارکۆد" required>
+
+        <div>
+          <label for="edit-name">ناوی دەرمان</label>
+          <input type="text" name="name" id="edit-name" class="field" placeholder="ناوی دەرمان بنووسە" required>
+        </div>
+
+        <div>
+          <label for="edit-category">جۆر</label>
+          <input type="text" name="category" id="edit-category" class="field" placeholder="جۆری دەرمان بنووسە" required>
+        </div>
+
+        <div>
+          <label for="edit-cost_price">نرخی کڕین</label>
+          <input type="number" name="cost_price" min="1" id="edit-cost_price" class="field" placeholder="نرخی کڕینی بنووسە" required>
+        </div>
+
+        <div>
+          <label for="edit-selling_price">نرخی فرۆشتن</label>
+          <input type="number" name="selling_price" min="1" id="edit-selling_price" class="field" placeholder="نرخی فرۆشتنی بنووسە" required>
+        </div>
+
+        <div>
+          <label for="edit-quantity">بڕ</label>
+          <input type="number" name="quantity" min="1" id="edit-quantity" class="field" placeholder="بڕی دەرمان بنووسە" required>
+        </div>
+
+        <div>
+          <label for="edit-expiry_date">بەسەرچوونی</label>
+          <input type="date" name="expiry_date" id="edit-expiry_date" class="field" placeholder="بەسەرچوونی بنووسە" required>
+        </div>
+
+        <div>
+          <label for="edit-barcode">بارکۆد</label>
+          <input type="text" name="barcode" id="edit-barcode" class="field" placeholder="بارکۆد بنووسە یان سکان بکە" required>
+        </div>
+
         <button type="submit" class="light-blue-btn">نوێکردنەوە</button>
       </form>
     </div>
