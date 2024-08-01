@@ -19,17 +19,18 @@ if (empty($data)) {
 
 $sales = $data['sales'];
 $discount = floatval($data['discount']);
-$discounted_total = floatval($data['discountedTotalIQD']);
+$discount_currency = $data['discountCurrency'];
+$discounted_totalIQD = floatval($data['discountedTotalIQD']);
 $sale_details = json_encode($sales);
 
 // Calculate total sale amount
-$total = array_reduce($sales, function ($carry, $sale) {
+$totalIQD = array_reduce($sales, function ($carry, $sale) {
   return $carry + $sale['totalIQD'];
 }, 0);
 
 // Prepare statement to insert the entire sale record
-$insert_stmt = $conn->prepare("INSERT INTO sales_history (user_id, total, discount, discounted_total, sale_details) VALUES (?, ?, ?, ?, ?)");
-$insert_stmt->bind_param('iddds', $user_id, $total, $discount, $discounted_total, $sale_details);
+$insert_stmt = $conn->prepare("INSERT INTO sales_history (user_id, totalIQD, discount, discount_currency, discounted_totalIQD, sale_details) VALUES (?, ?, ?, ?, ?, ?)");
+$insert_stmt->bind_param('iddsds', $user_id, $totalIQD, $discount, $discount_currency, $discounted_totalIQD, $sale_details);
 
 // Prepare statements to update medicine quantities and check warnings
 $select_medicine_stmt = $conn->prepare("SELECT quantity, expiry_date FROM medicines WHERE id = ?");

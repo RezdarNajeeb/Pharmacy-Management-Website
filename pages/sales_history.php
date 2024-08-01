@@ -42,7 +42,7 @@ if (!isset($_SESSION['user_id'])) {
       </thead>
       <tbody>
         <?php
-        $stmt = $conn->prepare("SELECT sales_history.id, sales_history.total, sales_history.discount, sales_history.discounted_total, users.username, sales_history.created_at FROM sales_history JOIN users ON sales_history.user_id = users.id ORDER BY sales_history.created_at DESC");
+        $stmt = $conn->prepare("SELECT sales_history.id, sales_history.totalIQD, sales_history.discount, sales_history.discount_currency, sales_history.discounted_totalIQD, users.username, sales_history.created_at FROM sales_history JOIN users ON sales_history.user_id = users.id ORDER BY sales_history.created_at DESC");
         $stmt->execute();
         $result = $stmt->get_result();
         if ($result->num_rows === 0) {
@@ -53,18 +53,30 @@ if (!isset($_SESSION['user_id'])) {
         while ($row = $result->fetch_assoc()) {
           $id = htmlspecialchars($row['id']);
           $number = htmlspecialchars($counter);
-          $total = htmlspecialchars(number_format($row['total'], 2));
-          $discount = htmlspecialchars(number_format($row['discount'], 2));
-          $discountedTotal = htmlspecialchars(number_format($row['discounted_total'], 2));
+
+          $totalIQD = htmlspecialchars($row['totalIQD']);
+          $totalUSD = floatval($totalIQD) / $exchange_rate;
+
+          if ($row['discount_currency'] === 'USD') {
+            $discountUSD = htmlspecialchars(number_format($row['discount'], 2));
+            $discountIQD = floatval($discountUSD) * $exchange_rate;
+          } else {
+            $discountIQD = htmlspecialchars(number_format($row['discount'], 2));
+            $discountUSD = floatval($discountIQD) / $exchange_rate;
+          }
+
+          $discountedTotalIQD = htmlspecialchars($row['discounted_totalIQD']);
+          $discountedTotalUSD = floatval($discountedTotalIQD) / $exchange_rate;
+
           $username = htmlspecialchars($row['username']);
           $createdAt = htmlspecialchars($row['created_at']);
 
           echo <<<HTML
             <tr>
                 <td>$number</td>
-                <td>$total</td>
-                <td>$discount</td>
-                <td>$discountedTotal</td>
+                <td>$totalUSD $<br><br>$totalIQD IQD</td>
+                <td>$discountUSD $<br><br>$discountIQD IQD</td>
+                <td>$discountedTotalUSD $<br><br>$discountedTotalIQD IQD</td>
                 <td>$username</td>
                 <td>$createdAt</td>
                 <td>

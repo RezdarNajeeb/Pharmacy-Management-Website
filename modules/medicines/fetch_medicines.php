@@ -45,8 +45,8 @@ if (!empty($search_value)) {
 $columns = [
   2 => 'name',
   3 => 'category',
-  4 => 'cost_price',
-  5 => 'selling_price',
+  4 => ['cost_price', 'currency'],
+  5 => ['selling_price', 'currency'],
   6 => 'quantity',
   7 => 'expiry_date',
 ];

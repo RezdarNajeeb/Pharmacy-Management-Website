@@ -22,12 +22,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $barcode = $_POST['barcode'];
   $existing_image = $_POST['existing_image'];
 
-  // convert cost price and selling price to USD if currency is USD
-  if ($currency == 'USD') {
-    $cost_price = $cost_price * $exchange_rate;
-    $selling_price = $selling_price * $exchange_rate;
-  }
-
   // Handle image upload
   if (!empty($_FILES['image']['name'])) {
     $image = $_FILES['image']['name'];
@@ -40,8 +34,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $image = $existing_image;
   }
 
-  $stmt = $conn->prepare("UPDATE medicines SET name=?, category=?, cost_price=?, selling_price=?, quantity=?, expiry_date=?, barcode=?, image=? WHERE id=?");
-  $stmt->bind_param("ssddisssi", $name, $category, $cost_price, $selling_price, $quantity, $expiry_date, $barcode, $image, $id);
+  $stmt = $conn->prepare("UPDATE medicines SET name=?, category=?, cost_price=?, selling_price=?, currency=?, quantity=?, expiry_date=?, barcode=?, image=? WHERE id=?");
+  $stmt->bind_param("ssddsisssi", $name, $category, $cost_price, $selling_price, $currency, $quantity, $expiry_date, $barcode, $image, $id);
 
   if ($stmt->execute()) {
     // Log the activity

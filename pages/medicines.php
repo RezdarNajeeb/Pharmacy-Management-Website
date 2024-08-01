@@ -22,20 +22,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
   $expiry_date = $_POST['expiry_date'];
   $barcode = $_POST['barcode'];
 
-  // convert cost price and selling price to USD if currency is USD
-  if ($currency == 'USD') {
-    $cost_price = $cost_price * $exchange_rate;
-    $selling_price = $selling_price * $exchange_rate;
-  }
-
   // Handle image upload
   $image = $_FILES['image']['name'];
   $target_dir = "../uploads/";
   $target_file = $target_dir . basename($image);
 
   if (move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
-    $stmt = $conn->prepare("INSERT INTO medicines (name, category, cost_price, selling_price, quantity, expiry_date, barcode, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("ssddisss", $name, $category, $cost_price, $selling_price, $quantity, $expiry_date, $barcode, $image);
+    $stmt = $conn->prepare("INSERT INTO medicines (name, category, cost_price, selling_price, currency, quantity, expiry_date, barcode, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("ssddsisss", $name, $category, $cost_price, $selling_price, $currency, $quantity, $expiry_date, $barcode, $image);
 
     try {
       if ($stmt->execute() === TRUE) {
@@ -272,14 +266,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
           },
           {
             "data": "cost_price",
-            "render": function(data) {
-              return (data / <?= $exchange_rate ?>).toFixed(2) + ' $<br><br>' + parseFloat(data).toFixed(0) + ' د.ع';
+            "render": function(data, type, row) {
+              var costPrice = row['cost_price'];
+              var currency = row['currency'];
+
+              if (currency === 'USD') {
+                return parseFloat(costPrice).toFixed(2) + ' $<br><br>' + (costPrice * <?= $exchange_rate ?>).toFixed(0) + ' د.ع';
+              } else {
+                return (costPrice / <?= $exchange_rate ?>).toFixed(2) + ' $<br><br>' + parseFloat(costPrice).toFixed(0) + ' د.ع';
+              }
             }
           },
           {
             "data": "selling_price",
-            "render": function(data) {
-              return (data / <?= $exchange_rate ?>).toFixed(2) + ' $<br><br>' + parseFloat(data).toFixed(0) + ' د.ع';
+            "render": function(data, type, row) {
+              var sellingPrice = row['selling_price'];
+              var currency = row['currency'];
+
+              if (currency === 'USD') {
+                return parseFloat(sellingPrice).toFixed(2) + ' $<br><br>' + (sellingPrice * <?= $exchange_rate ?>).toFixed(0) + ' د.ع';
+              } else {
+                return (sellingPrice / <?= $exchange_rate ?>).toFixed(2) + ' $<br><br>' + parseFloat(sellingPrice).toFixed(0) + ' د.ع';
+              }
             }
           },
           {
