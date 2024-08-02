@@ -178,7 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
         <input type="hidden" name="exchange_rate" value="1450">
 
         <div class="current-img-cont">
-          <img id="current-img" src="" alt="Current Image">
+          <img id="current-img" src="" alt="Medicine Image">
           <label for="edit-image" class="edit-icon"><i class="fa-regular fa-pen-to-square"></i></label>
           <input type="file" id="edit-image" name="image" accept="image/*" class="file-input">
         </div>
@@ -325,7 +325,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
           $('.dataTables_filter input').focus();
           $('#medicines-table_wrapper').prepend('<h2 class="title">دەرمانەکان</h2>');
         },
-        "scrollY": "330px", // Set vertical scrollable area height
+        "scrollY": "500px", // Set vertical scrollable area height
         "scrollX": true, // Enable horizontal scrolling
         "scrollCollapse": true, // Collapse the table to fit the content if less than set height
         "scrollXInner": "100%", // Allow horizontal scrolling to extend beyond the table width
@@ -345,7 +345,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
           const medicine = response.medicine;
           $('#edit-id').val(medicine.id);
           $('#edit-name').val(medicine.name);
-          $('#current-img').attr('src', `../uploads/${medicine.image}`);
+          if (medicine.image) {
+            $('#current-img').attr('src', `../uploads/${medicine.image}`);
+          } else {
+            $('#current-img').attr('src', '../assets/images/no-image.avif');
+          }
           $('#edit-category').val(medicine.category);
           $('#edit-cost_price').val(medicine.cost_price);
           $('#edit-selling_price').val(medicine.selling_price);

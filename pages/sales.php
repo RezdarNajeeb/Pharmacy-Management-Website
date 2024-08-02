@@ -27,7 +27,7 @@ if (!isset($_SESSION['user_id'])) {
 
   <div class="sales-container">
     <div class="right-cont">
-      <h1 class="title">فرۆشتن</h1>
+      <h1 class="title">لیست کردن بۆ فرۆشتن</h1>
       <div class="top">
         <form id="add-sale-form">
           <div class="input-control">
@@ -47,6 +47,8 @@ if (!isset($_SESSION['user_id'])) {
       </div>
 
       <div class="bottom">
+        <h1 class="title">فرۆشتن</h1>
+
         <div class="input-control">
           <label for="discount">داشکاندن </label>
           <input type="number" id="discount" name="discount" min="0" value="0" required>

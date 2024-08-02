@@ -80,7 +80,8 @@ if (!isset($_SESSION['user_id'])) {
         } else {
           while ($row = $warningMedicinesResult->fetch_assoc()) : ?>
             <tr>
-              <td><img src="../uploads/<?php echo htmlspecialchars($row['image']); ?>" alt="Medicine Image"></td>
+              <?php $imageUrl = $row['image'] ? "../uploads/" . $row['image'] : "../assets/images/no-image.avif"; ?>
+              <td><img src="<?= $imageUrl ?>" alt="Medicine Image"></td>
               <td><?php echo htmlspecialchars($row['name']); ?></td>
               <td><?php echo htmlspecialchars($row['category']); ?></td>
               <td <?php echo $row['quantity'] <= $warning_quantity ? "style='background-color: #FCDB58'" : "" ?>><?php echo htmlspecialchars($row['quantity']); ?></td>
@@ -98,17 +99,17 @@ if (!isset($_SESSION['user_id'])) {
     $(function() {
       $('#warnings-form').on('submit', function(e) {
         e.preventDefault(); // Prevent default form submission
-    
+
         let $warningQtyElement = $('#warning_quantity');
         let $warningExpiryDaysElement = $('#warning_expiry_days');
         let warningQty = $.trim($warningQtyElement.val());
         let warningExpiryDays = $.trim($warningExpiryDaysElement.val());
-    
+
         let errorMessage = '';
-    
+
         // Clear previous error messages
         $('.error-field').remove();
-    
+
         // Validate input fields
         if (warningQty === '' || warningExpiryDays === '') {
           errorMessage = "<span class='error-field'>پێویستە هەموو خانەکان پڕ بکرێتەوە</span>";
@@ -117,13 +118,13 @@ if (!isset($_SESSION['user_id'])) {
         } else if (parseInt(warningQty) < 1 || parseInt(warningExpiryDays) < 1) {
           errorMessage = "<span class='error-field'>پێویستە ژمارەکە زیاتر بێت لە ١.</span>";
         }
-    
+
         // Display error message if any
         if (errorMessage) {
           $(errorMessage).insertAfter('#warnings-form .warnings-inner').css("display", "block");
           return;
         }
-    
+
         // Proceed with AJAX request if no errors
         $.ajax({
           url: '../modules/warnings/update_warning_settings.php',
