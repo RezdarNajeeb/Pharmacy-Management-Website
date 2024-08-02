@@ -6,6 +6,25 @@ if (!isset($_SESSION['user_id'])) {
   header('Location: login.php');
   exit();
 }
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sale_id'])) {
+
+  $saleId = $_POST['sale_id'];
+
+  try {
+    $stmt = $conn->prepare("DELETE FROM sales_history WHERE id = ?");
+    $stmt->bind_param('i', $saleId);
+    $stmt->execute();
+    $stmt->close();
+
+    $_SESSION['messages'][] = ['type' => 'success', 'message' => 'فرۆشتنەکە بەسەرکەوتوی سڕایەوە'];
+  } catch (Exception $e) {
+    $_SESSION['messages'][] = ['type' => 'error', 'message' => 'هەڵەیەک ڕوویدا: ' . $e->getMessage()];
+  }
+
+  header('Location: sales_history.php');
+  exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -80,14 +99,22 @@ if (!isset($_SESSION['user_id'])) {
                 <td>$username</td>
                 <td>$createdAt</td>
                 <td>
-                    <button 
-                        data-id="$id" 
-                        data-number="$number" 
-                        data-username="$username" 
-                        data-sale-date="$createdAt" 
-                        class="light-blue-btn view-sale-details">
-                        وردەکاری
-                    </button>
+                    <div class="actions">
+                      <button
+                          data-id="$id"
+                          data-number="$number"
+                          data-username="$username"
+                          data-sale-date="$createdAt"
+                          class="light-blue-btn view-sale-details">
+                          <i class="fa-solid fa-circle-info"></i>
+                      </button>
+                      <form action="sales_history.php" method="POST">
+                          <input type="hidden" name="sale_id" value="$id">
+                          <button type="submit" class="red-btn">
+                              <i class="fa-solid fa-trash"></i>
+                          </button>
+                      </form>
+                    </div>
                 </td>
             </tr>
             HTML;

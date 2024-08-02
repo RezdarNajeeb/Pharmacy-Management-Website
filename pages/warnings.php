@@ -60,7 +60,7 @@ if (!isset($_SESSION['user_id'])) {
         </div>
       </div>
 
-      <button type="submit" class="light-blue-btn">نوێکردنەوە</button>
+      <button type="submit" class="light-yellow-btn">نوێکردنەوە</button>
     </form>
 
     <table id="warnings-table" class="normal-table">

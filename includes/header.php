@@ -19,7 +19,7 @@ $warningCount = $warningResult->fetch_assoc()['warning_count'];
     </div>
 
     <a href="../pages/warnings.php" class="icon" id="notifications-icon">
-      <i class="fas fa-exclamation-circle"></i>
+      <i class="fa-solid fa-triangle-exclamation"></i>
       <?php if ($warningCount > 0) : ?>
         <span class="notification-count"><?php echo $warningCount; ?></span>
       <?php endif; ?>
@@ -34,10 +34,10 @@ $warningCount = $warningResult->fetch_assoc()['warning_count'];
   </div>
 
   <div class="currency-selector">
-    <label for="currency-select">دراو</label>
+    <label for="currency-select"><i class="fa-solid fa-money-bill-transfer"></i></label>
     <select id="currency-select">
       <option value="USD">$</option>
-      <option value="IQD">د.ع</option>
+      <option value="IQD">IQD</option>
     </select>
   </div>
 
@@ -84,8 +84,8 @@ $warningCount = $warningResult->fetch_assoc()['warning_count'];
 
   <div id="user-box">
     <span><?php echo $currentUsername; ?></span>
-    <button id="update-user">گۆڕانکاری</button>
-    <a href="../modules/users/logout.php">چوونەدەرەوە</a>
+    <button id="update-user"><i class="fa-solid fa-user-pen"></i></button>
+    <a href="../modules/users/logout.php"><i class="fa-solid fa-arrow-right-from-bracket"></i></a>
   </div>
 
   <?php
@@ -124,7 +124,7 @@ $warningCount = $warningResult->fetch_assoc()['warning_count'];
         <label for="show-password">پیشاندانی وشەی نهێنی</label>
       </div>
 
-      <button type="submit" class="light-blue-btn">نوێکردنەوە</button>
+      <button type="submit" class="light-yellow-btn">نوێکردنەوە</button>
     </form>
   </div>
 </div>

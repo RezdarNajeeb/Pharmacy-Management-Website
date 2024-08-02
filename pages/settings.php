@@ -45,7 +45,7 @@ $systemProfile = $systemResult->fetch_assoc();
 
         <input type="text" id="systemName" class="sys-profile-name" name="name" value="<?php echo htmlspecialchars($systemProfile['name'], ENT_QUOTES, 'UTF-8'); ?>" required>
 
-        <button type="submit" class="light-blue-btn">نوێکردنەوە</button>
+        <button type="submit" class="light-yellow-btn">نوێکردنەوە</button>
       </form>
     </div>
   </div>

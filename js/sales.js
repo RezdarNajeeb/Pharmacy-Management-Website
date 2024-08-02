@@ -137,11 +137,17 @@ $(document).ready(function () {
           totalPriceUSD += sale.totalUSD;
           totalPriceIQD += sale.totalIQD;
 
+          const imageUrl =
+            sale.image &&
+            sale.image !== "null" &&
+            sale.image !== null &&
+            sale.image !== ""
+              ? `../uploads/${sale.image}`
+              : "../assets/images/no-image.avif";
+
           return `
                 <tr>
-                    <td><img src="../uploads/${sale.image}" alt="${
-            sale.name
-          }"></td>
+                    <td><img src="${imageUrl}" alt="Medicine Image"></td>
                     <td>${sale.name}</td>
                     <td>${sale.quantity}</td>
                     <td>
@@ -177,9 +183,9 @@ $(document).ready(function () {
                     </td>
                     <td>
                         <div class="actions">
-                          <button type="button" class="increase-quantity light-green-btn" data-index="${index}">زیادکردن</button>
-                          <button type="button" class="reduce-quantity light-blue-btn" data-index="${index}">کەمکردنەوە</button>
-                          <button type="button" class="remove-sale red-btn" data-index="${index}">سڕینەوە</button>
+                          <button type="button" class="increase-quantity light-green-btn" data-index="${index}"><i class="fa-solid fa-plus"></i></button>
+                          <button type="button" class="reduce-quantity light-yellow-btn" data-index="${index}"><i class="fa-solid fa-minus"></i></button>
+                          <button type="button" class="remove-sale red-btn" data-index="${index}"><i class="fa-solid fa-trash"></i></button>
                         </div>
                     </td>
                 </tr>
@@ -290,8 +296,6 @@ $(document).ready(function () {
     }
 
     const discount = parseFloat($discountField.val()) || 0;
-    const discountedTotalUSD =
-      parseFloat($discountedTotalPriceUSDElement.text()) || 0;
     const discountedTotalIQD =
       parseFloat($discountedTotalPriceIQDElement.text()) || 0;
 
@@ -396,9 +400,17 @@ $(document).ready(function () {
         `;
 
         sale.forEach(function (item) {
+          const imageUrl =
+            item.image &&
+            item.image !== "null" &&
+            item.image !== null &&
+            item.image !== ""
+              ? `../uploads/${item.image}`
+              : "../assets/images/no-image.avif";
+
           saleDetailsHtml += `
             <tr>
-              <td><img src="../uploads/${item.image}" alt="${item.name}"></td>
+              <td><img src="${imageUrl}" alt="Medicine Image"></td>
               <td>${item.name}</td>
               <td>${
                 item.currency === "USD"

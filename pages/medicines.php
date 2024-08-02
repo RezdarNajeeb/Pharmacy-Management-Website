@@ -23,46 +23,52 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
   $barcode = $_POST['barcode'];
 
   // Handle image upload
-  $image = $_FILES['image']['name'];
-  $target_dir = "../uploads/";
-  $target_file = $target_dir . basename($image);
+  $image = null;
+  if (!empty($_FILES['image']['name'])) {
+    $image = $_FILES['image']['name'];
+    $target_dir = "../uploads/";
+    $target_file = $target_dir . basename($image);
 
-  if (move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
-    $stmt = $conn->prepare("INSERT INTO medicines (name, category, cost_price, selling_price, currency, quantity, expiry_date, barcode, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("ssddsisss", $name, $category, $cost_price, $selling_price, $currency, $quantity, $expiry_date, $barcode, $image);
-
-    try {
-      if ($stmt->execute() === TRUE) {
-        // Log the user activity
-        logUserActivity("دەرمانێکی زیادکرد بە ناوی $name.");
-
-        $_SESSION['messages'][] = [
-          'type' => 'success',
-          'message' => 'دەرمانێکی نوێ زیادکرا.'
-        ];
-      }
-    } catch (mysqli_sql_exception $e) {
-      // Log the error
-      // change the language of $e->getMessage() to Kurdish
-      error_log("Error adding medicine: " . $e->getMessage());
-
+    if (!move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
       $_SESSION['messages'][] = [
         'type' => 'error',
-        'message' => 'هەڵەیەک ڕویدا لە زیادکردنی دەرمان.'
+        'message' => 'هەڵەیەک ڕویدا لە بارکردنی وێنە.'
       ];
 
       // Redirect to the same page to show the error message
       header("Location: medicines.php");
       exit();
     }
+  }
 
-    $stmt->close();
-  } else {
+  $stmt = $conn->prepare("INSERT INTO medicines (name, category, cost_price, selling_price, currency, quantity, expiry_date, barcode, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+  $stmt->bind_param("ssddsisss", $name, $category, $cost_price, $selling_price, $currency, $quantity, $expiry_date, $barcode, $image);
+
+  try {
+    if ($stmt->execute() === TRUE) {
+      // Log the user activity
+      logUserActivity("دەرمانێکی زیادکرد بە ناوی $name.");
+
+      $_SESSION['messages'][] = [
+        'type' => 'success',
+        'message' => 'دەرمانێکی نوێ زیادکرا.'
+      ];
+    }
+  } catch (mysqli_sql_exception $e) {
+    // Log the error
+    error_log("Error adding medicine: " . $e->getMessage());
+
     $_SESSION['messages'][] = [
       'type' => 'error',
-      'message' => 'هەڵەیەک ڕویدا لە بارکردنی وێنە.'
+      'message' => "هەڵەیەک ڕویدا لە زیادکردنی دەرمان: " . $e->getMessage()
     ];
+
+    // Redirect to the same page to show the error message
+    header("Location: medicines.php");
+    exit();
   }
+
+  $stmt->close();
 }
 ?>
 
@@ -123,7 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
         </div>
 
         <div class="file-upload">
-          <input type="file" name="image" id="image-input" class="file-input" accept="image/*" required>
+          <input type="file" name="image" id="image-input" class="file-input" accept="image/*">
           <label for="image-input" class="light-blue-btn file-choose-btn">وێنەیەک هەڵبژێرە</label>
           <span id="image-name" class="file-name">هیچ وێنەیەک هەڵنەبژێردراوە</span>
         </div>
@@ -212,7 +218,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
           <input type="text" name="barcode" id="edit-barcode" class="field" placeholder="بارکۆد بنووسە یان سکان بکە" required>
         </div>
 
-        <button type="submit" class="light-blue-btn">نوێکردنەوە</button>
+        <button type="submit" class="light-yellow-btn">نوێکردنەوە</button>
       </form>
     </div>
   </div>
@@ -255,7 +261,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
           {
             "data": "image",
             "render": function(data) {
-              return `<img src="../uploads/${data}" alt="Medicine Image" class="image">`;
+              const imageUrl = data ? `../uploads/${data}` : '../assets/images/no-image.avif';
+              return `<img src="${imageUrl}" alt="Medicine Image" class="image">`;
             }
           },
           {
@@ -271,9 +278,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
               var currency = row['currency'];
 
               if (currency === 'USD') {
-                return parseFloat(costPrice).toFixed(2) + ' $<br><br>' + (costPrice * <?= $exchange_rate ?>).toFixed(0) + ' د.ع';
+                return parseFloat(costPrice).toFixed(2) + ' $<br><br>' + (costPrice * <?= $exchange_rate ?>).toFixed(0) + ' IQD';
               } else {
-                return (costPrice / <?= $exchange_rate ?>).toFixed(2) + ' $<br><br>' + parseFloat(costPrice).toFixed(0) + ' د.ع';
+                return (costPrice / <?= $exchange_rate ?>).toFixed(2) + ' $<br><br>' + parseFloat(costPrice).toFixed(0) + ' IQD';
               }
             }
           },
@@ -304,9 +311,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
             "render": function(data) {
               return `
               <div class="actions">
-                <button type="button" class="light-blue-btn" onclick="showEditMedicineModal(${data})">نوێکردنەوە</button>
+                <button type="button" class="light-yellow-btn" onclick="showEditMedicineModal(${data})"><i class="fa-regular fa-pen-to-square"></i></button>
                 <form method="post" id="delete-medicine-form" onsubmit="deleteMedicine(${data});">
-                  <input type="submit" value="سڕینەوە" class="red-btn"></input>
+                  <button class="red-btn"><i class="fa-solid fa-trash"></i></button>
                 </form>
               </div>
               `;

@@ -7,6 +7,7 @@
   --red: #ec4848;
   --light-green: #6dcc70;
   --light-blue: #5a9bd4;
+  --light-yellow: #f7d154;
   --border: 1px solid #ccc;
   --border-tc: 1px solid var(--text-color);
   --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -86,7 +87,8 @@ body {
 
 .light-blue-btn,
 .red-btn,
-.light-green-btn {
+.light-green-btn,
+.light-yellow-btn {
   font-size: 2rem;
   padding: 0.5em 1em;
   color: #fff;
@@ -118,6 +120,14 @@ body {
 
 .light-blue-btn:hover {
   background-color: #3a6e9d;
+}
+
+.light-yellow-btn {
+  background-color: var(--light-yellow);
+}
+
+.light-yellow-btn:hover {
+  background-color: #f7c154;
 }
 
 /* auth-forms styles */
@@ -193,6 +203,7 @@ body {
   color: #fff;
   padding: 0.5rem;
   border-radius: 0.5rem;
+  margin-right: 0;
 }
 
 .show-pass-cont,
@@ -429,7 +440,7 @@ header #user-box span {
 header #user-box button {
   font-size: 2rem;
   padding: 0.5rem 1rem;
-  background-color: var(--light-blue);
+  background-color: var(--light-yellow);
   color: #fff;
   border: none;
   border-radius: 0.5rem;
@@ -438,7 +449,7 @@ header #user-box button {
 }
 
 header #user-box button:hover {
-  background-color: #3a6e9d;
+  background-color: #f7c154;
 }
 
 header #user-box a {
@@ -869,7 +880,8 @@ header #notifications-icon .notification-count {
 }
 
 .dataTables_scrollBody tbody tr td .image {
-  width: 8rem;
+  width: 7rem;
+  height: 7rem;
   border-radius: 0.5rem;
 }
 
@@ -879,7 +891,6 @@ header #notifications-icon .notification-count {
 
 .dataTables_scrollBody tbody tr td .actions {
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 1rem;
@@ -893,7 +904,7 @@ header #notifications-icon .notification-count {
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
-  gap: .5rem;
+  gap: 0.5rem;
   direction: rtl;
 }
 
@@ -913,7 +924,7 @@ header #notifications-icon .notification-count {
   border-radius: 50%;
 }
 
-#edit-medicine-form div {
+#edit-medicine-form div:not(.current-img-cont) {
   flex: 1;
   display: flex;
   justify-content: space-between;
@@ -1055,6 +1066,7 @@ header #notifications-icon .notification-count {
 
 .normal-table tbody tr td img {
   width: 10rem;
+  height: 10rem;
   border-radius: 0.5rem;
 }
 
@@ -1064,14 +1076,14 @@ header #notifications-icon .notification-count {
 
 .normal-table tbody tr td .actions {
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
   gap: 0.5rem;
 }
 
-.normal-table tbody tr td .actions * {
-  width: 100%;
+.normal-table tbody tr td .actions button:last-of-type {
+  width: 87%;
 }
 
 /* User Tracking Styles and Sales History Styles */
@@ -1110,6 +1122,23 @@ header #notifications-icon .notification-count {
   background-color: var(--background-color);
 }
 
+#sales-history-table .actions {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+#sales-history-table .actions button,
+#sales-history-table .actions form {
+  width: 50%;
+}
+
+#sales-history-table .actions form button {
+  width: 100%;
+}
+
 /* Sale details style */
 #sale-details {
   display: flex;
@@ -1118,8 +1147,7 @@ header #notifications-icon .notification-count {
   padding: 1rem;
   border-radius: 0.5rem;
   background-color: #fff;
-  /* this box-shadow make the box look like injected in the parent box */
-  box-shadow: 0 0 0 5px var(--primary-color);
+  box-shadow: 0 0 0 5px var(--text-color);
 }
 
 #sale-details table {
@@ -1128,6 +1156,24 @@ header #notifications-icon .notification-count {
   margin-bottom: 1rem;
   font-size: 1.6rem;
   text-align: center;
+  max-height: 40rem;
+  overflow-y: auto;
+  display: block;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-color) var(--background-color);
+}
+
+#sale-details thead {
+  position: sticky;
+  top: 0;
+}
+
+#sale-details thead tr,
+#sale-details tbody tr,
+#sale-details tfoot tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
 }
 
 #sale-details th,
