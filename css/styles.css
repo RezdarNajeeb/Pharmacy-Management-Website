@@ -941,7 +941,7 @@ header #notifications-icon .notification-count {
 
 .dataTables_scrollHead thead tr th::after,
 .dataTables_scrollHead thead tr th::before {
-  color: var(--hd-ft-bg);
+  color: var(--yellow);
 }
 
 .dataTables_scrollHead thead {

@@ -51,8 +51,14 @@ $columns = [
   7 => 'expiry_date',
 ];
 
-$order_column = $columns[$_POST['order'][0]['column']];
+$order_column_index = $_POST['order'][0]['column'];
 $order_dir = $_POST['order'][0]['dir'];
+
+if (is_array($columns[$order_column_index])) {
+  $order_column = $columns[$order_column_index][0]; // Use only the first value for ordering
+} else {
+  $order_column = $columns[$order_column_index];
+}
 
 $query .= " ORDER BY $order_column $order_dir";
 

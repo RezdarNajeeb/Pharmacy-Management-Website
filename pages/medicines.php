@@ -234,7 +234,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
         "serverSide": true,
         "ajax": {
           "url": "../modules/medicines/fetch_medicines.php",
-          "type": "POST"
+          "type": "POST",
+          "error": function(xhr, status, error) {
+            console.error('Error:', error); // Debugging: log the error
+            alert('Failed to load the medicines. Please refresh the page.');
+          },
         },
         "language": {
           "url": "https://cdn.datatables.net/plug-ins/1.10.25/i18n/Kurdish.json",
