@@ -1,5 +1,5 @@
 $(document).ready(function () {
-  const currencySystem = localStorage.getItem("currency");
+  let currencySystem = localStorage.getItem("currency");
   const exchangeRate = parseFloat($("#exchange-rate").data("exchange-rate"));
   const sales = [];
 
@@ -13,6 +13,21 @@ $(document).ready(function () {
   const $saleInputElement = $("#add-sale-input");
   const $saleQtyElement = $("#quantity");
 
+  // Initialize currency system from local storage or default to "USD"
+  if (!currencySystem) {
+    currencySystem = "USD";
+    localStorage.setItem("currency", currencySystem);
+  }
+  $("#currency-select").val(currencySystem);
+
+  // Update currency system on change
+  $("#currency-select").change(function () {
+    currencySystem = $(this).val();
+    localStorage.setItem("currency", currencySystem);
+    updateDiscountedTotals(); // Update totals based on the new currency
+  });
+
+  // Add a new sale item
   $("#add-sale-form").on("submit", function (event) {
     event.preventDefault();
 
@@ -234,245 +249,46 @@ $(document).ready(function () {
     }
 
     $discountedTotalPriceUSDElement.text(discountedTotalPriceUSD.toFixed(2));
-    $discountedTotalPriceIQDElement.text(discountedTotalPriceIQD.toFixed(2));
+    $discountedTotalPriceIQDElement.text(discountedTotalPriceIQD.toFixed(0));
   }
 
-  // Cache jQuery selectors
-  const $document = $(document);
-  const $finalizeSaleButton = $("#finalize-sale");
+  $discountField.on("input", updateDiscountedTotals);
 
-  // Event handler to remove a sale item
-  $document.on("click", ".remove-sale", function () {
+  $(document).on("click", ".increase-quantity", function () {
     const index = $(this).data("index");
-    sales.splice(index, 1); // splice() removes the element at the specified index
+    sales[index].quantity++;
+    sales[index].totalUSD =
+      sales[index].currency === "USD"
+        ? sales[index].quantity * sales[index].sellingPrice
+        : (sales[index].quantity * sales[index].sellingPrice) / exchangeRate;
+    sales[index].totalIQD =
+      sales[index].currency === "IQD"
+        ? sales[index].quantity * sales[index].sellingPrice
+        : sales[index].quantity * sales[index].sellingPrice * exchangeRate;
     updateSalesTable();
-
-    $saleInputElement.focus();
   });
 
-  // Event handler to reduce quantity of a sale item
-  $document.on("click", ".reduce-quantity", function () {
+  $(document).on("click", ".reduce-quantity", function () {
     const index = $(this).data("index");
-    const saleItem = sales[index];
-
-    if (saleItem.quantity > 1) {
-      saleItem.quantity--;
-      if (saleItem.currency === "USD") {
-        saleItem.totalUSD = saleItem.quantity * saleItem.sellingPrice;
-        saleItem.totalIQD = saleItem.totalUSD * exchangeRate;
-      } else {
-        saleItem.totalIQD = saleItem.quantity * saleItem.sellingPrice;
-        saleItem.totalUSD = saleItem.totalIQD / exchangeRate;
-      }
-      updateSalesTable();
-    }
-
-    $saleInputElement.focus();
-  });
-
-  // Event handler to increase quantity of a sale item
-  $document.on("click", ".increase-quantity", function () {
-    const index = $(this).data("index");
-    const saleItem = sales[index];
-
-    saleItem.quantity++;
-    if (saleItem.currency === "USD") {
-      saleItem.totalUSD = saleItem.quantity * saleItem.sellingPrice;
-      saleItem.totalIQD = saleItem.totalUSD * exchangeRate;
+    if (sales[index].quantity > 1) {
+      sales[index].quantity--;
+      sales[index].totalUSD =
+        sales[index].currency === "USD"
+          ? sales[index].quantity * sales[index].sellingPrice
+          : (sales[index].quantity * sales[index].sellingPrice) / exchangeRate;
+      sales[index].totalIQD =
+        sales[index].currency === "IQD"
+          ? sales[index].quantity * sales[index].sellingPrice
+          : sales[index].quantity * sales[index].sellingPrice * exchangeRate;
     } else {
-      saleItem.totalIQD = saleItem.quantity * saleItem.sellingPrice;
-      saleItem.totalUSD = saleItem.totalIQD / exchangeRate;
+      sales.splice(index, 1);
     }
-
     updateSalesTable();
-    $saleInputElement.focus();
   });
 
-  // Event handler to finalize the sale
-  $finalizeSaleButton.on("click", function () {
-    if (sales.length === 0) {
-      alert("هیچ دەرمانێک لە لیستی فرۆشتندا نییە.");
-      return;
-    }
-
-    const discount = parseFloat($discountField.val()) || 0;
-    const discountedTotalIQD =
-      parseFloat($discountedTotalPriceIQDElement.text()) || 0;
-
-    if (isNaN(discount) || discount === null) {
-      $discountError
-        .text("داشکاندن پێویستە پڕبکرێتەوە و تەنها ژمارە بێت.")
-        .css("display", "block");
-      return;
-    } else if (discount < 0) {
-      $discountError
-        .text("داشکاندن پێویستە بەلایەنی کەمەەوە ٠ بێت.")
-        .css("display", "block");
-      return;
-    }
-
-    const saleData = {
-      sales: sales,
-      discount: discount,
-      discountCurrency: currencySystem,
-      discountedTotalIQD: discountedTotalIQD,
-    };
-
-    $.ajax({
-      url: "../modules/sales/finalize_sale.php",
-      method: "POST",
-      contentType: "application/json",
-      data: JSON.stringify(saleData), // Convert the sales array to a JSON string
-      success: function (response) {
-        location.reload();
-        sales.length = 0;
-        updateSalesTable();
-      },
-      error: function (xhr, status, error) {
-        console.error("Error finalizing sale:", error);
-        alert("Failed to finalize sale.");
-      },
-    });
+  $(document).on("click", ".remove-sale", function () {
+    const index = $(this).data("index");
+    sales.splice(index, 1);
+    updateSalesTable();
   });
-
-  // Event handler for discount input field
-  $discountField.on("input", function () {
-    updateDiscountedTotals();
-  });
-
-  // Sales history table with details modal
-  $("#sales-history-table").on("click", ".view-sale-details", function () {
-    const $this = $(this);
-    const saleId = $this.data("id");
-    const number = $this.data("number");
-    const username = $this.data("username");
-    const saleDate = $this.data("sale-date");
-
-    $.ajax({
-      url: "../modules/sales/get_sale_details.php",
-      method: "GET",
-      data: { sale_id: saleId },
-      dataType: "json",
-      success: function (response) {
-        if (response.status === "error") {
-          alert(response.message);
-          return;
-        }
-
-        const $modal = $("#sale-details-modal");
-        const $saleDetails = $("#sale-details");
-
-        $modal
-          .find("h2")
-          .text(`وردەکاریی فرۆشتنی ژمارە ${number}`)
-          .css("margin-bottom", "1rem");
-
-        const data = response.data;
-        const sale = JSON.parse(data.sale_details);
-
-        const totalIQD = parseFloat(data.totalIQD);
-        const totalUSD = totalIQD / exchangeRate;
-
-        const discountCurrency = data.discount_currency;
-        if (discountCurrency === "USD") {
-          var discountUSD = parseFloat(data.discount);
-          var discountIQD = discountUSD * exchangeRate;
-        } else {
-          var discountIQD = parseFloat(data.discount);
-          var discountUSD = discountIQD / exchangeRate;
-        }
-
-        const discountedTotalIQD = parseFloat(data.discounted_totalIQD);
-        const discountedTotalUSD = discountedTotalIQD / exchangeRate;
-
-        let saleDetailsHtml = `
-          <table>
-            <thead>
-              <tr>
-                <th>وێنە</th>
-                <th>ناو</th>
-                <th>نرخی فرۆشتن</th>
-                <th>بڕ</th>
-                <th>کۆی گشتی</th>
-              </tr>
-            </thead>
-            <tbody>
-        `;
-
-        sale.forEach(function (item) {
-          const imageUrl =
-            item.image &&
-            item.image !== "null" &&
-            item.image !== null &&
-            item.image !== ""
-              ? `../uploads/${item.image}`
-              : "../assets/images/no-image.avif";
-
-          saleDetailsHtml += `
-            <tr>
-              <td><img src="${imageUrl}" alt="Medicine Image"></td>
-              <td>${item.name}</td>
-              <td>${
-                item.currency === "USD"
-                  ? `${item.sellingPrice} $ <br><br> ${
-                      item.sellingPrice * exchangeRate
-                    } IQD`
-                  : `${item.sellingPrice} IQD <br><br> ${
-                      item.sellingPrice / exchangeRate
-                    } $`
-              }</td>
-              <td>${item.quantity}</td>
-              <td>
-                ${item.totalUSD.toFixed(2)} $
-                 <br/><br/>
-                ${item.totalIQD} IQD
-              </td>
-            </tr>
-          `;
-        });
-
-        saleDetailsHtml += `
-            </tbody>
-            <tfoot>
-              <tr>
-                <td colspan="3">کۆی گشتی فرۆشتنەکە</td>
-                <td colspan="2">${totalUSD} $ <br><br> ${totalIQD} IQD</td>
-              </tr>
-              <tr>
-                <td colspan="3">داشکاندن</td>
-                <td colspan="2">${discountUSD} $ <br><br> ${discountIQD} IQD</td>
-              </tr>
-              <tr>
-                <td colspan="3">کۆی گشتی فرۆشتنەکە دوای داشکاندن</td>
-                <td colspan="2">${discountedTotalUSD} $ <br><br> ${discountedTotalIQD} IQD</td>
-              </tr>
-            </tfoot>
-          </table>
-          <p>ئەم فرۆشتنە ئەنجام دراوە لەلایەن ${username} لە بەرواری ${saleDate}.</p>
-        `;
-
-        $saleDetails.html(saleDetailsHtml).css("direction", "rtl");
-
-        // Show the modal
-        $modal.css("visibility", "visible");
-      },
-      error: function (error) {
-        console.error("Error fetching sale details:", error);
-      },
-    });
-  });
-
-  $(".close").on("click", function () {
-    $("#sale-details-modal").css("visibility", "hidden");
-  });
-
-  // Close the modal by clicking outside of it
-  $(window).click(function (event) {
-    if (event.target == $("#sale-details-modal")[0]) {
-      $("#sale-details-modal").css("visibility", "hidden");
-    }
-  });
-
-  // Focus on the sale input field when the page loads
-  $saleInputElement.focus();
 });

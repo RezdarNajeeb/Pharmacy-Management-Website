@@ -332,28 +332,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
       });
     });
 
-
-
-    function updateFormValues() {
-      const currency = localStorage.getItem("currency");
-      const exchangeRate = $('#exchange-rate').data('exchange-rate');
-
-      // Update both forms
-      ['#add-medicine-form', '#edit-medicine-form'].forEach(formSelector => {
-        // Update currency
-        $(`${formSelector} input[name="currency"]`).val(currency);
-        // Update exchange rate
-        $(`${formSelector} input[name="exchange_rate"]`).val(exchangeRate);
-      });
-    }
-
-    updateFormValues(); // Ensure form values are updated on page load
-
-    // Update form values when the currency is changed
-    $("#currency-select").on('change', function() {
-      updateFormValues(); // Update form values before reloading to ensure consistency
-    });
-
     function showEditMedicineModal(id) {
       // Fetch the medicine details and fill the form
       $.ajax({

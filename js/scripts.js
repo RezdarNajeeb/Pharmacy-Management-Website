@@ -27,13 +27,6 @@ $(function () {
     $("#currency-select").val(savedCurrency);
   }
 
-  // Update localStorage and reload the page when the currency is changed
-  $("#currency-select").change(function () {
-    var currency = $(this).val();
-    localStorage.setItem("currency", currency);
-    location.reload();
-  });
-
   function setupModalHandlers(
     modalSelector,
     triggerBtnSelector,
@@ -208,6 +201,27 @@ $(function () {
 
   setupImagePreview("#profileImageInput", "#profileImage");
   setupImagePreview("#edit-image", "#current-img");
+
+  // Update form values with the currency and exchange rate
+  function updateFormValues() {
+    const currency = localStorage.getItem("currency");
+    const exchangeRate = $("#exchange-rate").data("exchange-rate");
+
+    // Update both forms
+    ["#add-medicine-form", "#edit-medicine-form"].forEach((formSelector) => {
+      // Update currency
+      $(`${formSelector} input[name="currency"]`).val(currency);
+      // Update exchange rate
+      $(`${formSelector} input[name="exchange_rate"]`).val(exchangeRate);
+    });
+  }
+
+  // Update localStorage and reload the page when the currency is changed
+  $("#currency-select").change(function () {
+    var currency = $(this).val();
+    localStorage.setItem("currency", currency);
+    updateFormValues();
+  });
 
   // Unified validation function
   function validateForm(form, formId) {
