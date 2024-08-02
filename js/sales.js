@@ -94,6 +94,29 @@ $(document).ready(function () {
         const costPrice = parseFloat(medicine.cost_price);
         const sellingPrice = parseFloat(medicine.selling_price);
         const currency = medicine.currency;
+        const quantityInDB = parseInt(medicine.quantity);
+        const expiryDate = medicine.expiry_date;
+
+        if (quantity > quantityInDB) {
+          alert(
+            `ئەو بڕە دەرمانەی [ ${name} ] کە داواکراوە، زیاترە لەو بڕەی کە لە سیستەم هەیە.`
+          );
+          return;
+        }
+
+        if (expiryDate !== null) {
+          const today = new Date();
+          const expiry = new Date(expiryDate);
+          const warningDate = new Date(today);
+          warningDate.setDate(today.getDate() + warningExpiryDays);
+          const isExpire = expiry <= warningDate;
+          if (isExpire) {
+            alert(
+              `بەسەرچوونی ئەم دەرمانە [ ${name} ] گەشتووەتە بڕی ئاگادارکردنەوە.`
+            );
+            return;
+          }
+        }
 
         // Check if the medicine is already in sales, update quantity instead of adding a new row
         let existingSale = sales.find((sale) => sale.id === id);

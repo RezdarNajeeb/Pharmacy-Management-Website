@@ -10,7 +10,12 @@ $warningQuery = "
 ";
 $warningResult = $conn->query($warningQuery);
 $warningCount = $warningResult->fetch_assoc()['warning_count'];
+
+$warning_expiry_days = $conn->query("SELECT warning_expiry_days FROM warning_settings WHERE id = 1")->fetch_assoc()['warning_expiry_days'];
 ?>
+<script>
+  var warningExpiryDays = <?php echo json_encode($warning_expiry_days); ?>;
+</script>
 
 <header id="header">
   <div class="icons">

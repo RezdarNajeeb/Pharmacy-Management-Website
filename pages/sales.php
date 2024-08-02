@@ -32,7 +32,7 @@ if (!isset($_SESSION['user_id'])) {
         <form id="add-sale-form">
           <div class="input-control">
             <label for="medicine-barcode">ناو <i class="fa-solid fa-minus"></i> بارکۆد</label>
-            <input type="text" id="add-sale-input" name="barcode" placeholder="ناوی دەرمان بنووسە یان بارکۆد سکان بکە" required>
+            <input type="text" id="add-sale-input" name="barcode" required>
             <span id="sale-input-error" class="error-field"></span>
           </div>
 
@@ -62,7 +62,7 @@ if (!isset($_SESSION['user_id'])) {
     </div>
 
     <div class="left-cont">
-      <table id="sales-table" class="normal-table">
+      <table id="sales-table" class="normal-table sales">
         <thead>
           <tr>
             <th>وێنە</th>

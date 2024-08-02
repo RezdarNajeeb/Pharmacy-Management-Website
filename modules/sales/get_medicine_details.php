@@ -10,7 +10,7 @@ if (!isset($_GET['barcode'])) {
 $barcode = $_GET['barcode'];
 $medicine_name = $_GET['medicine_name'];
 
-$stmt = $conn->prepare("SELECT id, name, image, cost_price, selling_price, currency FROM medicines WHERE barcode = ? OR name = ?");
+$stmt = $conn->prepare("SELECT id, name, image, cost_price, selling_price, currency, quantity, expiry_date FROM medicines WHERE barcode = ? OR name = ?");
 $stmt->bind_param('ss', $barcode, $medicine_name);
 $stmt->execute();
 $result = $stmt->get_result();

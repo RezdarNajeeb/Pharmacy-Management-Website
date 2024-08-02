@@ -4,12 +4,15 @@
   --secondary-color: #a6e3e9;
   --background-color: #f9f9f9;
   --text-color: #333333;
+  --hd-ft-bg: #555;
+  --yellow: #f1c40f;
   --red: #ec4848;
   --light-green: #6dcc70;
   --light-blue: #5a9bd4;
   --light-yellow: #f7d154;
   --border: 1px solid #ccc;
   --border-tc: 1px solid var(--text-color);
+  --border-yl: 2px solid var(--yellow);
   --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   --base-font-size: 10px;
 }
@@ -46,24 +49,42 @@
 
 /* Scrollbar Styles */
 ::-webkit-scrollbar {
-  width: 1rem;
+  width: 0.8rem;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: var(--primary-color);
+  background-color: var(--hd-ft-bg);
 }
 
 ::-webkit-scrollbar-track {
-  background-color: #f9f9f9;
+  background-color: var(--background-color);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: var(--secondary-color);
+  background-color: var(--yellow);
+}
+
+/* Custom font family */
+@font-face {
+  font-family: "speda";
+  src: url("../assets/fonts/Speda.woff");
+}
+
+@font-face {
+  font-family: "rudaw";
+  src: url("../assets/fonts/rudawregular2.woff");
+}
+
+@font-face {
+  font-family: "sarchia";
+  src: url("../assets/fonts/38_Sarchia_Halab.woff");
 }
 
 /* General Font Size */
 html {
   font-size: var(--base-font-size);
+  font-family: "sarchia", sans-serif;
+  scroll-behavior: smooth;
 }
 
 /* General Styles */
@@ -77,6 +98,7 @@ html {
 body {
   background-color: var(--background-color);
   color: var(--text-color);
+  font-family: "sarchia", sans-serif;
 }
 
 .title {
@@ -192,13 +214,13 @@ body {
   font-size: 2rem;
   position: absolute;
   left: 1rem;
+  color: var(--yellow);
 }
 
 .auth-forms-container form .input-control span,
 .error-field {
   display: none;
   font-size: 1.6rem;
-  font-weight: bold;
   background-color: var(--red);
   color: #fff;
   padding: 0.5rem;
@@ -340,7 +362,7 @@ header {
   justify-content: space-between;
   align-items: center;
   padding: 0.5rem 2rem;
-  background-color: var(--primary-color);
+  background-color: var(--hd-ft-bg);
   z-index: 1000;
 }
 
@@ -375,15 +397,30 @@ header .navbar ul li {
 
 header .navbar ul a {
   font-size: 2rem;
-  color: var(--text-color);
+  color: var(--background-color);
   padding: 0.5rem;
   border-radius: 0.5rem;
   text-decoration: none;
-  transition: background-color 0.3s;
+  position: relative;
 }
 
-header .navbar ul a:hover {
-  background-color: var(--background-color);
+header .navbar ul a::after {
+  content: "";
+  display: block;
+  width: 0;
+  height: 2px;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  border-radius: 0.5rem;
+  transform: translateX(-50%);
+  background-color: var(--yellow);
+  transition: width 0.3s;
+}
+
+header .navbar ul a:hover::after,
+header .navbar ul a.active::after {
+  width: 100%;
 }
 
 header .icons {
@@ -400,7 +437,7 @@ header .icons .icon i {
 }
 
 header .icons .icon i:hover {
-  color: var(--text-color);
+  color: var(--yellow);
 }
 
 /* User Box Styles */
@@ -495,6 +532,8 @@ header #notifications-icon .notification-count {
 }
 
 .currency-selector label {
+  font-family: none;
+  color: var(--yellow);
   font-size: 2rem;
 }
 
@@ -507,14 +546,13 @@ header #notifications-icon .notification-count {
 }
 
 .exchange-rate {
-  width: 17rem;
+  width: 18rem;
   height: 5rem;
   padding: 0.3rem;
   background-color: var(--background-color);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.3rem;
   border-radius: 0.5rem;
 }
 
@@ -524,25 +562,33 @@ header #notifications-icon .notification-count {
 }
 
 .exchange-rate form {
+  width: 100%;
   display: flex;
   gap: 0.5rem;
+  justify-content: center;
 }
 
 .exchange-rate form input {
+  font-family: "sarchia", sans-serif;
   width: 50%;
-  padding: 0.3rem 0.5rem;
+  padding: 0.1rem 0.5rem;
   border: var(--border-tc);
   border-radius: 0.5rem;
 }
 
 .exchange-rate form button {
+  font-family: "sarchia", sans-serif;
   width: 50%;
-  background-color: var(--text-color);
-  color: #fff;
+  background-color: var(--yellow);
+  color: var(--text-color);
   border: none;
   border-radius: 0.5rem;
   cursor: pointer;
   transition: background-color 0.3s;
+}
+
+.exchange-rate form button:hover {
+  background-color: #f7c154;
 }
 
 /* Modal Styles For Updating User Account and Medicines */
@@ -626,7 +672,8 @@ header #notifications-icon .notification-count {
 .dashboard {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1rem;
+  padding: 2rem;
 }
 
 /* showing sys profile like a profile card */
@@ -639,7 +686,7 @@ header #notifications-icon .notification-count {
   padding: 2rem;
   border-radius: 0.5rem;
   background-color: #fff;
-  border: var(--border-tc);
+  border: var(--border-yl);
 }
 
 .sys-img {
@@ -658,7 +705,7 @@ header #notifications-icon .notification-count {
 .sys-name {
   font-size: 4rem;
   text-align: center;
-  color: var(--light-blue);
+  color: var(--text-color);
 }
 
 .sys-user {
@@ -667,14 +714,14 @@ header #notifications-icon .notification-count {
 }
 
 .sys-user span {
-  color: var(--light-green);
+  color: var(--yellow);
 }
 
 .stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
   gap: 2rem;
-  padding: 2rem;
+  padding: 2rem 0;
   border-radius: 0.5rem;
 }
 
@@ -744,7 +791,7 @@ header #notifications-icon .notification-count {
   flex-direction: column;
   align-items: center;
   gap: 2rem;
-  border-left: 5px solid var(--primary-color);
+  border-left: 5px solid var(--hd-ft-bg);
   background-color: var(--background-color);
   padding-bottom: 1rem;
 }
@@ -792,17 +839,15 @@ header #notifications-icon .notification-count {
 
 /* Style the file upload button */
 .file-choose-btn {
-  width: 45%;
+  width: 44%;
   padding: 1rem 1.2rem;
   font-size: 1.6rem;
 }
 
 /* Style the file name display */
 .file-name {
-  width: 55%;
+  width: 58%;
   font-size: 1.6rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 /* Left Side Container */
@@ -844,44 +889,68 @@ header #notifications-icon .notification-count {
 
 /* Pagination styling */
 .dataTables_wrapper .dataTables_paginate .paginate_button {
-  font-weight: bold;
-  padding: 0.5em 1em;
+  font-size: 1.2rem;
+  padding: 0.5rem 1rem;
   margin: 0.4rem;
   background-color: var(--text-color);
-  color: #fff !important;
+  color: var(--yellow) !important;
   border-radius: 0.5rem;
   cursor: pointer;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+  background-color: var(--yellow);
+  color: var(--text-color) !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+  background-color: var(--yellow);
+  color: var(--text-color) !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+  color: var(--yellow) !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+  color: var(--text-color) !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover {
+  color: var(--text-color) !important;
 }
 
 /* Info styling */
 .dataTables_wrapper .dataTables_info {
   font-size: 1.2rem;
-  font-weight: bold;
+  color: var(--text-color) !important;
 }
 
 /* The Table itself Styles */
 .dataTables_scrollBody {
   scrollbar-width: thin;
-  scrollbar-color: var(--primary-color) var(--background-color);
+  scrollbar-color: var(--hd-ft-bg) var(--background-color);
 }
 
 .dataTables_scrollHead thead tr th,
 .dataTables_scrollBody tbody tr td {
   font-size: 1.6rem;
   text-align: center;
+  font-weight: normal;
 }
 
 .dataTables_scrollHead thead tr th::after,
 .dataTables_scrollHead thead tr th::before {
-  color: var(--text-color);
+  color: var(--hd-ft-bg);
 }
 
 .dataTables_scrollHead thead {
-  background-color: var(--secondary-color);
+  background-color: var(--hd-ft-bg);
+  color: var(--background-color);
 }
 
 .dataTables_scrollBody tbody tr {
-  border-bottom: 2px solid var(--secondary-color);
+  border-bottom: 2px solid var(--yellow);
   background-color: #fff !important;
 }
 
@@ -945,7 +1014,6 @@ header #notifications-icon .notification-count {
 /* Sales Styles */
 .sales-container {
   width: 100%;
-  height: 100vh;
   display: flex;
   gap: 2rem;
 }
@@ -957,7 +1025,8 @@ header #notifications-icon .notification-count {
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  border-left: 5px solid var(--primary-color);
+  border-left: 5px solid var(--hd-ft-bg);
+  padding-bottom: 2.4rem;
 }
 
 .top {
@@ -996,7 +1065,7 @@ header #notifications-icon .notification-count {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  border-top: 5px solid var(--primary-color);
+  border-top: 5px solid var(--hd-ft-bg);
   padding: 0 1rem 1rem 1rem;
 }
 
@@ -1043,24 +1112,31 @@ header #notifications-icon .notification-count {
   margin: 0 auto;
   table-layout: fixed;
   background-color: var(--background-color);
+  margin-bottom: 3.4rem;
 }
 
 .normal-table thead {
-  background-color: var(--secondary-color);
+  background-color: var(--hd-ft-bg);
+  color: var(--background-color);
 }
 
 .normal-table thead th,
 .normal-table tbody tr td {
+  font-weight: normal;
   font-size: 1.6rem;
   text-align: center;
 }
 
 .normal-table tbody {
   display: block;
-  max-height: 60rem;
+  max-height: 50rem;
   overflow-y: auto; /* Enables vertical scroll */
   scrollbar-width: thin;
-  scrollbar-color: var(--primary-color) var(--background-color);
+  scrollbar-color: var(--yellow) var(--hd-ft-bg);
+}
+
+.normal-table.sales tbody {
+  max-height: 60rem;
 }
 
 .normal-table thead th {
@@ -1076,7 +1152,10 @@ header #notifications-icon .notification-count {
   display: table;
   width: 100%;
   table-layout: fixed; /* Ensures consistent column width */
-  border-bottom: 2px solid var(--secondary-color);
+}
+
+.normal-table tbody tr {
+  border-bottom: 2px solid var(--yellow);
 }
 
 .normal-table tbody tr td img {
@@ -1106,17 +1185,14 @@ header #notifications-icon .notification-count {
 .user-tracking-container,
 .warnings-container {
   width: 100%;
-  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 3rem;
-  overflow-y: hidden;
   background-image: url("../assets/images/sales.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  padding-bottom: 1rem;
 }
 
 .user-tracking-container {
@@ -1345,8 +1421,8 @@ header #notifications-icon .notification-count {
 
 /* Footer Styles */
 footer {
-  background-color: var(--primary-color);
-  color: var(--text-color);
+  background-color: var(--hd-ft-bg);
+  color: var(--background-color);
   padding: 2rem;
   text-align: center;
   z-index: 1000;
@@ -1358,7 +1434,7 @@ footer p {
 }
 
 footer span {
-  color: var(--background-color);
+  color: var(--yellow);
   font-weight: bold;
 }
 
@@ -1369,7 +1445,7 @@ footer a {
 }
 
 footer a:hover {
-  color: var(--text-color);
+  color: var(--yellow);
 }
 
 footer .social-media {
@@ -1389,5 +1465,5 @@ footer .social-media a {
 }
 
 footer .social-media a:hover {
-  color: var(--text-color);
+  color: var(--yellow);
 }

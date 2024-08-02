@@ -100,32 +100,32 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
 
         <div>
           <label for="name">ناوی دەرمان</label>
-          <input type="text" class="field" name="name" id="name" placeholder="ناوی دەرمان بنووسە" required>
+          <input type="text" class="field" name="name" id="name" required>
         </div>
 
         <div>
           <label for="category">جۆر</label>
-          <input type="text" class="field" name="category" id="category" placeholder="جۆری دەرمان بنووسە" required>
+          <input type="text" class="field" name="category" id="category" required>
         </div>
 
         <div>
           <label for="cost_price">نرخی کڕین</label>
-          <input type="number" class="field" name="cost_price" id="cost_price" min="1" placeholder="نرخی کڕینی بنووسە" required>
+          <input type="number" class="field" name="cost_price" id="cost_price" min="1" required>
         </div>
 
         <div>
           <label for="selling_price">نرخی فرۆشتن</label>
-          <input type="number" class="field" name="selling_price" id="selling_price" min="1" placeholder="نرخی فرۆشتنی بنووسە" required>
+          <input type="number" class="field" name="selling_price" id="selling_price" min="1" required>
         </div>
 
         <div>
           <label for="quantity">بڕ</label>
-          <input type="number" class="field" name="quantity" id="quantity" min="1" placeholder="بڕی دەرمان بنووسە" required>
+          <input type="number" class="field" name="quantity" id="quantity" min="1" required>
         </div>
 
         <div>
           <label for="expiry_date">بەسەرچوونی</label>
-          <input type="date" class="field" name="expiry_date" id="expiry_date" placeholder="بەسەرچوونی بنووسە" required>
+          <input type="date" class="field" name="expiry_date" id="expiry_date" required>
         </div>
 
         <div class="file-upload">
@@ -136,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
 
         <div>
           <label for="barcode">بارکۆد</label>
-          <input type="text" class="field" name="barcode" id="barcode" placeholder="بارکۆد بنووسە یان سکان بکە" required>
+          <input type="text" class="field" name="barcode" id="barcode" required>
         </div>
 
         <button type="submit" class="light-green-btn" name="add_medicine">زیادکردنی دەرمان</button>
@@ -185,37 +185,37 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
 
         <div>
           <label for="edit-name">ناوی دەرمان</label>
-          <input type="text" name="name" id="edit-name" class="field" placeholder="ناوی دەرمان بنووسە" required>
+          <input type="text" name="name" id="edit-name" class="field" required>
         </div>
 
         <div>
           <label for="edit-category">جۆر</label>
-          <input type="text" name="category" id="edit-category" class="field" placeholder="جۆری دەرمان بنووسە" required>
+          <input type="text" name="category" id="edit-category" class="field" required>
         </div>
 
         <div>
           <label for="edit-cost_price">نرخی کڕین</label>
-          <input type="number" name="cost_price" min="1" id="edit-cost_price" class="field" placeholder="نرخی کڕینی بنووسە" required>
+          <input type="number" name="cost_price" min="1" id="edit-cost_price" class="field" required>
         </div>
 
         <div>
           <label for="edit-selling_price">نرخی فرۆشتن</label>
-          <input type="number" name="selling_price" min="1" id="edit-selling_price" class="field" placeholder="نرخی فرۆشتنی بنووسە" required>
+          <input type="number" name="selling_price" min="1" id="edit-selling_price" class="field" required>
         </div>
 
         <div>
           <label for="edit-quantity">بڕ</label>
-          <input type="number" name="quantity" min="1" id="edit-quantity" class="field" placeholder="بڕی دەرمان بنووسە" required>
+          <input type="number" name="quantity" min="1" id="edit-quantity" class="field" required>
         </div>
 
         <div>
           <label for="edit-expiry_date">بەسەرچوونی</label>
-          <input type="date" name="expiry_date" id="edit-expiry_date" class="field" placeholder="بەسەرچوونی بنووسە" required>
+          <input type="date" name="expiry_date" id="edit-expiry_date" class="field" required>
         </div>
 
         <div>
           <label for="edit-barcode">بارکۆد</label>
-          <input type="text" name="barcode" id="edit-barcode" class="field" placeholder="بارکۆد بنووسە یان سکان بکە" required>
+          <input type="text" name="barcode" id="edit-barcode" class="field" required>
         </div>
 
         <button type="submit" class="light-yellow-btn">نوێکردنەوە</button>

@@ -14,7 +14,7 @@ $(function () {
     $(".navbar ul li a").each(function () {
       var link = $(this).attr("href");
       if (link === filename) {
-        $(this).css("background-color", "var(--background-color)");
+        $(this).addClass("active");
       }
     });
   }
@@ -181,7 +181,7 @@ $(function () {
     $("#image-input").on("change", function () {
       // .prop() is used to get the value of properties means attributes of the element
       var fileName = $(this).prop("files")[0].name;
-      $("#image-name").text(fileName + " هەڵبژێردراوە");
+      $("#image-name").html(`<span>${fileName}</span> هەڵبژێردراوە`);
     });
   }
 

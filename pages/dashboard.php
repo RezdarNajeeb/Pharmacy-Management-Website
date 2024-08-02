@@ -41,14 +41,6 @@ $system_profile = $result->fetch_assoc();
     ?>
 
     <div class="dashboard">
-        <div class="sys-profile">
-            <div class="sys-img">
-                <img src=<?= "../uploads/" . $system_profile['image'] ?> alt="profile">
-            </div>
-            <h1 class="sys-name"><?= $system_profile['name'] ?></h1>
-            <h3 class="sys-user"><?= $isAdmin ? "بەڕێوەبەر: " : "بەکارهێنەر: " ?> <span><?php echo $_SESSION['username'] ?></span></h3>
-        </div>
-
         <h2 class="title">زانیارییەکان</h2>
         <div class="stats">
             <a href="medicines.php">
@@ -77,6 +69,14 @@ $system_profile = $result->fetch_assoc();
                     <p><?php echo $stats['upcoming_expiries']; ?></p>
                 </div>
             </a>
+        </div>
+
+        <div class="sys-profile">
+            <div class="sys-img">
+                <img src=<?= "../uploads/" . $system_profile['image'] ?> alt="profile">
+            </div>
+            <h1 class="sys-name"><?= $system_profile['name'] ?></h1>
+            <h3 class="sys-user"><?= $isAdmin ? "بەڕێوەبەر: " : "بەکارهێنەر: " ?> <span><?php echo $_SESSION['username'] ?></span></h3>
         </div>
     </div>
 
