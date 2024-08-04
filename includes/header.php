@@ -6,14 +6,14 @@ $isAdmin = $_SESSION['role'] === 'admin';
 $warningQuery = "
     SELECT COUNT(*) AS warning_count FROM medicines 
     WHERE quantity <= (SELECT warning_quantity FROM warning_settings WHERE id = 1) 
-    OR expiry_date <= DATE_ADD(NOW(), INTERVAL (SELECT warning_expiry_days FROM warning_settings WHERE id = 1) DAY)
+    OR (expiry_date IS NOT NULL AND expiry_date != '0000-00-00' AND expiry_date <= DATE_ADD(NOW(), INTERVAL (SELECT warning_expiry_days FROM warning_settings WHERE id = 1) DAY))
 ";
 $warningResult = $conn->query($warningQuery);
 $warningCount = $warningResult->fetch_assoc()['warning_count'];
 
 $warning_expiry_days = $conn->query("SELECT warning_expiry_days FROM warning_settings WHERE id = 1")->fetch_assoc()['warning_expiry_days'];
 ?>
-<script>
+<script defer>
   var warningExpiryDays = <?php echo json_encode($warning_expiry_days); ?>;
 </script>
 
@@ -66,11 +66,11 @@ $warning_expiry_days = $conn->query("SELECT warning_expiry_days FROM warning_set
   ?>
 
   <div class="exchange-rate">
-    <span id="exchange-rate" data-exchange-rate="<?php echo htmlspecialchars($exchange_rate); ?>">1 دۆلار = <?php echo htmlspecialchars(number_format($exchange_rate, 2)); ?> دینار</span>
+    <span id="exchange-rate" data-exchange-rate="<?php echo htmlspecialchars($exchange_rate); ?>">1 دۆلار = <?php echo htmlspecialchars(number_format($exchange_rate, 2, '.', false)); ?> دینار</span>
     <!-- Add a form to update the exchange rate -->
     <form id="update-exc-rate-form" action="../modules/utilities/update_exchange_rate.php" method="post">
-      <input type="number" id="exchange-rate-input" name="new_rate" min="1" step="any" placeholder="بەهای ئەمڕۆ" required>
-      <button type="submit">گۆڕین</button>
+      <input type="number" id="exchange-rate-input" name="new_rate" min="1" step="any" placeholder="بەهای ئەمڕۆ" class="custom-font" required>
+      <button type="submit" class="custom-font">گۆڕین</button>
     </form>
   </div>
 
@@ -129,7 +129,7 @@ $warning_expiry_days = $conn->query("SELECT warning_expiry_days FROM warning_set
         <label for="show-password">پیشاندانی وشەی نهێنی</label>
       </div>
 
-      <button type="submit" class="light-yellow-btn">نوێکردنەوە</button>
+      <button type="submit" class="light-yellow-btn custom-font">نوێکردنەوە</button>
     </form>
   </div>
 </div>

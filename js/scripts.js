@@ -27,6 +27,19 @@ $(function () {
     $("#currency-select").val(savedCurrency);
   }
 
+  function setMinExpiryDate() {
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, "0");
+    var mm = String(today.getMonth() + 1).padStart(2, "0"); // January is 0!
+    var yyyy = today.getFullYear();
+
+    var minDate = yyyy + "-" + mm + "-" + dd;
+    $("#edit-expiry_date").attr("min", minDate);
+    $("#expiry_date").attr("min", minDate);
+  }
+
+  setMinExpiryDate();
+
   function setupModalHandlers(
     modalSelector,
     triggerBtnSelector,
@@ -233,8 +246,6 @@ $(function () {
       "نرخی کڕین پێویستە پڕبکرێتەوە.",
       "نرخی فرۆشتن پێویستە پڕبکرێتەوە.",
       "بڕ پێویستە پڕبکرێتەوە.",
-      "بەسەرچوونی پێویستە پڕبکرێتەوە.",
-      "بارکۆد پێویستە پڕبکرێتەوە.",
     ];
 
     const inputRegex = /^[a-z][a-z0-9-]*(?:[ -]?[a-z0-9-]+)*$/i;
@@ -259,6 +270,11 @@ $(function () {
       isValid = false;
     };
 
+    const costPriceSelector =
+      formId === "add-medicine-form" ? "#cost_price" : "#edit-cost_price";
+    const sellingPriceSelector =
+      formId === "add-medicine-form" ? "#selling_price" : "#edit-selling_price";
+
     fields.each(function (index) {
       const value = $(this).val().trim();
 
@@ -276,49 +292,34 @@ $(function () {
       }
 
       if (index === 6 && value) {
-        if (value.length !== 13) {
-          addErrorMessage(this, "بارکۆد پێویستە ١٣ ژمارە بێت.");
-        } else if (isNaN(value)) {
+        if (isNaN(value)) {
           addErrorMessage(this, "بارکۆد پێویستە تەنها ژمارە بێت.");
         }
         return;
       }
 
       if ((index === 2 || index === 3) && value) {
-        if (isNaN(value)) {
+        const costingPrice = parseFloat($(costPriceSelector).val().trim());
+        const sellingPrice = parseFloat($(sellingPriceSelector).val().trim());
+
+        if (isNaN(costingPrice) || isNaN(sellingPrice)) {
           addErrorMessage(
             this,
             "نرخی کڕین و نرخی فرۆشتن پێویستە تەنها ژمارە بێت."
           );
-        } else if (value <= 0 || value > 1000000) {
-          const rangeMessage =
-            value <= 0
-              ? "نرخی کڕین و نرخی فرۆشتن پێویستە زیاتر بێت لە ١."
-              : "نرخی کڕین و نرخی فرۆشتن پێویستە کەمتر بێت لە ١٠٠٠٠٠٠.";
-          addErrorMessage(this, rangeMessage);
-        }
-
-        const costPriceSelector =
-          formId === "add-form-medicine" ? "#cost_price" : "#edit-cost_price";
-        const sellingPriceSelector =
-          formId === "add-form-medicine"
-            ? "#selling_price"
-            : "#edit-selling_price";
-
-        const costingPrice = parseFloat($(costPriceSelector).val().trim());
-        const sellingPrice = parseFloat($(sellingPriceSelector).val().trim());
-
-        if (costingPrice && sellingPrice && sellingPrice <= costingPrice) {
-          if (index === 3) {
-            addErrorMessage(
-              this,
-              "نرخی فرۆشتن پێویستە زیاتر بێت لە نرخی کڕین."
-            );
-          } else {
-            addErrorMessage(
-              this,
-              "نرخی کڕین پێویستە کەمتر بێت لە نرخی فرۆشتن."
-            );
+        } else {
+          if (costingPrice <= 0) {
+            addErrorMessage(this, "نرخی کڕین پێویستە زیاتر بێت لە ٠.");
+          }
+          if (sellingPrice <= 0) {
+            addErrorMessage(this, "نرخی فرۆشتن پێویستە زیاتر بێت لە ٠.");
+          }
+          if (sellingPrice <= costingPrice) {
+            const errorMessage =
+              index === 3
+                ? "نرخی فرۆشتن پێویستە زیاتر بێت لە نرخی کڕین."
+                : "نرخی کڕین پێویستە کەمتر بێت لە نرخی فرۆشتن.";
+            addErrorMessage(this, errorMessage);
           }
         }
       }

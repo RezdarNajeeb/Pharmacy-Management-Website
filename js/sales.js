@@ -104,17 +104,35 @@ $(document).ready(function () {
           return;
         }
 
-        if (expiryDate !== null) {
+        if (
+          expiryDate !== null &&
+          expiryDate !== "" &&
+          expiryDate !== "0000-00-00"
+        ) {
           const today = new Date();
           const expiry = new Date(expiryDate);
-          const warningDate = new Date(today);
-          warningDate.setDate(today.getDate() + warningExpiryDays);
-          const isExpire = expiry <= warningDate;
-          if (isExpire) {
-            alert(
-              `بەسەرچوونی ئەم دەرمانە [ ${name} ] گەشتووەتە بڕی ئاگادارکردنەوە.`
+
+          // Ensure the expiry date is valid
+          if (!isNaN(expiry.getTime())) {
+            // Convert warningExpiryDays to milliseconds and add to the current date
+            const warningDate = new Date(
+              today.getTime() + warningExpiryDays * 24 * 60 * 60 * 1000
             );
-            return;
+
+            // Check if the expiry date is less than or equal to the warning date
+            const isWithinWarningPeriod = expiry <= warningDate;
+            // Check if the expiry date is exactly today's date
+            const isTodayOrPast = expiry <= today;
+
+            if (isTodayOrPast) {
+              alert(`ئەم دەرمانە [ ${name} ] بەسەرچووە.`);
+              return;
+            } else if (isWithinWarningPeriod) {
+              alert(
+                `بەسەرچوونی ئەم دەرمانە [ ${name} ] گەشتووەتە بڕی ئاگادارکردنەوە.`
+              );
+              return;
+            }
           }
         }
 
@@ -148,6 +166,7 @@ $(document).ready(function () {
             currency,
             totalUSD,
             totalIQD,
+            quantityInDB,
           });
         }
 
@@ -196,31 +215,32 @@ $(document).ready(function () {
                       sale.currency === "USD"
                         ? `${sale.costPrice.toFixed(2)} $<br><br>${(
                             sale.costPrice * exchangeRate
-                          ).toFixed(0)} د.ع`
+                          ).toFixed(0)} IQD`
                         : `${(sale.costPrice / exchangeRate).toFixed(
                             2
                           )} $<br><br>${parseFloat(sale.costPrice).toFixed(
                             0
-                          )} د.ع`
+                          )} IQD`
                     }
                     </td>
                     <td>
                     ${
                       sale.currency === "USD"
-                        ? `${sale.sellingPrice.toFixed(2)} $<br><br>${(
-                            sale.sellingPrice * exchangeRate
-                          ).toFixed(0)} د.ع`
+                        ? `${sale.sellingPrice.toFixed(2)} 
+                        $<br><br>${(sale.sellingPrice * exchangeRate).toFixed(
+                          0
+                        )} IQD`
                         : `${(sale.sellingPrice / exchangeRate).toFixed(
                             2
                           )} $<br><br>${parseFloat(sale.sellingPrice).toFixed(
                             0
-                          )} د.ع`
+                          )} IQD`
                     }
                     </td>
                     <td>
                         ${sale.totalUSD.toFixed(2)} $
                         <br><br>
-                        ${sale.totalIQD.toFixed(2)} د.ع
+                        ${sale.totalIQD.toFixed(0)} IQD
                     </td>
                     <td>
                         <div class="actions">
@@ -238,8 +258,9 @@ $(document).ready(function () {
     }
 
     $totalPriceUSDElement.text(totalPriceUSD.toFixed(2));
-    $totalPriceIQDElement.text(totalPriceIQD.toFixed(2));
+    $totalPriceIQDElement.text(totalPriceIQD.toFixed(0));
     updateDiscountedTotals();
+    $saleInputElement.focus();
   }
 
   // Validate discount input
@@ -352,16 +373,23 @@ $(document).ready(function () {
 
   $document.on("click", ".increase-quantity", function () {
     const index = $(this).data("index");
-    sales[index].quantity++;
-    sales[index].totalUSD =
-      sales[index].currency === "USD"
-        ? sales[index].quantity * sales[index].sellingPrice
-        : (sales[index].quantity * sales[index].sellingPrice) / exchangeRate;
-    sales[index].totalIQD =
-      sales[index].currency === "IQD"
-        ? sales[index].quantity * sales[index].sellingPrice
-        : sales[index].quantity * sales[index].sellingPrice * exchangeRate;
-    updateSalesTable();
+    if (sales[index].quantity >= sales[index].quantityInDB) {
+      alert(
+        `ئەم دەرمانە [ ${sales[index].name} ] کە داواکراوە، زیاترە لەو بڕەی کە لە سیستەم هەیە.`
+      );
+      return;
+    } else {
+      sales[index].quantity++;
+      sales[index].totalUSD =
+        sales[index].currency === "USD"
+          ? sales[index].quantity * sales[index].sellingPrice
+          : (sales[index].quantity * sales[index].sellingPrice) / exchangeRate;
+      sales[index].totalIQD =
+        sales[index].currency === "IQD"
+          ? sales[index].quantity * sales[index].sellingPrice
+          : sales[index].quantity * sales[index].sellingPrice * exchangeRate;
+      updateSalesTable();
+    }
   });
 
   $document.on("click", ".reduce-quantity", function () {
@@ -377,15 +405,18 @@ $(document).ready(function () {
           ? sales[index].quantity * sales[index].sellingPrice
           : sales[index].quantity * sales[index].sellingPrice * exchangeRate;
     } else {
-      sales.splice(index, 1);
+      if (confirm("دەتەوێت ئەم دەرمانە لە لیستەکە لاببەیت؟"))
+        sales.splice(index, 1);
     }
     updateSalesTable();
   });
 
   $document.on("click", ".remove-sale", function () {
     const index = $(this).data("index");
-    sales.splice(index, 1);
-    updateSalesTable();
+    if (confirm("دەتەوێت ئەم دەرمانە لە لیستەکە لاببەیت؟")) {
+      sales.splice(index, 1);
+      updateSalesTable();
+    }
   });
 
   // Sales history table with details modal
@@ -458,18 +489,18 @@ $(document).ready(function () {
               <td>${item.name}</td>
               <td>${
                 item.currency === "USD"
-                  ? `${item.sellingPrice} $ <br><br> ${
-                      item.sellingPrice * exchangeRate
-                    } IQD`
-                  : `${item.sellingPrice} IQD <br><br> ${
-                      item.sellingPrice / exchangeRate
-                    } $`
+                  ? `${item.sellingPrice.toFixed(2)} $ 
+                  <br><br> 
+                  ${(item.sellingPrice * exchangeRate).toFixed(0)} IQD`
+                  : `${item.sellingPrice.toFixed(0)} IQD 
+                  <br><br> 
+                  ${(item.sellingPrice / exchangeRate).toFixed(2)} $`
               }</td>
               <td>${item.quantity}</td>
               <td>
                 ${item.totalUSD.toFixed(2)} $
                  <br/><br/>
-                ${item.totalIQD} IQD
+                ${item.totalIQD.toFixed(0)} IQD
               </td>
             </tr>`;
         });
@@ -478,15 +509,21 @@ $(document).ready(function () {
             <tfoot>
               <tr>
                 <td colspan="3">کۆی گشتی فرۆشتنەکە</td>
-                <td colspan="2">${totalUSD} $ <br><br> ${totalIQD} IQD</td>
+                <td colspan="2">${totalUSD.toFixed(
+                  2
+                )} $ <br><br> ${totalIQD.toFixed(0)} IQD</td>
               </tr>
               <tr>
                 <td colspan="3">داشکاندن</td>
-                <td colspan="2">${discountUSD} $ <br><br> ${discountIQD} IQD</td>
+                <td colspan="2">${discountUSD.toFixed(
+                  2
+                )} $ <br><br> ${discountIQD.toFixed(0)} IQD</td>
               </tr>
               <tr>
                 <td colspan="3">کۆی گشتی فرۆشتنەکە دوای داشکاندن</td>
-                <td colspan="2">${discountedTotalUSD} $ <br><br> ${discountedTotalIQD} IQD</td>
+                <td colspan="2">${discountedTotalUSD.toFixed(
+                  2
+                )} $ <br><br> ${discountedTotalIQD.toFixed(0)} IQD</td>
               </tr>
             </tfoot>
           </table>

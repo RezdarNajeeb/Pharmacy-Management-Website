@@ -35,10 +35,10 @@ if (!isset($_SESSION['user_id'])) {
 
   // Fetch medicines with low quantity or near expiry date
   $warningMedicinesQuery = "
-    SELECT * FROM medicines 
-    WHERE quantity <= $warning_quantity 
-    OR expiry_date <= DATE_ADD(NOW(), INTERVAL $warning_expiry_days DAY)
-";
+      SELECT * FROM medicines 
+      WHERE (quantity <= $warning_quantity 
+      OR (expiry_date IS NOT NULL AND expiry_date != '0000-00-00' AND expiry_date <= DATE_ADD(NOW(), INTERVAL $warning_expiry_days DAY)))
+  ";
   $warningMedicinesResult = $conn->query($warningMedicinesQuery);
   ?>
 
@@ -60,7 +60,7 @@ if (!isset($_SESSION['user_id'])) {
         </div>
       </div>
 
-      <button type="submit" class="light-yellow-btn">نوێکردنەوە</button>
+      <button type="submit" class="light-yellow-btn custom-font">نوێکردنەوە</button>
     </form>
 
     <table id="warnings-table" class="normal-table">
@@ -78,16 +78,31 @@ if (!isset($_SESSION['user_id'])) {
         if ($warningMedicinesResult->num_rows === 0) {
           echo "<tr><td colspan='5'>هیچ زانیاریەک نییە</td></tr>";
         } else {
-          while ($row = $warningMedicinesResult->fetch_assoc()) : ?>
+
+          while ($row = $warningMedicinesResult->fetch_assoc()) :
+        ?>
             <tr>
               <?php $imageUrl = $row['image'] ? "../uploads/" . $row['image'] : "../assets/images/no-image.avif"; ?>
               <td><img src="<?= $imageUrl ?>" alt="Medicine Image"></td>
               <td><?php echo htmlspecialchars($row['name']); ?></td>
               <td><?php echo htmlspecialchars($row['category']); ?></td>
               <td <?php echo $row['quantity'] <= $warning_quantity ? "style='background-color: #FCDB58'" : "" ?>><?php echo htmlspecialchars($row['quantity']); ?></td>
-              <td <?php echo strtotime($row['expiry_date']) <= strtotime(date('Y-m-d', strtotime("+$warning_expiry_days days"))) ? "style='background-color: #ff9966'" : "" ?>><?php echo htmlspecialchars($row['expiry_date']); ?></td>
+              <?php
+              $expiry_date = htmlspecialchars($row['expiry_date']);
+              $current_date = date('Y-m-d');
+              $warning_date = date('Y-m-d', strtotime("+$warning_expiry_days days"));
+
+              if ($row['expiry_date'] <= $current_date) {
+                echo "<td style='background-color: #FF6464'>$expiry_date</td>";
+              } elseif (strtotime($row['expiry_date']) <= strtotime($warning_date)) {
+                echo "<td style='background-color: #ff9966'>$expiry_date</td>";
+              } else {
+                echo "<td>$expiry_date</td>";
+              }
+              ?>
             </tr>
-        <?php endwhile;
+        <?php
+          endwhile;
         } ?>
       </tbody>
     </table>

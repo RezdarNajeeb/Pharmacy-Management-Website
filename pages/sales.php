@@ -42,7 +42,7 @@ if (!isset($_SESSION['user_id'])) {
             <span id="sale-qty-error" class="error-field"></span>
           </div>
 
-          <button type="submit" class="light-green-btn">زیادیکە بۆ خشتەی فرۆشتن</button>
+          <button type="submit" class="light-green-btn custom-font">زیادیکە بۆ خشتەی فرۆشتن</button>
         </form>
       </div>
 
@@ -56,8 +56,8 @@ if (!isset($_SESSION['user_id'])) {
         </div>
 
         <h3>کۆی گشتی: <span id="total-price-usd">0.00</span> $ | <span id="total-price-iqd">0</span> د.ع</h3>
-        <h3>دوای داشکاندن: <span id="discounted-total-price-usd">0.00</span> $ | <span id="discounted-total-price-iqd">0</span> د.ع</h3>
-        <button id="finalize-sale" class="light-blue-btn">بیفرۆشە</button>
+        <h3>دوای داشکاندن: <span id="discounted-total-price-usd">0.00</span> $ | <span id="discounted-total-price-iqd">0</span> IQD</h3>
+        <button id="finalize-sale" class="light-blue-btn custom-font">بیفرۆشە</button>
       </div>
     </div>
 

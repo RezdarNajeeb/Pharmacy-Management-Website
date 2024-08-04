@@ -107,6 +107,10 @@ body {
   margin-top: 2rem;
 }
 
+.custom-font {
+  font-family: "sarchia", sans-serif;
+}
+
 .light-blue-btn,
 .red-btn,
 .light-green-btn,
@@ -452,7 +456,7 @@ header #user-box {
   row-gap: 0.5rem;
   direction: ltr;
   position: absolute;
-  top: 9rem;
+  top: 7rem;
   right: 1rem;
   background-color: var(--background-color);
   border: var(--border-tc);
@@ -471,12 +475,14 @@ header #user-box span {
   color: var(--text-color);
   font-size: 2.5rem;
   font-weight: bold;
-  margin-bottom: 1rem;
 }
 
 header #user-box button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-size: 2rem;
-  padding: 0.5rem 1rem;
+  padding: .5rem .5rem;
   background-color: var(--light-yellow);
   color: #fff;
   border: none;
@@ -490,8 +496,11 @@ header #user-box button:hover {
 }
 
 header #user-box a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-size: 2rem;
-  padding: 0.5rem 1rem;
+  padding: .5rem .5rem;
   color: #fff;
   background-color: var(--red);
   border-radius: 0.5rem;
@@ -569,7 +578,6 @@ header #notifications-icon .notification-count {
 }
 
 .exchange-rate form input {
-  font-family: "sarchia", sans-serif;
   width: 50%;
   padding: 0.1rem 0.5rem;
   border: var(--border-tc);

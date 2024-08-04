@@ -40,12 +40,12 @@ $systemProfile = $systemResult->fetch_assoc();
         <div class="sys-profile-image">
           <img src="<?= "../uploads/" . $systemProfile['image']; ?>" alt="System Profile Image" id="profileImage">
           <label for="profileImageInput" class="edit-icon"><i class="fa-regular fa-pen-to-square"></i></label>
-          <input type="file" id="profileImageInput" name="edit-image" accept="image/*" class="file-input">
+          <input type="file" id="profileImageInput" name="edit-image" accept="image/jpg, image/jpeg, image/png" class="file-input">
         </div>
 
-        <input type="text" id="systemName" class="sys-profile-name" name="name" value="<?php echo htmlspecialchars($systemProfile['name'], ENT_QUOTES, 'UTF-8'); ?>" required>
+        <input type="text" id="systemName" class="sys-profile-name custom-font" name="name" value="<?php echo htmlspecialchars($systemProfile['name'], ENT_QUOTES, 'UTF-8'); ?>" required>
 
-        <button type="submit" class="light-yellow-btn">نوێکردنەوە</button>
+        <button type="submit" class="light-yellow-btn custom-font">نوێکردنەوە</button>
       </form>
     </div>
   </div>
@@ -59,7 +59,8 @@ $systemProfile = $systemResult->fetch_assoc();
 
         const $systemNameElement = $('#systemName');
         const systemName = $systemNameElement.val();
-        const nameRegex = /^[a-zA-Z\u0600-\u06FF][a-zA-Z0-9\u0600-\u06FF\s]*$/;
+
+        const nameRegex = /^[a-zA-Z0-9\u0600-\u06FF][a-zA-Z0-9\u0600-\u06FF\s]*$/;
         let errorMessage = '';
 
         // Clear previous error messages
@@ -68,7 +69,7 @@ $systemProfile = $systemResult->fetch_assoc();
         if (!systemName) {
           errorMessage = "<span class='error-field'>ناوی سیستەم پێویستە پڕبکرێتەوە.</span>";
         } else if (!nameRegex.test(systemName)) {
-          errorMessage = "<span class='error-field'>ناوی سیستەم پێویستە بە پیت دەست پێبکات.</span>";
+          errorMessage = "<span class='error-field'>ناوی سیستەم پێویستە بە پیت یان ژمارە دەست پێبکات و تەنها پیت و ژمارە و بۆشایی وەردەگرێت.</span>";
         } else if (systemName.length > 25) {
           errorMessage = "<span class='error-field'>ناوی سیستەم نابێت زیاتر لە ٢٥ پیت بێت.</span>";
         }

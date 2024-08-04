@@ -22,6 +22,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
   $expiry_date = $_POST['expiry_date'];
   $barcode = $_POST['barcode'];
 
+  if ($barcode == '') {
+    $barcode = null;
+  }
+
+  if ($expiry_date == '' || $expiry_date == '0000-00-00') {
+    $expiry_date = null;
+  }
+
   // Handle image upload
   $image = null;
   if (!empty($_FILES['image']['name'])) {
@@ -63,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
       'message' => "هەڵەیەک ڕویدا لە زیادکردنی دەرمان: " . $e->getMessage()
     ];
 
-    // Redirect to the same page to show the error message
+    // Redirect to the same page and delete the history to prevent resubmission
     header("Location: medicines.php");
     exit();
   }
@@ -110,12 +118,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
 
         <div>
           <label for="cost_price">نرخی کڕین</label>
-          <input type="number" class="field" name="cost_price" id="cost_price" min="1" required>
+          <input type="number" class="field" name="cost_price" min="0" step="0.01" id="cost_price" required>
         </div>
 
         <div>
           <label for="selling_price">نرخی فرۆشتن</label>
-          <input type="number" class="field" name="selling_price" id="selling_price" min="1" required>
+          <input type="number" class="field" name="selling_price" min="0" step="0.01" id="selling_price" required>
         </div>
 
         <div>
@@ -125,21 +133,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
 
         <div>
           <label for="expiry_date">بەسەرچوونی</label>
-          <input type="date" class="field" name="expiry_date" id="expiry_date" required>
+          <input type="date" class="field" name="expiry_date" id="expiry_date">
         </div>
 
         <div class="file-upload">
-          <input type="file" name="image" id="image-input" class="file-input" accept="image/*">
+          <input type="file" name="image" id="image-input" class="file-input" accept="image/jpg, image/jpeg, image/png">
           <label for="image-input" class="light-blue-btn file-choose-btn">وێنەیەک هەڵبژێرە</label>
           <span id="image-name" class="file-name">هیچ وێنەیەک هەڵنەبژێردراوە</span>
         </div>
 
         <div>
           <label for="barcode">بارکۆد</label>
-          <input type="text" class="field" name="barcode" id="barcode" required>
+          <input type="text" class="field" name="barcode" id="barcode">
         </div>
 
-        <button type="submit" class="light-green-btn" name="add_medicine">زیادکردنی دەرمان</button>
+        <button type="submit" class="light-green-btn custom-font" name="add_medicine">زیادکردنی دەرمان</button>
       </form>
     </div>
 
@@ -180,7 +188,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
         <div class="current-img-cont">
           <img id="current-img" src="" alt="Medicine Image">
           <label for="edit-image" class="edit-icon"><i class="fa-regular fa-pen-to-square"></i></label>
-          <input type="file" id="edit-image" name="image" accept="image/*" class="file-input">
+          <input type="file" id="edit-image" name="image" accept="image/jpg, image/jpeg, image/png" class="file-input">
         </div>
 
         <div>
@@ -195,12 +203,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
 
         <div>
           <label for="edit-cost_price">نرخی کڕین</label>
-          <input type="number" name="cost_price" min="1" id="edit-cost_price" class="field" required>
+          <input type="number" name="cost_price" id="edit-cost_price" min="0" step="0.01" class="field" required>
         </div>
 
         <div>
           <label for="edit-selling_price">نرخی فرۆشتن</label>
-          <input type="number" name="selling_price" min="1" id="edit-selling_price" class="field" required>
+          <input type="number" name="selling_price" id="edit-selling_price" min="0" step="0.01" class="field" required>
         </div>
 
         <div>
@@ -210,15 +218,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
 
         <div>
           <label for="edit-expiry_date">بەسەرچوونی</label>
-          <input type="date" name="expiry_date" id="edit-expiry_date" class="field" required>
+          <input type="date" name="expiry_date" id="edit-expiry_date" class="field">
         </div>
 
         <div>
           <label for="edit-barcode">بارکۆد</label>
-          <input type="text" name="barcode" id="edit-barcode" class="field" required>
+          <input type="text" name="barcode" id="edit-barcode" class="field">
         </div>
 
-        <button type="submit" class="light-yellow-btn">نوێکردنەوە</button>
+        <button type="submit" class="light-yellow-btn custom-font">نوێکردنەوە</button>
       </form>
     </div>
   </div>
@@ -295,17 +303,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
               var currency = row['currency'];
 
               if (currency === 'USD') {
-                return parseFloat(sellingPrice).toFixed(2) + ' $<br><br>' + (sellingPrice * <?= $exchange_rate ?>).toFixed(0) + ' د.ع';
+                return parseFloat(sellingPrice).toFixed(2) + ' $<br><br>' + (sellingPrice * <?= $exchange_rate ?>).toFixed(0) + ' IQD';
               } else {
-                return (sellingPrice / <?= $exchange_rate ?>).toFixed(2) + ' $<br><br>' + parseFloat(sellingPrice).toFixed(0) + ' د.ع';
+                return (sellingPrice / <?= $exchange_rate ?>).toFixed(2) + ' $<br><br>' + parseFloat(sellingPrice).toFixed(0) + ' IQD';
               }
             }
           },
           {
-            "data": "quantity"
+            "data": "quantity",
           },
           {
-            "data": "expiry_date"
+            "data": "expiry_date",
+            "render": function(data) {
+              return data === null || data === '0000-00-00' || data === '' ? 'بەسەرچوونی نییە' : data;
+            }
           },
           {
             "data": "barcode"
@@ -381,7 +392,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
             id: id
           },
           success: function(response) {
-
+            location.reload();
           },
           error: function(xhr, status, error) {
             console.error('Error:', error); // Debugging: log the error

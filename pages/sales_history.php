@@ -77,10 +77,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sale_id'])) {
           $totalUSD = floatval($totalIQD) / $exchange_rate;
 
           if ($row['discount_currency'] === 'USD') {
-            $discountUSD = htmlspecialchars(number_format($row['discount'], 2));
+            $discountUSD = htmlspecialchars($row['discount']);
             $discountIQD = floatval($discountUSD) * $exchange_rate;
           } else {
-            $discountIQD = htmlspecialchars(number_format($row['discount'], 2));
+            $discountIQD = htmlspecialchars($row['discount']);
             $discountUSD = floatval($discountIQD) / $exchange_rate;
           }
 
@@ -89,6 +89,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sale_id'])) {
 
           $username = htmlspecialchars($row['username']);
           $createdAt = htmlspecialchars($row['created_at']);
+
+          $totalIQD = number_format($totalIQD, 0, false, false);
+          $totalUSD = number_format($totalUSD, 2);
+          $discountIQD = number_format($discountIQD, 0, false, false);
+          $discountUSD = number_format($discountUSD, 2);
+          $discountedTotalIQD = number_format($discountedTotalIQD, 0, false, false);
+          $discountedTotalUSD = number_format($discountedTotalUSD, 2);
 
           echo <<<HTML
             <tr>
@@ -108,7 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sale_id'])) {
                           class="light-blue-btn view-sale-details">
                           <i class="fa-solid fa-circle-info"></i>
                       </button>
-                      <form action="sales_history.php" method="POST">
+                      <form action="sales_history.php" method="POST" onsubmit="return confirm('دڵنیایت کە دەتەوێت ئەم مێژووی فرۆشتنە بسڕیتەوە؟')">
                           <input type="hidden" name="sale_id" value="$id">
                           <button type="submit" class="red-btn">
                               <i class="fa-solid fa-trash"></i>
