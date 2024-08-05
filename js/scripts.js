@@ -21,12 +21,6 @@ $(function () {
 
   highlightCurrentPageLink();
 
-  // Set the currency select value from localStorage if it exists
-  var savedCurrency = localStorage.getItem("currency");
-  if (savedCurrency) {
-    $("#currency-select").val(savedCurrency);
-  }
-
   function setMinExpiryDate() {
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, "0");
@@ -215,10 +209,21 @@ $(function () {
   setupImagePreview("#profileImageInput", "#profileImage");
   setupImagePreview("#edit-image", "#current-img");
 
+  // Set the currency select value from localStorage if it exists
+  const savedCurrency = localStorage.getItem("currency");
+  if (savedCurrency) {
+    $("#currency-select").val(savedCurrency);
+  }
+
   // Update form values with the currency and exchange rate
   function updateFormValues() {
     const currency = localStorage.getItem("currency");
     const exchangeRate = $("#exchange-rate").data("exchange-rate");
+
+    if (!exchangeRate) {
+      alert("نرخی ئەمڕۆی دۆلار نەزانراوە.");
+      return;
+    }
 
     // Update both forms
     ["#add-medicine-form", "#edit-medicine-form"].forEach((formSelector) => {
@@ -229,9 +234,12 @@ $(function () {
     });
   }
 
-  // Update localStorage and reload the page when the currency is changed
+  // Call updateFormValues on page load to set initial values
+  updateFormValues();
+
+  // Update localStorage when the currency is changed
   $("#currency-select").change(function () {
-    var currency = $(this).val();
+    const currency = $(this).val();
     localStorage.setItem("currency", currency);
     updateFormValues();
   });
