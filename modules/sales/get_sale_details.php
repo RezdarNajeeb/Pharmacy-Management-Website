@@ -15,7 +15,7 @@ $stmt->execute();
 $result = $stmt->get_result();
 
 if ($result->num_rows === 0) {
-  echo json_encode(['status' => 'error', 'message' => 'هیچ دەتایەک نەدۆزرایەوە.']);
+  echo json_encode(['status' => 'error', 'message' => 'هیچ فرۆشتنێک نەدۆزرایەوە.']);
   exit();
 }
 

@@ -4,7 +4,7 @@ require_once '../../includes/db.php';
 require_once '../utilities/log_user_activity.php';
 
 if (!isset($_SESSION['user_id'])) {
-  header("Location: ../../../../pages/login.php");
+  header("Location: ../../pages/login.php");
   exit();
 }
 
@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     logUserActivity("زانیارییەکانی خۆی نوێکردەوە.");
 
     $_SESSION['messages'][] = ['type' => 'success', 'message' => 'زانیارییەکانت بەسەرکەوتوویی نوێکرانەوە.'];
-    header("Location: ../../../../pages/dashboard.php");
+    header('Location: ' . $_SERVER['HTTP_REFERER']); // Redirect back to the previous page
     exit();
   } else {
     $_SESSION['messages'][] = ['type' => 'error', 'message' => 'هەڵەیەک ڕوویدا.'];

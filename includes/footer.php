@@ -1,5 +1,5 @@
 <footer dir="ltr">
-  <p>Developed By <span>Rezdar Najeeb</span> | All Things Reserved &copy;</p>
+  <p>Developed By <span>Rezdar Najeeb</span> | &copy; All Things Reserved</p>
   <p>Contact: <a href="mailto:rezdar.00166214@gmail.com">rezdar.00166214@gmail.com</a> | <a href="tel:07501406655">07501406655</a></p>
 
   <div class="social-media">

@@ -14,11 +14,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id'])) {
     $medicine = $result->fetch_assoc();
     echo json_encode(['success' => true, 'medicine' => $medicine]);
   } else {
-    $_SESSION['messages'][] = ['error', 'دەرمانەکە نەدۆزرایەوە.'];
+    $_SESSION['messages'][] = ['type' => 'error', 'message' => 'بەرهەمەکە نەدۆزرایەوە.'];
   }
   $stmt->close();
 } else {
-  $_SESSION['messages'][] = ['error', 'دەرمانەکە نەدۆزرایەوە.'];
+  $_SESSION['messages'][] = ['type' => 'error', 'message' => 'بەرهەمەکە نەدۆزرایەوە.'];
 }
 
 $conn->close();

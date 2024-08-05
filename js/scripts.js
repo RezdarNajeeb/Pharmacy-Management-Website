@@ -241,7 +241,7 @@ $(function () {
     let isValid = true;
 
     const errorMessages = [
-      "ناوی دەرمان پێویستە پڕبکرێتەوە.",
+      "ناوی بەرهەم پێویستە پڕبکرێتەوە.",
       "جۆر پێویستە پڕبکرێتەوە.",
       "نرخی کڕین پێویستە پڕبکرێتەوە.",
       "نرخی فرۆشتن پێویستە پڕبکرێتەوە.",
@@ -250,7 +250,7 @@ $(function () {
 
     const inputRegex = /^[a-z][a-z0-9-]*(?:[ -]?[a-z0-9-]+)*$/i;
     const fieldSelectors = {
-      0: "ناوی دەرمان",
+      0: "ناوی بەرهەم",
       1: "جۆر",
     };
 
@@ -346,10 +346,10 @@ $(function () {
         contentType: false,
         processData: false,
         success: function (response) {
-          location.reload(); // Reload the page on success
+          location.reload();
         },
         error: function (xhr, status, error) {
-          alert(xhr.responseText); // Show error message on failure
+          console.error(error);
         },
       });
     }

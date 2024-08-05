@@ -78,7 +78,7 @@ $warning_expiry_days = $conn->query("SELECT warning_expiry_days FROM warning_set
   <nav class="navbar">
     <ul>
       <li><a href="dashboard.php">زانیارییەکان</a></li>
-      <li><a href="medicines.php">دەرمانەکان</a></li>
+      <li><a href="medicines.php">بەرهەمەکان</a></li>
       <li><a href="sales.php">فرۆشتن</a></li>
       <?php if ($isAdmin) { ?>
         <li><a href="sales_history.php">مێژووی فرۆشتن</a></li>
@@ -101,7 +101,7 @@ $warning_expiry_days = $conn->query("SELECT warning_expiry_days FROM warning_set
 
   <div class="logo">
     <a href="dashboard.php">
-      <img src=<?= "../uploads/" . $system_profile['image'] ?> alt="profile">
+      <img src="<?= isset($system_profile['image']) && !empty($system_profile['image']) ? htmlspecialchars("../uploads/system_profile/" . $system_profile['image']) : htmlspecialchars("../assets/images/no-image.png") ?>" alt="System Profile Image">
     </a>
   </div>
 </header>

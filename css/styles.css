@@ -383,6 +383,7 @@ header .logo {
   height: 4rem;
   border-radius: 50%;
   overflow: hidden;
+  border: 2px solid var(--yellow);
 }
 
 header .logo img {
@@ -482,7 +483,7 @@ header #user-box button {
   justify-content: center;
   align-items: center;
   font-size: 2rem;
-  padding: .5rem .5rem;
+  padding: 0.5rem 0.5rem;
   background-color: var(--light-yellow);
   color: #fff;
   border: none;
@@ -500,7 +501,7 @@ header #user-box a {
   justify-content: center;
   align-items: center;
   font-size: 2rem;
-  padding: .5rem .5rem;
+  padding: 0.5rem 0.5rem;
   color: #fff;
   background-color: var(--red);
   border-radius: 0.5rem;
@@ -629,8 +630,12 @@ header #notifications-icon .notification-count {
   box-shadow: var(--box-shadow);
   overflow-y: scroll;
   scrollbar-width: thin;
-  scrollbar-color: var(--primary-color) var(--background-color);
+  scrollbar-color: var(--yellow) var(--hd-ft-bg);
   direction: ltr;
+}
+
+.modal-content:has(#sale-details) {
+  max-width: 80rem;
 }
 
 .close {
@@ -688,13 +693,18 @@ header #notifications-icon .notification-count {
 .sys-profile {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   gap: 2rem;
   margin: 0 auto;
   margin-top: 2rem;
   padding: 2rem;
+  min-width: 40rem;
+  min-height: 50rem;
+  max-width: 40rem;
+  max-height: 50rem;
   border-radius: 0.5rem;
   background-color: #fff;
-  border: var(--border-yl);
+  border: 3px solid var(--yellow);
 }
 
 .sys-img {
@@ -703,6 +713,7 @@ header #notifications-icon .notification-count {
   border-radius: 50%;
   margin: 0 auto;
   overflow: hidden;
+  border: 2px solid var(--hd-ft-bg);
 }
 
 .sys-img img {
@@ -898,7 +909,7 @@ header #notifications-icon .notification-count {
 /* Pagination styling */
 .dataTables_wrapper .dataTables_paginate .paginate_button {
   font-size: 1.2rem;
-  padding: 0.5rem 1rem;
+  padding: 0.7rem 1.1rem 0.4rem 1.1rem;
   margin: 0.4rem;
   background-color: var(--text-color);
   color: var(--yellow) !important;
@@ -937,7 +948,7 @@ header #notifications-icon .notification-count {
 /* The Table itself Styles */
 .dataTables_scrollBody {
   scrollbar-width: thin;
-  scrollbar-color: var(--hd-ft-bg) var(--background-color);
+  scrollbar-color: var(--yellow) var(--hd-ft-bg);
 }
 
 .dataTables_scrollHead thead tr th,
@@ -998,7 +1009,7 @@ header #notifications-icon .notification-count {
   position: relative;
   margin-bottom: 2rem;
   border-radius: 50%;
-  border: 3px solid var(--primary-color);
+  border: 3px solid var(--yellow);
 }
 
 #edit-medicine-form .current-img-cont img {
@@ -1197,29 +1208,6 @@ header #notifications-icon .notification-count {
   flex-direction: column;
   align-items: center;
   gap: 3rem;
-  background-image: url("../assets/images/sales.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-.user-tracking-container {
-  background-image: url("../assets/images/user_tracking.jpg");
-}
-
-.warnings-container {
-  background-image: url("../assets/images/warnings.jpg");
-}
-
-.sales-history-container h1,
-.user-tracking-container h1,
-.warnings-container h1 {
-  text-align: center;
-  margin-right: auto;
-  margin-left: auto;
-  padding: 1rem;
-  border-radius: 0.5rem;
-  background-color: var(--background-color);
 }
 
 #sales-history-table .actions {
@@ -1247,7 +1235,7 @@ header #notifications-icon .notification-count {
   padding: 1rem;
   border-radius: 0.5rem;
   background-color: #fff;
-  box-shadow: 0 0 0 5px var(--text-color);
+  box-shadow: 0 0 0 5px var(--hd-ft-bg);
 }
 
 #sale-details table {
@@ -1260,12 +1248,14 @@ header #notifications-icon .notification-count {
   overflow-y: auto;
   display: block;
   scrollbar-width: thin;
-  scrollbar-color: var(--primary-color) var(--background-color);
+  scrollbar-color: var(--yellow) var(--hd-ft-bg);
 }
 
 #sale-details thead {
   position: sticky;
   top: 0;
+  background-color: var(--hd-ft-bg);
+  color: var(--background-color);
 }
 
 #sale-details thead tr,
@@ -1276,23 +1266,14 @@ header #notifications-icon .notification-count {
   table-layout: fixed;
 }
 
+#sale-details tbody tr {
+  border-bottom: var(--border-yl);
+}
+
 #sale-details th,
 #sale-details td {
   padding: 1rem 0.5rem;
-  border: var(--border);
-}
-
-#sale-details th {
-  background-color: #f2f2f2;
-  font-weight: bold;
-}
-
-#sale-details tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-
-#sale-details tr:hover {
-  background-color: #f1f1f1;
+  font-weight: normal;
 }
 
 #sale-details img {
@@ -1303,8 +1284,8 @@ header #notifications-icon .notification-count {
 }
 
 #sale-details tfoot td {
-  font-weight: bold;
-  background-color: #f2f2f2;
+  background-color: var(--hd-ft-bg);
+  color: var(--background-color);
   text-align: right;
 }
 
@@ -1395,6 +1376,7 @@ header #notifications-icon .notification-count {
   width: 15rem;
   height: 15rem;
   border-radius: 50%;
+  border: 3px solid var(--yellow);
   margin: 0 auto;
   position: relative;
 }

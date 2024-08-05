@@ -4,7 +4,7 @@ require_once '../../includes/db.php';
 require_once '../utilities/log_user_activity.php';
 
 if (!isset($_SESSION['user_id'])) {
-  header("Location: ../../../../pages/login.php");
+  header("Location: ../../pages/login.php");
   exit();
 }
 
@@ -32,6 +32,6 @@ session_unset();
 session_destroy();
 
 // Redirect to the login page
-header("Location: ../../../../pages/login.php");
+header("Location: ../../pages/login.php");
 $conn->close();
 exit();

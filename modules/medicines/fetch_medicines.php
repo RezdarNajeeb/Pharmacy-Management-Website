@@ -1,10 +1,10 @@
 <?php
-require_once '../../includes/db.php';
 session_start();
+require_once '../../includes/db.php';
 
 // Check if the user is logged in
 if (!isset($_SESSION['user_id'])) {
-  header("Location: ../../../../pages/login.php");
+  header("Location: ../../pages/login.php");
   exit();
 }
 

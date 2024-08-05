@@ -46,7 +46,7 @@ $(document).ready(function () {
     if (isNaN(saleInput)) {
       medicineName = saleInput;
       if (!medicineName) {
-        $saleInputError.text("ناوی دەرمان یان بارکۆد پێویستە پڕبکرێتەوە.");
+        $saleInputError.text("ناوی بەرهەم یان بارکۆد پێویستە پڕبکرێتەوە.");
         $saleInputError.css("display", "block");
         return;
       }
@@ -55,7 +55,7 @@ $(document).ready(function () {
       if (!barcode || barcode.length !== 13) {
         $saleInputError.text(
           !barcode
-            ? "ناوی دەرمان یان بارکۆد پێویستە پڕبکرێتەوە."
+            ? "ناوی بەرهەم یان بارکۆد پێویستە پڕبکرێتەوە."
             : "بارکۆد پێویستە لە ١٣ پیت بێت."
         );
         $saleInputError.css("display", "block");
@@ -99,7 +99,7 @@ $(document).ready(function () {
 
         if (quantity > quantityInDB) {
           alert(
-            `ئەو بڕە دەرمانەی [ ${name} ] کە داواکراوە، زیاترە لەو بڕەی کە لە سیستەم هەیە.`
+            `ئەو بڕە بەرهەمەی [ ${name} ] کە داواکراوە، زیاترە لەو بڕەی کە لە سیستەم هەیە.`
           );
           return;
         }
@@ -125,11 +125,11 @@ $(document).ready(function () {
             const isTodayOrPast = expiry <= today;
 
             if (isTodayOrPast) {
-              alert(`ئەم دەرمانە [ ${name} ] بەسەرچووە.`);
+              alert(`ئەم بەرهەمە [ ${name} ] بەسەرچووە.`);
               return;
             } else if (isWithinWarningPeriod) {
               alert(
-                `بەسەرچوونی ئەم دەرمانە [ ${name} ] گەشتووەتە بڕی ئاگادارکردنەوە.`
+                `بەسەرچوونی ئەم بەرهەمە [ ${name} ] گەشتووەتە بڕی ئاگادارکردنەوە.`
               );
               return;
             }
@@ -189,7 +189,7 @@ $(document).ready(function () {
 
     if (sales.length === 0) {
       $salesTableBody.append(
-        "<tr><td colspan='7'>هیچ دەرمانێک لە لیستی فرۆشتندا نییە.</td></tr>"
+        "<tr><td colspan='7'>هیچ بەرهەمێک لە لیستی فرۆشتندا نییە.</td></tr>"
       );
     } else {
       const rows = sales
@@ -203,7 +203,7 @@ $(document).ready(function () {
             sale.image !== null &&
             sale.image !== ""
               ? `../uploads/${sale.image}`
-              : "../assets/images/no-image.avif";
+              : "../assets/images/no-image.png";
 
           return `
                 <tr>
@@ -324,7 +324,7 @@ $(document).ready(function () {
   // Event handler to finalize the sale
   $finalizeSaleButton.on("click", function () {
     if (sales.length === 0) {
-      alert("هیچ دەرمانێک لە لیستی فرۆشتندا نییە.");
+      alert("هیچ بەرهەمێک لە لیستی فرۆشتندا نییە.");
       return;
     }
 
@@ -375,7 +375,7 @@ $(document).ready(function () {
     const index = $(this).data("index");
     if (sales[index].quantity >= sales[index].quantityInDB) {
       alert(
-        `ئەم دەرمانە [ ${sales[index].name} ] کە داواکراوە، زیاترە لەو بڕەی کە لە سیستەم هەیە.`
+        `ئەم بەرهەمە [ ${sales[index].name} ] کە داواکراوە، زیاترە لەو بڕەی کە لە سیستەم هەیە.`
       );
       return;
     } else {
@@ -405,7 +405,7 @@ $(document).ready(function () {
           ? sales[index].quantity * sales[index].sellingPrice
           : sales[index].quantity * sales[index].sellingPrice * exchangeRate;
     } else {
-      if (confirm("دەتەوێت ئەم دەرمانە لە لیستەکە لاببەیت؟"))
+      if (confirm("دەتەوێت ئەم بەرهەمە لە لیستەکە لاببەیت؟"))
         sales.splice(index, 1);
     }
     updateSalesTable();
@@ -413,7 +413,7 @@ $(document).ready(function () {
 
   $document.on("click", ".remove-sale", function () {
     const index = $(this).data("index");
-    if (confirm("دەتەوێت ئەم دەرمانە لە لیستەکە لاببەیت؟")) {
+    if (confirm("دەتەوێت ئەم بەرهەمە لە لیستەکە لاببەیت؟")) {
       sales.splice(index, 1);
       updateSalesTable();
     }
@@ -482,7 +482,7 @@ $(document).ready(function () {
             item.image !== null &&
             item.image !== ""
               ? `../uploads/${item.image}`
-              : "../assets/images/no-image.avif";
+              : "../assets/images/no-image.png";
 
           saleDetailsHtml += `<tr>
               <td><img src="${imageUrl}" alt="Medicine Image"></td>

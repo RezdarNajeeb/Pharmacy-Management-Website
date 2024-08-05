@@ -124,7 +124,7 @@ if (isset($_POST['login'])) {
         <label for="remember">منت لەبیر بێت</label>
       </div>
 
-      <button type="submit" class="light-blue-btn" name="login">بچۆ ژوورەوە</button>
+      <button type="submit" class="light-blue-btn custom-font" name="login">بچۆ ژوورەوە</button>
 
       <p>هەژمارت نییە؟ <a href="register.php">هەژمارێک دروست بکە</a></p>
     </form>

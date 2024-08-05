@@ -2,7 +2,7 @@
 session_start();
 require_once '../../includes/db.php';
 
-if (!isset($_GET['barcode'])) {
+if (!isset($_GET['barcode']) || !isset($_GET['medicine_name'])) {
   echo json_encode(['status' => 'error', 'message' => 'Invalid request']);
   exit();
 }
@@ -16,7 +16,7 @@ $stmt->execute();
 $result = $stmt->get_result();
 
 if ($result->num_rows === 0) {
-  $_SESSION['messages'][] = ['type' => 'error', 'message' => 'هیچ دەرمانێک بەم ناوە یان بارکۆدە نەدۆزرایەوە.'];
+  $_SESSION['messages'][] = ['type' => 'error', 'message' => 'هیچ بەرهەمێک بەم ناوە یان بارکۆدە نەدۆزرایەوە.'];
   exit();
 }
 

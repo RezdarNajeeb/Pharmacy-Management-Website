@@ -4,7 +4,7 @@ require_once '../../includes/db.php';
 require_once '../utilities/log_user_activity.php';
 
 if (!isset($_SESSION['user_id'])) {
-  header("Location: ../../../../pages/login.php");
+  header("Location: ../../pages/login.php");
   exit();
 }
 
@@ -30,9 +30,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     // Log the activity
-    logUserActivity("دەرمانێکی سڕییەوە بە ناوی " . $medicine['name'] . ".");
+    logUserActivity("بەرهەمێکی سڕییەوە بە ناوی " . $medicine['name'] . ".");
 
-    $_SESSION['messages'][] = ["type" => 'success', "message" => 'دەرمانەکە بەسەرکەوتوویی سڕایەوە.'];
+    $_SESSION['messages'][] = ["type" => 'success', "message" => 'بەرهەمەکە بەسەرکەوتوویی سڕایەوە.'];
   } else {
     $_SESSION['messages'][] = ["type" => 'error', "message" => 'کێشەیەک ڕوویدا.'];
   }

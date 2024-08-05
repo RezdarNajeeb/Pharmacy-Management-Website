@@ -82,7 +82,7 @@ if (!isset($_SESSION['user_id'])) {
           while ($row = $warningMedicinesResult->fetch_assoc()) :
         ?>
             <tr>
-              <?php $imageUrl = $row['image'] ? "../uploads/" . $row['image'] : "../assets/images/no-image.avif"; ?>
+              <?php $imageUrl = $row['image'] ? "../uploads/" . $row['image'] : "../assets/images/no-image.png"; ?>
               <td><img src="<?= $imageUrl ?>" alt="Medicine Image"></td>
               <td><?php echo htmlspecialchars($row['name']); ?></td>
               <td><?php echo htmlspecialchars($row['category']); ?></td>
@@ -92,12 +92,16 @@ if (!isset($_SESSION['user_id'])) {
               $current_date = date('Y-m-d');
               $warning_date = date('Y-m-d', strtotime("+$warning_expiry_days days"));
 
-              if ($row['expiry_date'] <= $current_date) {
-                echo "<td style='background-color: #FF6464'>$expiry_date</td>";
-              } elseif (strtotime($row['expiry_date']) <= strtotime($warning_date)) {
-                echo "<td style='background-color: #ff9966'>$expiry_date</td>";
+              if ($expiry_date == '0000-00-00' || $expiry_date == '' || $expiry_date == null) {
+                echo "<td>بەسەرچوونی نییە</td>";
               } else {
-                echo "<td>$expiry_date</td>";
+                if ($row['expiry_date'] <= $current_date) {
+                  echo "<td style='background-color: #FF6464'>$expiry_date</td>";
+                } elseif (strtotime($row['expiry_date']) <= strtotime($warning_date)) {
+                  echo "<td style='background-color: #ff9966'>$expiry_date</td>";
+                } else {
+                  echo "<td>$expiry_date</td>";
+                }
               }
               ?>
             </tr>

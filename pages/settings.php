@@ -36,9 +36,10 @@ $systemProfile = $systemResult->fetch_assoc();
     <div class="sys-settings-section">
       <h3>پڕۆفایلی سیستەمەکە</h3>
       <form id="sys-profile-form" enctype="multipart/form-data">
-        <input type="hidden" name="existing-image" value="<?= "../uploads/" . $systemProfile['image']; ?>">
+        <input type="hidden" name="existing-image" value="<?= isset($systemProfile['image']) && !empty($systemProfile['image']) ? "../uploads/system_profile/" . $systemProfile['image'] : "" ?>">
         <div class="sys-profile-image">
-          <img src="<?= "../uploads/" . $systemProfile['image']; ?>" alt="System Profile Image" id="profileImage">
+          <img src="<?= isset($systemProfile['image']) && !empty($systemProfile['image']) ? "../uploads/system_profile/" . $systemProfile['image'] : "../assets/images/no-image.png" ?>" alt="System Profile Image" id="profileImage">
+
           <label for="profileImageInput" class="edit-icon"><i class="fa-regular fa-pen-to-square"></i></label>
           <input type="file" id="profileImageInput" name="edit-image" accept="image/jpg, image/jpeg, image/png" class="file-input">
         </div>

@@ -64,16 +64,16 @@ try {
     $warning_expiry_days = $warning_result['warning_expiry_days'];
     $warning_expiry_date = date('Y-m-d', strtotime('+' . $warning_expiry_days . ' days')); // Add warning expiry days to current date
 
-    if (strtotime($medicine_DB_expiry_date) <= strtotime($warning_expiry_date)) {
-      throw new Exception('فرۆشتنەکە سەرکەوتوو نەبوو چونکە بەسەرچوونی ئەم دەرمانە [ ' . $sale['name'] . ' ] گەشتووەتە بڕی ئاگادارکردنەوە.');
+    if (!empty($medicine_DB_expiry_date) && strtotime($medicine_DB_expiry_date) <= strtotime($warning_expiry_date)) {
+      throw new Exception('فرۆشتنەکە سەرکەوتوو نەبوو چونکە بەسەرچوونی ئەم بەرهەمە [ ' . $sale['name'] . ' ] گەشتووەتە بڕی ئاگادارکردنەوە.');
     }
 
     if ($quantity > $medicine_DB_qty) {
-      throw new Exception('فرۆشتنەکە سەرکەوتوو نەبوو چونکە بڕی پێویست لەم دەرمانە [ ' . $sale['name'] . ' ] بەردەست نییە.');
+      throw new Exception('فرۆشتنەکە سەرکەوتوو نەبوو چونکە بڕی پێویست لەم بەرهەمە [ ' . $sale['name'] . ' ] بەردەست نییە.');
     }
 
     if ($medicine_DB_qty <= $warning_qty) {
-      $_SESSION['messages'][] = ['type' => 'info', 'message' => 'ئاگاداربە بڕی ئەم دەرمانە ' . $sale['name'] . ' گەشتووەتە بڕی ئاگادارکردنەوە.'];
+      $_SESSION['messages'][] = ['type' => 'info', 'message' => 'ئاگاداربە بڕی ئەم بەرهەمە ' . $sale['name'] . ' گەشتووەتە بڕی ئاگادارکردنەوە.'];
     }
 
     if (!$update_medicine_stmt->execute()) {

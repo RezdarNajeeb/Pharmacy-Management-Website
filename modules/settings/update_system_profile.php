@@ -12,12 +12,19 @@ if (!isset($_SESSION['user_id'])) {
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $system_name = $_POST['name'];
   $existing_image = $_POST['existing-image'];
-  $edit_image = $_FILES['edit-image'];
+  $edit_image = isset($_FILES['edit-image']) ? $_FILES['edit-image'] : null;
 
-  // Check if a new image is selected
-  if ($edit_image['name']) {
+  // Check if a new image is selected and valid
+  if ($edit_image && $edit_image['name']) {
     $image_name = $edit_image['name'];
-    move_uploaded_file($edit_image['tmp_name'], "../../uploads/" . $image_name);
+
+    // Delete the old image file if it exists
+    if (file_exists("../../uploads/system_profile/" . $existing_image)) {
+      unlink("../../uploads/system_profile/" . $existing_image);
+    }
+
+    // Move the new image to the uploads directory
+    move_uploaded_file($edit_image['tmp_name'], "../../uploads/system_profile/" . $image_name);
   } else {
     $image_name = $existing_image;
   }

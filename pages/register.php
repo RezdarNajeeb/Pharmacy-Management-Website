@@ -1,6 +1,6 @@
 <?php
-require_once '../includes/db.php';
 session_start();
+require_once '../includes/db.php';
 
 $_SESSION['messages'] = [];
 
@@ -92,7 +92,7 @@ if (isset($_POST['register'])) {
         <label for="show-password">پیشاندانی وشەی نهێنی</label>
       </div>
 
-      <button type="submit" name="register" class="light-green-btn">دروستکردن</button>
+      <button type="submit" name="register" class="light-green-btn custom-font">دروستکردن</button>
 
       <p>هەژمارت هەیە؟ <a href="login.php">بچۆ ژوورەوە</a></p>
     </form>

@@ -45,7 +45,7 @@ $system_profile = $result->fetch_assoc();
         <div class="stats">
             <a href="medicines.php">
                 <div class="stat">
-                    <h2>هەموو دەرمانەکان</h2>
+                    <h2>هەموو بەرهەمەکان</h2>
                     <p><?php echo $stats['total_medicines']; ?></p>
                 </div>
             </a>
@@ -59,13 +59,13 @@ $system_profile = $result->fetch_assoc();
             <?php } ?>
             <a href="warnings.php">
                 <div class="stat">
-                    <h2>دەرمانە کەمبووەکان</h2>
+                    <h2>بەرهەمە کەمبووەکان</h2>
                     <p><?php echo $stats['low_stock_medicines']; ?></p>
                 </div>
             </a>
             <a href="warnings.php">
                 <div class="stat">
-                    <h2>نزیك بە بەسەرچوون</h2>
+                    <h2>نزیك لە بەسەرچوون</h2>
                     <p><?php echo $stats['upcoming_expiries']; ?></p>
                 </div>
             </a>
@@ -73,7 +73,7 @@ $system_profile = $result->fetch_assoc();
 
         <div class="sys-profile">
             <div class="sys-img">
-                <img src=<?= "../uploads/" . $system_profile['image'] ?> alt="profile">
+                <img src="<?= !empty($system_profile['image']) ? "../uploads/system_profile/" . $system_profile['image'] : "../assets/images/no-image.png" ?>" alt="System Profile Image">
             </div>
             <h1 class="sys-name"><?= $system_profile['name'] ?></h1>
             <h3 class="sys-user"><?= $isAdmin ? "بەڕێوەبەر: " : "بەکارهێنەر: " ?> <span><?php echo $_SESSION['username'] ?></span></h3>

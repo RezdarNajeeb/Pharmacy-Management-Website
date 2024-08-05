@@ -1,6 +1,5 @@
 <?php
 session_start();
-mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT); // Set MySQLi to throw exceptions
 require_once '../includes/db.php';
 require_once '../modules/utilities/log_user_activity.php';
 
@@ -8,75 +7,6 @@ require_once '../modules/utilities/log_user_activity.php';
 if (!isset($_SESSION['user_id'])) {
   header("Location: login.php");
   exit();
-}
-
-// Handle form submission for adding a medicine
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
-  $currency = $_POST['currency'];
-  $exchange_rate = floatval($_POST['exchange_rate']);
-  $name = $_POST['name'];
-  $category = $_POST['category'];
-  $cost_price = $_POST['cost_price'];
-  $selling_price = $_POST['selling_price'];
-  $quantity = $_POST['quantity'];
-  $expiry_date = $_POST['expiry_date'];
-  $barcode = $_POST['barcode'];
-
-  if ($barcode == '') {
-    $barcode = null;
-  }
-
-  if ($expiry_date == '' || $expiry_date == '0000-00-00') {
-    $expiry_date = null;
-  }
-
-  // Handle image upload
-  $image = null;
-  if (!empty($_FILES['image']['name'])) {
-    $image = $_FILES['image']['name'];
-    $target_dir = "../uploads/";
-    $target_file = $target_dir . basename($image);
-
-    if (!move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
-      $_SESSION['messages'][] = [
-        'type' => 'error',
-        'message' => 'هەڵەیەک ڕویدا لە بارکردنی وێنە.'
-      ];
-
-      // Redirect to the same page to show the error message
-      header("Location: medicines.php");
-      exit();
-    }
-  }
-
-  $stmt = $conn->prepare("INSERT INTO medicines (name, category, cost_price, selling_price, currency, quantity, expiry_date, barcode, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-  $stmt->bind_param("ssddsisss", $name, $category, $cost_price, $selling_price, $currency, $quantity, $expiry_date, $barcode, $image);
-
-  try {
-    if ($stmt->execute() === TRUE) {
-      // Log the user activity
-      logUserActivity("دەرمانێکی زیادکرد بە ناوی $name.");
-
-      $_SESSION['messages'][] = [
-        'type' => 'success',
-        'message' => 'دەرمانێکی نوێ زیادکرا.'
-      ];
-    }
-  } catch (mysqli_sql_exception $e) {
-    // Log the error
-    error_log("Error adding medicine: " . $e->getMessage());
-
-    $_SESSION['messages'][] = [
-      'type' => 'error',
-      'message' => "هەڵەیەک ڕویدا لە زیادکردنی دەرمان: " . $e->getMessage()
-    ];
-
-    // Redirect to the same page and delete the history to prevent resubmission
-    header("Location: medicines.php");
-    exit();
-  }
-
-  $stmt->close();
 }
 ?>
 
@@ -86,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>دەرمانەکان</title>
+  <title>بەرهەمەکان</title>
   <link rel="stylesheet" href="../assets/fontawesome-free-6.5.2-web/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css" />
   <link rel="stylesheet" href="../css/styles.css">
@@ -101,13 +31,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
   <div class="medicines-container">
 
     <div class="right-side-container">
-      <h2 class="title">زیادکردنی دەرمان</h2>
-      <form action="medicines.php" id="add-medicine-form" method="post" enctype="multipart/form-data">
+      <h2 class="title">زیادکردنی بەرهەم</h2>
+      <form action="../modules/medicines/add_medicine.php" id="add-medicine-form" method="post" enctype="multipart/form-data">
         <input type="hidden" name="currency" value="USD">
         <input type="hidden" name="exchange_rate" value="1450">
 
         <div>
-          <label for="name">ناوی دەرمان</label>
+          <label for="name">ناوی بەرهەم</label>
           <input type="text" class="field" name="name" id="name" required>
         </div>
 
@@ -147,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
           <input type="text" class="field" name="barcode" id="barcode">
         </div>
 
-        <button type="submit" class="light-green-btn custom-font" name="add_medicine">زیادکردنی دەرمان</button>
+        <button type="submit" class="light-green-btn custom-font" name="add_medicine">زیادکردنی بەرهەم</button>
       </form>
     </div>
 
@@ -178,7 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
   <div id="edit-medicine-modal" class="modal">
     <div class="modal-content">
       <i class="close fas fa-times" onclick="closeEditMedicineModal()"></i>
-      <h2 class="title">نوێکردنەوەی دەرمان</h2>
+      <h2 class="title">نوێکردنەوەی بەرهەم</h2>
       <form id="edit-medicine-form" method="post" enctype="multipart/form-data">
         <input type="hidden" name="id" id="edit-id">
         <input type="hidden" name="existing_image" id="existing-image">
@@ -192,7 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
         </div>
 
         <div>
-          <label for="edit-name">ناوی دەرمان</label>
+          <label for="edit-name">ناوی بەرهەم</label>
           <input type="text" name="name" id="edit-name" class="field" required>
         </div>
 
@@ -250,7 +180,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
         },
         "language": {
           "url": "https://cdn.datatables.net/plug-ins/1.10.25/i18n/Kurdish.json",
-          "emptyTable": "هیچ دەرمانێک لە سیستەمەکەدا نییە."
+          "emptyTable": "هیچ بەرهەمێک لە سیستەمەکەدا نییە."
         },
         "columnDefs": [{
             "orderable": false,
@@ -273,7 +203,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
           {
             "data": "image",
             "render": function(data) {
-              const imageUrl = data ? `../uploads/${data}` : '../assets/images/no-image.avif';
+              const imageUrl = data && data.trim() ? `../uploads/${data}` : '../assets/images/no-image.png';
               return `<img src="${imageUrl}" alt="Medicine Image" class="image">`;
             }
           },
@@ -338,7 +268,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
         "initComplete": function(settings, json) {
           // Focus on the search input field after DataTables has fully loaded
           $('.dataTables_filter input').focus();
-          $('#medicines-table_wrapper').prepend('<h2 class="title">دەرمانەکان</h2>');
+          $('#medicines-table_wrapper').prepend('<h2 class="title">بەرهەمەکان</h2>');
         },
         "scrollY": "500px", // Set vertical scrollable area height
         "scrollX": true, // Enable horizontal scrolling
@@ -363,7 +293,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
           if (medicine.image) {
             $('#current-img').attr('src', `../uploads/${medicine.image}`);
           } else {
-            $('#current-img').attr('src', '../assets/images/no-image.avif');
+            $('#current-img').attr('src', '../assets/images/no-image.png');
           }
           $('#edit-category').val(medicine.category);
           $('#edit-cost_price').val(medicine.cost_price);
@@ -384,7 +314,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
     // update medicine in the scripts.js
 
     function deleteMedicine(id) {
-      if (confirm('دڵنیایت کە دەتەوێت ئەم دەرمانە بسڕیتەوە؟')) {
+      if (confirm('دڵنیایت کە دەتەوێت ئەم بەرهەمە بسڕیتەوە؟')) {
         $.ajax({
           url: '../modules/medicines/delete_medicine.php',
           type: 'POST',
@@ -392,7 +322,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_medicine'])) {
             id: id
           },
           success: function(response) {
-            location.reload();
+            // location.reload();
           },
           error: function(xhr, status, error) {
             console.error('Error:', error); // Debugging: log the error
