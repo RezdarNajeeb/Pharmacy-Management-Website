@@ -42,6 +42,14 @@ $system_profile = $result->fetch_assoc();
 
     <div class="dashboard">
         <h2 class="title">زانیارییەکان</h2>
+        <div class="sys-profile">
+            <div class="sys-img">
+                <img src="<?= !empty($system_profile['image']) ? "../uploads/system_profile/" . $system_profile['image'] : "../assets/images/no-image.png" ?>" alt="System Profile Image">
+            </div>
+            <h1 class="sys-name"><?= $system_profile['name'] ?? 'Pharmacy' ?></h1>
+            <h3 class="sys-user"><?= $isAdmin ? "بەڕێوەبەر: " : "بەکارهێنەر: " ?> <span><?php echo $_SESSION['username'] ?></span></h3>
+        </div>
+
         <div class="stats">
             <a href="medicines.php">
                 <div class="stat">
@@ -69,14 +77,6 @@ $system_profile = $result->fetch_assoc();
                     <p><?php echo $stats['upcoming_expiries']; ?></p>
                 </div>
             </a>
-        </div>
-
-        <div class="sys-profile">
-            <div class="sys-img">
-                <img src="<?= !empty($system_profile['image']) ? "../uploads/system_profile/" . $system_profile['image'] : "../assets/images/no-image.png" ?>" alt="System Profile Image">
-            </div>
-            <h1 class="sys-name"><?= $system_profile['name'] ?? 'Pharmacy' ?></h1>
-            <h3 class="sys-user"><?= $isAdmin ? "بەڕێوەبەر: " : "بەکارهێنەر: " ?> <span><?php echo $_SESSION['username'] ?></span></h3>
         </div>
     </div>
 

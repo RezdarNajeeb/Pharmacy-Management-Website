@@ -705,9 +705,8 @@ header #notifications-icon .notification-count {
     margin: 0 auto;
     margin-top: 2rem;
     padding: 2rem;
+    width: 100%;
     min-width: 40rem;
-    min-height: 50rem;
-    max-width: 40rem;
     max-height: 50rem;
     border-radius: 0.5rem;
     background-color: var(--card-bg);
