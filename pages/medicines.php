@@ -245,7 +245,7 @@ if (!isset($_SESSION['user_id'])) {
           {
             "data": "expiry_date",
             "render": function(data) {
-              return data === null || data === '0000-00-00' || data === '' ? 'بەسەرچوونی نییە' : data;
+              return data === null || data === '' ? 'بەسەرچوونی نییە' : data;
             }
           },
           {

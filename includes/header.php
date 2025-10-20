@@ -1,17 +1,30 @@
-<?php $currentUsername = isset($_SESSION['username']) ? $_SESSION['username'] : null;
+<?php
+$currentUsername = $_SESSION['username'] ?? null;
+$isAdmin = ($_SESSION['role'] ?? '') === 'admin';
 
-$isAdmin = $_SESSION['role'] === 'admin';
+// Fetch warning and expiry settings first (for performance & clarity)
+$settings = $conn->query("
+    SELECT warning_quantity, warning_expiry_days 
+    FROM warning_settings 
+    WHERE id = 1
+")->fetch_assoc();
 
-// Fetch warning count
+$warning_quantity = $settings['warning_quantity'] ?? 0;
+$warning_expiry_days = $settings['warning_expiry_days'] ?? 0;
+
+// Main warning count query, NULL-safe logic
 $warningQuery = "
-    SELECT COUNT(*) AS warning_count FROM medicines 
-    WHERE quantity <= (SELECT warning_quantity FROM warning_settings WHERE id = 1) 
-    OR (expiry_date IS NOT NULL AND expiry_date != '0000-00-00' AND expiry_date <= DATE_ADD(NOW(), INTERVAL (SELECT warning_expiry_days FROM warning_settings WHERE id = 1) DAY))
+    SELECT COUNT(*) AS warning_count 
+    FROM medicines 
+    WHERE quantity <= $warning_quantity
+    OR (
+        expiry_date IS NOT NULL
+        AND expiry_date <= DATE_ADD(NOW(), INTERVAL $warning_expiry_days DAY)
+    )
 ";
-$warningResult = $conn->query($warningQuery);
-$warningCount = $warningResult->fetch_assoc()['warning_count'];
 
-$warning_expiry_days = $conn->query("SELECT warning_expiry_days FROM warning_settings WHERE id = 1")->fetch_assoc()['warning_expiry_days'];
+$warningResult = $conn->query($warningQuery);
+$warningCount = $warningResult ? ($warningResult->fetch_assoc()['warning_count'] ?? 0) : 0;
 ?>
 <script defer>
   var warningExpiryDays = <?php echo json_encode($warning_expiry_days); ?>;
