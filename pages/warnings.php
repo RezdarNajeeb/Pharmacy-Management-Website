@@ -30,14 +30,14 @@ if (!isset($_SESSION['user_id'])) {
   $warningSettingsResult = $conn->query($warningSettingsQuery);
   $warningSettings = $warningSettingsResult->fetch_assoc();
 
-  $warning_quantity = $warningSettings['warning_quantity'];
-  $warning_expiry_days = $warningSettings['warning_expiry_days'];
+  $warning_quantity = $warningSettings['warning_quantity'] ?? 0;
+  $warning_expiry_days = $warningSettings['warning_expiry_days'] ?? 0;
 
   // Fetch medicines with low quantity or near expiry date
   $warningMedicinesQuery = "
       SELECT * FROM medicines 
       WHERE (quantity <= $warning_quantity 
-      OR (expiry_date IS NOT NULL AND expiry_date != '0000-00-00' AND expiry_date <= DATE_ADD(NOW(), INTERVAL $warning_expiry_days DAY)))
+      OR (expiry_date IS NOT NULL AND expiry_date <= DATE_ADD(NOW(), INTERVAL $warning_expiry_days DAY)))
   ";
   $warningMedicinesResult = $conn->query($warningMedicinesQuery);
   ?>
