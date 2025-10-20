@@ -75,7 +75,7 @@ $system_profile = $result->fetch_assoc();
             <div class="sys-img">
                 <img src="<?= !empty($system_profile['image']) ? "../uploads/system_profile/" . $system_profile['image'] : "../assets/images/no-image.png" ?>" alt="System Profile Image">
             </div>
-            <h1 class="sys-name"><?= $system_profile['name'] ?? 'pharmacy' ?></h1>
+            <h1 class="sys-name"><?= $system_profile['name'] ?? 'Pharmacy' ?></h1>
             <h3 class="sys-user"><?= $isAdmin ? "بەڕێوەبەر: " : "بەکارهێنەر: " ?> <span><?php echo $_SESSION['username'] ?></span></h3>
         </div>
     </div>

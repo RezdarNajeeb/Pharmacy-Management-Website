@@ -44,7 +44,7 @@ $systemProfile = $systemResult->fetch_assoc();
           <input type="file" id="profileImageInput" name="edit-image" accept="image/jpg, image/jpeg, image/png" class="file-input">
         </div>
 
-        <input type="text" id="systemName" class="sys-profile-name custom-font" name="name" value="<?php echo htmlspecialchars($systemProfile['name'], ENT_QUOTES, 'UTF-8'); ?>" required>
+        <input type="text" id="systemName" class="sys-profile-name custom-font" name="name" value="<?php echo htmlspecialchars($systemProfile['name'] ?? 'Pharmacy', ENT_QUOTES, 'UTF-8'); ?>" required>
 
         <button type="submit" class="light-yellow-btn custom-font">نوێکردنەوە</button>
       </form>
